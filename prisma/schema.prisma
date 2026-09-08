@@ -1,0 +1,438 @@
+// Simply Styled — data model.
+//
+// Two things this schema is deliberately shaped around:
+//
+//  1. StyleProfile is versioned and an Order pins the version it was placed
+//     against. That is what lets a returning customer's saved answers pre-fill
+//     the whole flow, turning a repeat order into thirty seconds, while an old
+//     order still shows the stylist exactly what it was shopped from.
+//
+//  2. Both payment models are representable without a migration. Money is held
+//     as separate fee/budget/delivery columns and charges live in Payment rows,
+//     so an order can be settled in one charge (prepaid_full) or two
+//     (fee_first) purely by configuration.
+//
+// All money is integer fils. 1 KD = 1000 fils. There are no float amounts
+// anywhere in this schema, on purpose.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Prisma 7 takes connection URLs from prisma.config.ts (migrations) and from
+// the driver adapter passed to PrismaClient (runtime), not from here.
+datasource db {
+  provider = "postgresql"
+}
+
+enum Locale {
+  en
+  ar
+}
+
+// ---------------------------------------------------------------------------
+// Customers and auth
+// ---------------------------------------------------------------------------
+
+model Customer {
+  id        String  @id @default(cuid())
+  name      String
+  email     String  @unique
+  /// E.164, always +965 — validated server-side as 8 digits starting 5, 6 or 9.
+  phoneE164 String?
+  locale    Locale  @default(en)
+
+  createdAt  DateTime @default(now())
+  lastSeenAt DateTime @default(now())
+
+  profiles StyleProfile[]
+  orders   Order[]
+  tokens   MagicLinkToken[]
+  sessions Session[]
+
+  @@index([createdAt])
+}
+
+/// Single-use magic link. Only the hash is stored, so a database leak cannot
+/// be replayed into an account.
+model MagicLinkToken {
+  id         String    @id @default(cuid())
+  customerId String
+  tokenHash  String    @unique
+  expiresAt  DateTime
+  usedAt     DateTime?
+  /// Where to land after sign-in, so a deep link survives the round trip.
+  redirectTo String?
+  createdAt  DateTime  @default(now())
+
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([customerId])
+  @@index([expiresAt])
+}
+
+/// Long-lived so a returning customer is not re-authenticating every visit.
+model Session {
+  id         String   @id @default(cuid())
+  customerId String
+  tokenHash  String   @unique
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  lastUsedAt DateTime @default(now())
+  userAgent  String?
+
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([customerId])
+  @@index([expiresAt])
+}
+
+enum StylistRole {
+  stylist
+  admin
+}
+
+/// Stylists authenticate the same way customers do, but against their own
+/// table — a customer session must never reach /admin.
+model StylistUser {
+  id        String      @id @default(cuid())
+  name      String
+  email     String      @unique
+  role      StylistRole @default(stylist)
+  active    Boolean     @default(true)
+  createdAt DateTime    @default(now())
+
+  sessions      StylistSession[]
+  tokens        StylistMagicLinkToken[]
+  statusChanges OrderStatusEvent[]
+  itemsBought   OrderItem[]
+}
+
+model StylistSession {
+  id         String   @id @default(cuid())
+  stylistId  String
+  tokenHash  String   @unique
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  lastUsedAt DateTime @default(now())
+
+  stylist StylistUser @relation(fields: [stylistId], references: [id], onDelete: Cascade)
+
+  @@index([stylistId])
+}
+
+model StylistMagicLinkToken {
+  id        String    @id @default(cuid())
+  stylistId String
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  stylist StylistUser @relation(fields: [stylistId], references: [id], onDelete: Cascade)
+
+  @@index([stylistId])
+}
+
+// ---------------------------------------------------------------------------
+// Style profile
+// ---------------------------------------------------------------------------
+
+enum StylingFor {
+  women
+  men
+}
+
+/// One row per version. `isCurrent` marks the one that pre-fills the flow.
+///
+/// Hybrid on purpose: the columns below are the fields the business will filter
+/// and aggregate on, and everything else lives in `answers` under a Zod schema.
+/// All forty-odd answers as columns would mean a migration every time a
+/// question is reworded; all of it as JSON would make "which occasions actually
+/// sell" unqueryable.
+model StyleProfile {
+  id         String @id @default(cuid())
+  customerId String
+  version    Int
+  isCurrent  Boolean @default(true)
+
+  /// Bumped when the answer shape changes, so old profiles keep parsing.
+  answersSchemaVersion Int @default(1)
+
+  // Queryable slice.
+  stylingFor     StylingFor
+  occasion       String
+  sizeTop        String?
+  sizeBottom     String?
+  sizeShoe       String?
+  budgetTierFils Int?
+
+  /// Every answer from the seven screens, validated by Zod on write.
+  /// Body measurements live in here — never logged, never left an
+  /// authenticated session.
+  answers Json
+
+  /// The derived profile: palette ids, silhouette key, wear-more and skip rule
+  /// ids, plus the measurement readout. Structured tokens rather than prose, so
+  /// the English and Arabic wording stays in the dictionaries and the generator
+  /// stays testable.
+  generated Json
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  orders   Order[]
+
+  @@unique([customerId, version])
+  @@index([customerId, isCurrent])
+  @@index([occasion])
+  @@index([stylingFor])
+}
+
+// ---------------------------------------------------------------------------
+// Orders
+// ---------------------------------------------------------------------------
+
+enum PaymentModel {
+  /// Styling fee plus the whole clothing budget up front; unused budget refunded.
+  prepaid_full
+  /// Styling fee up front; clothes charged after the customer approves the look.
+  fee_first
+}
+
+enum OrderStatus {
+  /// Draft, nothing charged yet.
+  created
+  /// fee_first only: look approved, clothing charge outstanding.
+  awaiting_clothing_payment
+  paid
+  styling
+  awaiting_approval
+  approved
+  shopping
+  shipped
+  delivered
+  returned
+  refunded
+  cancelled
+}
+
+model Order {
+  id         String @id @default(cuid())
+  /// Short human reference the stylist and customer can say out loud.
+  reference  String @unique
+  customerId String
+  /// The exact profile version this order was shopped from.
+  styleProfileId String
+
+  paymentModel PaymentModel @default(fee_first)
+  status       OrderStatus  @default(created)
+
+  lookCount      Int
+  budgetTierFils Int
+
+  // Every amount computed server-side by lib/pricing.ts and stored, so an
+  // order can always be re-explained even if the prices change later.
+  stylingFeeFils     Int
+  clothingBudgetFils Int
+  deliveryFeeFils    Int
+  totalFils          Int
+  dueNowFils         Int
+  dueOnApprovalFils  Int
+  /// What the stylist actually spent. Null until the shopping is done.
+  spentFils          Int?
+
+  currency String @default("KWD")
+
+  /// Where the stylist sends the look for approval.
+  whatsappE164 String
+
+  // Kuwait-only delivery, validated server-side.
+  addressGovernorate String
+  addressArea        String
+  addressBlock       String
+  addressStreet      String
+  addressBuilding    String
+  addressFloor       String?
+  addressFlat        String?
+  addressNotes       String?
+
+  createdAt   DateTime  @default(now())
+  paidAt      DateTime?
+  approvedAt  DateTime?
+  shippedAt   DateTime?
+  deliveredAt DateTime?
+  closedAt    DateTime?
+  /// 3-5 working days after approval; set when the look is approved.
+  dueBy       DateTime?
+
+  customer     Customer     @relation(fields: [customerId], references: [id])
+  styleProfile StyleProfile @relation(fields: [styleProfileId], references: [id])
+
+  payments     Payment[]
+  refunds      Refund[]
+  items        OrderItem[]
+  approvals    LookApproval[]
+  statusEvents OrderStatusEvent[]
+
+  @@index([status, createdAt])
+  @@index([customerId, createdAt])
+}
+
+enum PaymentKind {
+  styling_fee
+  clothing_budget
+  /// fee_first: the actual cost of the clothes, charged after approval.
+  balance
+}
+
+enum PaymentStatus {
+  pending
+  authorised
+  captured
+  failed
+  cancelled
+}
+
+model Payment {
+  id      String @id @default(cuid())
+  orderId String
+
+  kind   PaymentKind
+  status PaymentStatus @default(pending)
+
+  amountFils Int
+
+  /// Which PaymentProvider handled it — "mock" locally, the gateway in production.
+  provider    String
+  /// The gateway's own id, for reconciliation and refunds.
+  providerRef String?
+  /// The method the customer chose, as the gateway reported it (knet, visa, …).
+  method      String?
+  /// Raw gateway callback, kept for reconciliation. Never rendered to a customer.
+  raw         Json?
+
+  createdAt   DateTime  @default(now())
+  completedAt DateTime?
+
+  order   Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  refunds Refund[]
+
+  @@unique([provider, providerRef])
+  @@index([orderId])
+  @@index([status])
+}
+
+enum RefundStatus {
+  requested
+  sent
+  settled
+  failed
+}
+
+/// The refund path is a real record with a real lifecycle, because "unused
+/// clothing budget refunded within 3 working days" is a promise made on the
+/// payment page and has to be auditable.
+model Refund {
+  id        String @id @default(cuid())
+  orderId   String
+  paymentId String?
+
+  amountFils Int
+  reason     String
+  status     RefundStatus @default(requested)
+
+  provider    String
+  providerRef String?
+
+  requestedAt DateTime  @default(now())
+  sentAt      DateTime?
+  settledAt   DateTime?
+  failureNote String?
+
+  order   Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  payment Payment? @relation(fields: [paymentId], references: [id])
+
+  @@index([orderId])
+  @@index([status])
+}
+
+enum ItemOutcome {
+  /// Bought, not yet resolved.
+  pending
+  kept
+  returned
+}
+
+/// What the stylist actually bought. This is how the business learns its
+/// margins, and how the two-sizes promise becomes auditable data rather than a
+/// sentence on a page.
+model OrderItem {
+  id      String @id @default(cuid())
+  orderId String
+
+  name     String
+  shopName String
+  /// Free text, because Kuwait boutique sizing is not a clean enum.
+  sizePrimary   String
+  /// Set when a fit-risky piece went out in two sizes.
+  sizeAlternate String?
+  sentTwoSizes  Boolean @default(false)
+
+  costFils Int
+  /// Which size came back kept. Null while pending, or if the piece was returned.
+  keptSize String?
+  outcome  ItemOutcome @default(pending)
+
+  boughtByStylistId String?
+  createdAt         DateTime  @default(now())
+  returnedAt        DateTime?
+
+  order   Order        @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  stylist StylistUser? @relation(fields: [boughtByStylistId], references: [id])
+
+  @@index([orderId])
+  @@index([outcome])
+}
+
+enum ApprovalResponse {
+  pending
+  approved
+  changes_requested
+}
+
+/// The stylist sends the look to WhatsApp and records what came back. Nothing
+/// ships before an `approved` row exists.
+model LookApproval {
+  id      String @id @default(cuid())
+  orderId String
+
+  sentAt      DateTime         @default(now())
+  channel     String           @default("whatsapp")
+  response    ApprovalResponse @default(pending)
+  respondedAt DateTime?
+  note        String?
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+}
+
+/// Audit trail. Every status change, who made it and when.
+model OrderStatusEvent {
+  id      String @id @default(cuid())
+  orderId String
+
+  fromStatus OrderStatus?
+  toStatus   OrderStatus
+  /// Null when the system moved it (a payment callback, say).
+  actorId    String?
+  note       String?
+  createdAt  DateTime     @default(now())
+
+  order Order        @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  actor StylistUser? @relation(fields: [actorId], references: [id])
+
+  @@index([orderId, createdAt])
+}
