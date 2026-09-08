@@ -2,26 +2,32 @@
 
 ## Current deployment
 
-A production deployment was created by direct file upload:
+Latest production deployment, by direct file upload:
 
-- **https://simply-styled-5aplnclop-t054175-1826.vercel.app**
-- alias: `simply-styled-t054175-1826.vercel.app`
-- inspector: <https://vercel.com/t054175-1826/simply-styled/DJ5GsJhgGGNLQG8a5GuxP3AKpDn4>
+- **https://simply-styled-g7z3x1wn1-t054175-1826.vercel.app**
+- alias: `simply-styled-t054175-1826.vercel.app` (points at the newest
+  successful production deployment)
+- inspector: <https://vercel.com/t054175-1826/simply-styled/GvDzB4x3Wi5gqERaKaz2eCEb4t4f>
 
-**Unverified.** The deployment was accepted, but nothing here could confirm it
-built:
+Earlier attempt, same project:
+<https://vercel.com/t054175-1826/simply-styled/DJ5GsJhgGGNLQG8a5GuxP3AKpDn4>
 
-- `vercel.app` is blocked by this environment's egress policy, so the URL
-  cannot be fetched from the session (`CONNECT tunnel failed, response 403`).
+**Unverified from this session.** The deployment is accepted, but nothing here
+can confirm it built:
+
+- `vercel.app` is blocked by this environment's egress policy, for both `curl`
+  and the web-fetch tool.
 - Every Vercel *read* API returns 403 for this scope — `get_deployment`,
-  `get_deployment_build_logs` and `web_fetch_vercel_url` all fail with
-  "You must re-authenticate to this scope". The connection can create a
-  deployment but not read one back.
+  `get_deployment_build_logs`, `web_fetch_vercel_url` and
+  `create_git_project` (which needs a read to look up linked projects) all
+  fail with "You must re-authenticate to this scope". The connection can
+  create a deployment but not read one back, which is also why the git-linked
+  project below has to be set up by hand.
 
-Check the inspector link for the build result. Both risky build steps were
-verified locally first: `prisma generate` runs without a database, and
-`node scripts/build-fonts.mjs --if-missing` regenerates all five font files
-byte-identically from a clean tree.
+Check the inspector link for the build result. The whole path a build machine
+takes was verified locally from an empty `node_modules` first: install (which
+runs `prisma generate`), then the font build, then `next build`, plus the tests
+and a typecheck.
 
 ### How that upload differs from the repo
 
