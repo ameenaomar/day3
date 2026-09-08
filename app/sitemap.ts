@@ -8,19 +8,30 @@ import { siteUrl } from "@/lib/site";
 export const dynamic = "force-dynamic";
 
 /**
- * Both locales are equals, so each entry declares the other as an alternate.
- * Without that a search engine picks one and buries the other.
+ * `/` is the live prototype and carries both languages in one page, so it is
+ * the primary entry. Below it, both locale routes of the port are equals, so
+ * each entry declares the other as an alternate — without that a search engine
+ * picks one and buries the other.
  */
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = siteUrl();
 
-  return locales.map((locale) => ({
-    url: `${base}/${locale}`,
+  const root = {
+    url: base,
     lastModified: new Date(),
     changeFrequency: "weekly" as const,
     priority: 1,
+  };
+
+  const localised = locales.map((locale) => ({
+    url: `${base}/${locale}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly" as const,
+    priority: 0.8,
     alternates: {
       languages: Object.fromEntries(locales.map((l) => [l, `${base}/${l}`])),
     },
   }));
+
+  return [root, ...localised];
 }

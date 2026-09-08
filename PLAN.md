@@ -4,32 +4,16 @@ Status: **awaiting approval.** Nothing has been built yet.
 
 ---
 
-## 0. Blocker: I cannot read `simply-styled.html`
+## 0. The prototype is in the repo
 
-The prototype was attached to the chat, but chat attachments are not copied into this
-remote container. I checked:
+`public/whatcaniwear.html` is the working single-file prototype, committed
+verbatim apart from its `<head>` (the `<title>` and the font `<link>`s were in
+`<body>`; they were moved up, and a description and favicon link added). It is
+the **source of truth for exact wording, option lists, helper text and the
+already-written Arabic**, and it is what `/` serves in production — so the site
+is live and usable while the port under `/en` and `/ar` is built out against it.
 
-- working directory `/home/user/day3` — empty apart from `.git`
-- `github.com/ameenaomar/day3` — no refs at all, the repo is empty
-- published artifacts on this account — only one unrelated document
-
-So the file genuinely is not reachable from here, and the brief is explicit that it is the
-source of truth for **exact wording, option lists, helper text, and the already-written
-Arabic**. I will not invent that copy, and I will not machine-translate Arabic to fill the
-gap.
-
-Everything else in the brief is specified well enough to plan and build against, so the
-plan below is complete. What it cannot do without the file is populate the seven screens
-with real strings.
-
-**Three ways to unblock, easiest first:**
-
-1. Commit `simply-styled.html` to this repo (any branch) and tell me — I read it from git.
-2. Paste the file contents into chat.
-3. Publish it as a Claude artifact and send me the URL — those I can fetch.
-
-Until then I can build phases 1–6 below against a small placeholder dictionary and swap in
-real copy in one commit. Your call whether to start that way or wait.
+Nothing else here is blocked.
 
 ---
 

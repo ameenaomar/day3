@@ -3,8 +3,9 @@ import { LOCALE_COOKIE, defaultLocale, isLocale, locales, type Locale } from "@/
 
 /**
  * Both locales live at real, indexable routes (/en/..., /ar/...). Anything
- * without a locale prefix is redirected to the viewer's — cookie first, so the
- * choice persists across the session, then Accept-Language.
+ * without a locale prefix — apart from `/`, which serves the prototype — is
+ * redirected to the viewer's: cookie first, so the choice persists across the
+ * session, then Accept-Language.
  */
 function preferredLocale(request: NextRequest): Locale {
   const fromCookie = request.cookies.get(LOCALE_COOKIE)?.value;
@@ -24,6 +25,11 @@ function preferredLocale(request: NextRequest): Locale {
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  // The prototype is the site: `/` is rewritten to public/whatcaniwear.html by
+  // next.config.ts, and it carries its own language switch, so it must not be
+  // redirected into a locale prefix.
+  if (pathname === "/") return NextResponse.next();
 
   const alreadyLocalised = locales.some(
     (locale) => pathname === `/${locale}` || pathname.startsWith(`/${locale}/`),
