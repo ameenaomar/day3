@@ -18,7 +18,7 @@ export const DELIVERY_FEE_FILS = 2_000;
 export const FREE_DELIVERY_OVER_FILS = 100_000;
 
 export const MIN_LOOKS = 1;
-/** TODO: confirm against simply-styled.html — the prototype sets the ceiling. */
+/** TODO: confirm against public/whatcaniwear.html — the prototype sets the ceiling. */
 export const MAX_LOOKS = 5;
 
 /**

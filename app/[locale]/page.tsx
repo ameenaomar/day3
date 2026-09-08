@@ -8,9 +8,10 @@ import { notFound } from "next/navigation";
 
 /**
  * Scaffold front page. The real wording, English and Arabic, is ported
- * verbatim from simply-styled.html — which is not in the repo yet, so this
- * screen currently proves out the machine (tokens, both themes, RTL, fonts,
- * the KWD formatter and the pricing module) rather than presenting final copy.
+ * verbatim from public/whatcaniwear.html — the working prototype, which `/`
+ * serves. Until that port lands, this screen proves out the machine (tokens,
+ * both themes, RTL, fonts, the KWD formatter and the pricing module) rather
+ * than presenting final copy.
  */
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale: raw } = await params;

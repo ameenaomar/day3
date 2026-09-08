@@ -1,0 +1,1140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>html,body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>What Can I Wear</title>
+<meta name="description" content="A personal stylist for Kuwait. Answer a few questions and a stylist puts a full look together, sourced from Kuwait boutiques and delivered to your door.">
+<link rel="icon" href="/icon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=VT323&family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+</head>
+<body>
+
+<style>
+/* ============ tokens: beige machine (light) ============ */
+:root{
+  --paper:#E5DCC6;
+  --panel:#F4EEE0;
+  --well:#FCF9F1;
+  --inset:#DDD2B9;
+  --rule:#B5A382;
+  --rule-soft:#CCBEA0;
+  --brown:#33200F;
+  --brown-soft:#6A4E35;
+  --dim:#8A7455;
+  --green:#1D6B3B;
+  --green-wash:#DCE8D6;
+  --red:#A32219;
+  --red-wash:#F2DED9;
+  --hard:2px 2px 0 0 var(--rule);
+  --scan:none;
+  --mono:"IBM Plex Mono",ui-monospace,"Courier New",monospace;
+  --crt:"VT323","IBM Plex Mono",monospace;
+  --arabic:"IBM Plex Sans Arabic","Segoe UI",Tahoma,sans-serif;
+  color-scheme:light;
+}
+/* ============ tokens: CRT (dark) ============ */
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#100D0A;
+    --panel:#1A1611;
+    --well:#221C15;
+    --inset:#251F17;
+    --rule:#54422E;
+    --rule-soft:#3A2E20;
+    --brown:#EFE3C9;
+    --brown-soft:#BCA684;
+    --dim:#8E7A5C;
+    --green:#4CD97C;
+    --green-wash:#17301F;
+    --red:#EC5D50;
+    --red-wash:#331713;
+    --hard:2px 2px 0 0 #000;
+    --scan:repeating-linear-gradient(180deg,rgba(255,255,255,.022) 0 1px,transparent 1px 3px);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#100D0A;
+  --panel:#1A1611;
+  --well:#221C15;
+  --inset:#251F17;
+  --rule:#54422E;
+  --rule-soft:#3A2E20;
+  --brown:#EFE3C9;
+  --brown-soft:#BCA684;
+  --dim:#8E7A5C;
+  --green:#4CD97C;
+  --green-wash:#17301F;
+  --red:#EC5D50;
+  --red-wash:#331713;
+  --hard:2px 2px 0 0 #000;
+  --scan:repeating-linear-gradient(180deg,rgba(255,255,255,.022) 0 1px,transparent 1px 3px);
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--paper);color:var(--brown);
+  font-family:var(--mono);font-size:14px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+body[dir="rtl"]{font-family:var(--arabic)}
+.wrap{max-width:680px;margin:0 auto;padding:16px 16px 60px}
+
+/* ============ machine header ============ */
+.bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:4px 0 12px}
+.logo{
+  font-family:var(--crt);font-size:30px;line-height:1;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--brown);margin-inline-end:auto;direction:ltr;
+}
+.logo b{color:var(--red);font-weight:400}
+.ghost{
+  font:inherit;font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+  background:var(--panel);border:1px solid var(--rule);color:var(--brown-soft);
+  padding:6px 10px;cursor:pointer;box-shadow:var(--hard);
+}
+.ghost:hover{color:var(--brown);border-color:var(--brown)}
+.ghost:active{box-shadow:none;transform:translate(2px,2px)}
+.who{
+  display:none;align-items:center;gap:7px;font-size:11.5px;font-weight:600;
+  color:var(--brown-soft);border:1px solid var(--rule);background:var(--panel);padding:5px 8px;
+}
+.who.on{display:inline-flex}
+.who i{font-style:normal;color:var(--green);font-weight:700}
+.who em{font-style:normal;max-width:11ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-transform:uppercase}
+.who button{font:inherit;font-size:10.5px;font-weight:600;letter-spacing:.05em;background:none;border:0;cursor:pointer;color:var(--dim);text-transform:uppercase;padding:0 2px}
+.who button:hover{color:var(--red);text-decoration:underline}
+
+/* ============ progress ============ */
+.rail{
+  display:none;direction:ltr;font-size:12.5px;letter-spacing:.02em;color:var(--dim);
+  padding:0 0 12px;gap:10px;align-items:center;
+}
+.rail.on{display:flex}
+.rail b{color:var(--brown);font-weight:600}
+.rail u{text-decoration:none;color:var(--green);letter-spacing:-.06em}
+.rail s{text-decoration:none;color:var(--rule-soft);letter-spacing:-.06em}
+
+/* ============ panel ============ */
+.card{
+  background:var(--panel);border:1px solid var(--rule);box-shadow:var(--hard);
+  background-image:var(--scan);
+}
+.tb{
+  display:flex;justify-content:space-between;gap:10px;align-items:center;
+  border-bottom:1px solid var(--rule);padding:7px 12px;
+  font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--panel);background:var(--brown);direction:ltr;
+}
+.tb span:last-child{color:var(--dim)}
+.pad{padding:20px 18px}
+
+.eyebrow{
+  font-size:10.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--dim);margin-bottom:9px;
+}
+.eyebrow b{color:var(--green);font-weight:700}
+body[dir="rtl"] .eyebrow{letter-spacing:.02em}
+h1.crt{
+  font-family:var(--crt);font-weight:400;font-size:42px;line-height:1.02;
+  margin:0 0 10px;letter-spacing:.01em;text-transform:uppercase;text-wrap:balance;
+}
+body[dir="rtl"] h1.crt{font-family:var(--arabic);font-size:27px;line-height:1.25;font-weight:600;text-transform:none}
+h2.q{font-size:19px;line-height:1.3;margin:0 0 6px;font-weight:600;text-wrap:balance}
+h2.q::before{content:"> ";color:var(--green)}
+body[dir="rtl"] h2.q::before{content:"< "}
+.sub{color:var(--brown-soft);font-size:13px;margin:0 0 4px;max-width:60ch}
+.cursor{display:inline-block;width:.55em;height:1em;background:var(--green);vertical-align:-.12em;animation:bl 1.1s steps(1) infinite}
+@keyframes bl{50%{opacity:0}}
+
+/* ============ fields ============ */
+.field{margin-top:19px;padding-top:16px;border-top:1px dashed var(--rule-soft)}
+.field.first{border-top:0;padding-top:0}
+.label{
+  font-size:10.5px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--brown);margin-bottom:9px;display:block;
+}
+.label i{font-style:normal;color:var(--dim);font-weight:400;letter-spacing:.05em}
+.label u{text-decoration:none;color:var(--red)}
+body[dir="rtl"] .label{letter-spacing:.02em}
+.hint{font-size:12px;color:var(--dim);margin-top:8px;max-width:62ch}
+.err{font-size:12px;color:var(--red);margin-top:12px;font-weight:600;background:var(--red-wash);border:1px solid var(--red);padding:8px 10px}
+
+/* ============ chips ============ */
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{
+  font:inherit;font-size:13px;font-weight:500;text-align:start;
+  background:var(--well);border:1px solid var(--rule-soft);color:var(--brown);
+  padding:8px 11px;cursor:pointer;
+}
+.chip:hover{border-color:var(--brown);background:var(--inset)}
+.chip[aria-pressed="true"]{border-color:var(--green);background:var(--green-wash);color:var(--brown);font-weight:600}
+.chip var{font-style:normal;color:var(--dim);font-weight:600;margin-inline-end:6px}
+.chip[aria-pressed="true"] var{color:var(--green)}
+.chip small{display:block;font-size:11px;font-weight:400;color:var(--dim);margin-top:1px;line-height:1.32}
+.chip.sz{min-width:52px;text-align:center;font-variant-numeric:tabular-nums;font-weight:600}
+.chips.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(152px,1fr))}
+.chips.grid .chip{padding:8px 10px}
+.chips.wide{display:grid;grid-template-columns:1fr}
+
+/* ============ tone swatches ============ */
+.tones{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:6px}
+.tone{font:inherit;text-align:start;background:var(--well);cursor:pointer;border:1px solid var(--rule-soft);padding:10px;color:var(--brown)}
+.tone:hover{border-color:var(--brown)}
+.tone[aria-pressed="true"]{border-color:var(--green);background:var(--green-wash)}
+.tone b{display:block;font-size:13px;font-weight:600;margin-bottom:2px}
+.tone b var{font-style:normal;color:var(--dim);margin-inline-end:5px}
+.tone[aria-pressed="true"] b var{color:var(--green)}
+.tone em{font-style:normal;font-size:11.5px;color:var(--dim);display:block;line-height:1.35}
+.sw{display:flex;margin-bottom:8px;height:24px;border:1px solid var(--rule-soft)}
+.sw i{flex:1}
+
+/* ============ inputs ============ */
+input[type=text]{
+  font:inherit;font-size:14px;width:100%;padding:10px 11px;color:var(--brown);
+  background:var(--well);border:1px solid var(--rule);border-radius:0;
+}
+input[type=text]::placeholder{color:var(--dim)}
+input[type=text]:focus{outline:2px solid var(--green);outline-offset:0;border-color:var(--green)}
+.mgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.mrow label{display:block;font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--brown-soft);margin-bottom:5px}
+body[dir="rtl"] .mrow label{letter-spacing:.02em}
+.mrow{position:relative}
+.mrow em{
+  position:absolute;inset-inline-end:10px;bottom:11px;font-style:normal;
+  font-size:11px;color:var(--dim);pointer-events:none;
+}
+.mrow input{padding-inline-end:34px;font-variant-numeric:tabular-nums}
+.toggle{
+  font:inherit;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;
+  background:var(--inset);border:1px dashed var(--rule);color:var(--brown-soft);
+  padding:9px 12px;cursor:pointer;width:100%;text-align:start;
+}
+.toggle:hover{border-color:var(--brown);color:var(--brown);border-style:solid}
+.toggle var{font-style:normal;color:var(--green);font-weight:700;margin-inline-end:7px}
+
+/* ============ nav ============ */
+.nav{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:22px;padding-top:16px;border-top:1px solid var(--rule)}
+.btn{
+  font:inherit;font-size:13px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;cursor:pointer;
+  background:var(--brown);color:var(--panel);border:1px solid var(--brown);
+  padding:12px 20px;box-shadow:var(--hard);
+}
+.btn:hover{background:var(--green);border-color:var(--green)}
+:root[data-theme="dark"] .btn:hover,
+.btn:hover{color:var(--panel)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn:hover{color:#100D0A}}
+:root[data-theme="dark"] .btn:hover{color:#100D0A}
+.btn:active{box-shadow:none;transform:translate(2px,2px)}
+.btn[disabled]{opacity:.42;cursor:not-allowed;box-shadow:none}
+.btn.wide{width:100%;text-align:center}
+.back{
+  font:inherit;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+  background:none;border:0;color:var(--dim);cursor:pointer;padding:8px 2px;margin-inline-end:auto;
+}
+.back:hover{color:var(--red);text-decoration:underline}
+:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+
+/* ============ landing bits ============ */
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:16px}
+.tag{font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--brown-soft);border:1px solid var(--rule-soft);padding:5px 9px}
+.priceline{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;margin:18px 0 2px;padding-top:15px;border-top:1px solid var(--rule)}
+.priceline b{font-family:var(--crt);font-size:40px;line-height:.9;font-weight:400;color:var(--red);font-variant-numeric:tabular-nums}
+body[dir="rtl"] .priceline b{font-family:var(--arabic);font-size:26px;font-weight:700;line-height:1.2}
+.priceline span{font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+.steps{list-style:none;margin:18px 0 0;padding:0;border:1px solid var(--rule-soft)}
+.steps li{padding:11px 12px;display:flex;gap:11px;align-items:flex-start;font-size:13px;border-bottom:1px dashed var(--rule-soft);background:var(--well)}
+.steps li:last-child{border-bottom:0}
+.steps li b{color:var(--green);font-weight:700;font-size:12px;font-variant-numeric:tabular-nums}
+.steps li strong{font-weight:600}
+.steps li em{font-style:normal;color:var(--dim);display:block;font-size:12px}
+
+/* ============ profile ============ */
+.rsw{display:flex;gap:5px;margin:2px 0}
+.rsw div{flex:1;text-align:center}
+.rsw i{display:block;height:40px;border:1px solid var(--rule-soft)}
+.rsw span{font-size:10px;letter-spacing:.03em;text-transform:uppercase;color:var(--dim);display:block;margin-top:4px;line-height:1.25}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+@media (max-width:540px){.two{grid-template-columns:1fr}}
+.box{background:var(--well);border:1px solid var(--rule-soft);padding:12px}
+.box h3{font-size:10.5px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;margin:0 0 8px}
+body[dir="rtl"] .box h3{letter-spacing:.02em}
+.box.yes{border-inline-start:3px solid var(--green)}
+.box.yes h3{color:var(--green)}
+.box.no{border-inline-start:3px solid var(--red)}
+.box.no h3{color:var(--red)}
+.box ul{margin:0;padding:0;list-style:none;font-size:12.5px;display:grid;gap:6px}
+.box li{display:flex;gap:7px}
+.box li::before{content:"+";color:var(--green);font-weight:700;flex:none}
+.box.no li::before{content:"-";color:var(--red)}
+.box li span::first-letter{text-transform:uppercase}
+.readout{background:var(--well);border:1px solid var(--rule-soft);padding:11px 12px;font-size:12.5px;display:grid;gap:4px}
+.readout div{display:flex;gap:10px}
+.readout dt{color:var(--dim);min-width:11ch;font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding-top:2px}
+.readout dd{margin:0;font-weight:600}
+
+/* ============ money ============ */
+.summary{border:1px solid var(--rule);margin-bottom:4px}
+.row{display:flex;justify-content:space-between;gap:12px;padding:10px 12px;font-size:13px;border-bottom:1px dashed var(--rule-soft);background:var(--well)}
+.row:last-child{border-bottom:0}
+.row span:last-child{font-variant-numeric:tabular-nums;font-weight:700;white-space:nowrap}
+.row em{font-style:normal;color:var(--dim);font-size:11.5px;display:block;font-weight:400}
+.row.total{background:var(--brown);color:var(--panel);font-weight:700;font-size:15px}
+.row.total em{color:var(--dim)}
+.pay{display:grid;gap:6px}
+.paybtn{
+  font:inherit;font-size:13px;font-weight:600;text-align:start;cursor:pointer;color:var(--brown);
+  background:var(--well);border:1px solid var(--rule-soft);padding:11px 12px;
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+}
+.paybtn:hover{border-color:var(--brown)}
+.paybtn[aria-pressed="true"]{border-color:var(--green);background:var(--green-wash)}
+.paybtn u{text-decoration:none;font-size:10px;font-weight:700;letter-spacing:.08em;border:1px solid var(--rule);padding:3px 5px;color:var(--brown-soft);direction:ltr}
+.paybtn[aria-pressed="true"] u{border-color:var(--green);color:var(--green)}
+.paybtn em{font-style:normal;font-weight:400;font-size:11.5px;color:var(--dim);margin-inline-start:auto;text-align:end}
+.terms{margin-top:14px;display:grid;gap:6px}
+.terms p{margin:0;font-size:11.5px;color:var(--dim);display:flex;gap:8px}
+.terms p b{color:var(--brown);font-weight:700;white-space:nowrap;letter-spacing:.04em;text-transform:uppercase;font-size:10.5px;padding-top:1px}
+
+/* ============ done ============ */
+.stamp{
+  font-family:var(--crt);font-size:34px;line-height:1;color:var(--green);
+  border:2px solid var(--green);display:inline-block;padding:4px 12px 2px;margin-bottom:12px;
+  text-transform:uppercase;letter-spacing:.08em;direction:ltr;
+}
+.foot{text-align:center;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);padding:18px 8px 0}
+[hidden]{display:none !important}
+@media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+@media (max-width:480px){
+  .pad{padding:17px 14px}
+  h1.crt{font-size:34px}
+  body[dir="rtl"] h1.crt{font-size:23px}
+  .logo{font-size:24px}
+  h2.q{font-size:17px}
+}
+</style>
+
+<div class="wrap">
+  <div class="bar">
+    <div class="logo">WHAT CAN I WEAR<b>?</b></div>
+    <span class="who" id="who"></span>
+    <button class="ghost" id="lang" type="button">العربية</button>
+  </div>
+  <div class="rail" id="rail"></div>
+  <div id="app"></div>
+  <div class="foot" id="foot"></div>
+</div>
+
+<script>
+"use strict";
+var lang="en";
+var t=function(o){return (o&&o[lang])||"";};
+var A={};                      /* answers */
+var U={name:"",email:""};      /* signed-in customer */
+var view="login", qi=0, loginErr=false, showExact=false;
+
+function firstName(){return (U.name||"").trim().split(/\s+/)[0]||"";}
+function initials(){var p=(U.name||"").trim().split(/\s+/).filter(Boolean);
+  return p.length?(p[0][0]+(p.length>1?p[p.length-1][0]:"")).toUpperCase():"?";}
+function validEmail(v){return /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test((v||"").trim());}
+function signedIn(){return (U.name||"").trim().length>1&&validEmail(U.email);}
+
+/* ================= copy ================= */
+var UI={
+  sys:{en:"WHAT CAN I WEAR",ar:"WHAT CAN I WEAR"},
+  ver:{en:"KWT · v1.0",ar:"KWT · v1.0"},
+  /* front page */
+  fpTag:{en:"Personal styling · Kuwait",ar:"تنسيق شخصي · الكويت"},
+  fpH:{en:"Answer the questions. Get the outfit.",ar:"أجيبي على الأسئلة. تصلك الإطلالة."},
+  fpL:{en:"Seven short screens about your body, your colours and the occasion. A stylist shops Kuwait for you and the look arrives at your door.",ar:"سبع شاشات قصيرة عن جسمك وألوانك والمناسبة. تشتري لك المنسّقة من الكويت وتصل الإطلالة إلى بابك."},
+  fName:{en:"Operator name",ar:"الاسم"},
+  fNameP:{en:"First and last name",ar:"الاسم الأول والأخير"},
+  fEmail:{en:"Email",ar:"البريد الإلكتروني"},
+  fEmailP:{en:"you@example.com",ar:"you@example.com"},
+  fEmailH:{en:"Your style profile and order updates are sent here. No marketing unless you ask for it.",ar:"يُرسل ملفك وتحديثات طلبك إلى هنا. لا رسائل ترويجية إلا بطلبك."},
+  fGo:{en:"Open my file",ar:"افتحي ملفي"},
+  fBad:{en:"Name and a valid email are required to continue.",ar:"الاسم وبريد إلكتروني صحيح مطلوبان للمتابعة."},
+  fReturn:{en:"Been here before? The same email loads your saved measurements.",ar:"زبونة سابقة؟ البريد نفسه يستعيد مقاساتك المحفوظة."},
+  signout:{en:"Log out",ar:"خروج"},
+  hi:{en:"User",ar:"المستخدمة"},
+  acct:{en:"Account",ar:"الحساب"},
+  /* landing */
+  h1:{en:"One look, put together for you.",ar:"إطلالة كاملة، منسّقة لك."},
+  fee:{en:"per look · styling",ar:"لكل إطلالة · التنسيق"},
+  feeNote:{en:"The clothing budget is separate and you set it. Anything unspent is refunded.",ar:"ميزانية الملابس منفصلة وتحددينها أنت. يُعاد أي مبلغ غير مستخدم."},
+  start:{en:"Run — about 2 minutes",ar:"ابدئي — حوالي دقيقتين"},
+  p1:{en:"Seven screens, mostly taps",ar:"سبع شاشات، معظمها بلمسة"},
+  p1s:{en:"Real measurements if you have them, honest estimates if you do not.",ar:"مقاسات دقيقة إن توفرت، أو تقديرات صادقة إن لم تتوفر."},
+  p2:{en:"Your style profile, free",ar:"ملفك الشخصي، مجاناً"},
+  p2s:{en:"Your palette and your silhouette on screen before you pay anything.",ar:"لوحة ألوانك وقَصّتك على الشاشة قبل أي دفع."},
+  p3:{en:"Delivered in 3–5 days",ar:"التوصيل في ٣–٥ أيام"},
+  p3s:{en:"Try it at home. Keep the look or return it free within 3 days.",ar:"قيسيها في البيت. احتفظي بها أو أرجعيها مجاناً خلال ٣ أيام."},
+  tr:{en:["Kuwait only","KNET & Apple Pay","Free returns","Women & men"],ar:["الكويت فقط","كي نت وآبل باي","إرجاع مجاني","نساء ورجال"]},
+  next:{en:"Continue",ar:"متابعة"},
+  back:{en:"Back",ar:"رجوع"},
+  file:{en:"FILE",ar:"FILE"},
+  pick:{en:"Answer the fields marked with * to continue.",ar:"أجيبي على الحقول المعلّمة بـ * للمتابعة."},
+  optional:{en:"optional",ar:"اختياري"},
+  /* measurements */
+  exactOpen:{en:"Enter exact measurements in cm",ar:"إدخال المقاسات الدقيقة بالسنتيمتر"},
+  exactClose:{en:"Hide exact measurements",ar:"إخفاء المقاسات الدقيقة"},
+  exactH:{en:"You do not need a tape measure. The taps above are enough — exact numbers just make the fit better.",ar:"لا تحتاجين شريط قياس. الاختيارات أعلاه كافية — الأرقام الدقيقة تحسّن المقاس فقط."},
+  cm:{en:"cm",ar:"سم"},
+  mBust:{en:"Bust",ar:"محيط الصدر"},
+  mChest:{en:"Chest",ar:"محيط الصدر"},
+  mWaist:{en:"Waist",ar:"الوسط"},
+  mHip:{en:"Hips",ar:"الأرداف"},
+  mShoulder:{en:"Shoulder, seam to seam",ar:"الكتف، من خيط لخيط"},
+  mArm:{en:"Arm, shoulder to wrist",ar:"الذراع، من الكتف للمعصم"},
+  mInseam:{en:"Inseam",ar:"الطول الداخلي للساق"},
+  /* profile */
+  prTag:{en:"Style profile",ar:"الملف الشخصي"},
+  prH:{en:"This is what we will shop for.",ar:"هذا ما سنشتريه لك."},
+  prSub:{en:"Built from your answers. Nothing has been charged yet — change anything you disagree with.",ar:"مبني على إجاباتك. لم يتم أي خصم — عدّلي أي شيء لا يعجبك."},
+  prData:{en:"Your measurements on file",ar:"مقاساتك المحفوظة"},
+  prPal:{en:"Palette",ar:"لوحة الألوان"},
+  prSil:{en:"Silhouette",ar:"القَصّة"},
+  prYes:{en:"Wear more of",ar:"أكثري من"},
+  prNo:{en:"We will skip",ar:"سنتجنّب"},
+  prGo:{en:"Continue to payment",ar:"إلى الدفع"},
+  prEdit:{en:"Edit answers",ar:"تعديل الإجابات"},
+  dHeight:{en:"Height",ar:"الطول"},
+  dSize:{en:"Sizes",ar:"المقاسات"},
+  dFrame:{en:"Frame",ar:"البنية"},
+  dShape:{en:"Shape",ar:"الشكل"},
+  dExact:{en:"Exact",ar:"دقيق"},
+  /* payment */
+  payTag:{en:"Payment",ar:"الدفع"},
+  payH:{en:"Confirm your order",ar:"تأكيد طلبك"},
+  rStyle:{en:"Styling",ar:"التنسيق"},
+  rBudget:{en:"Clothing budget held",ar:"ميزانية الملابس المحجوزة"},
+  rBudgetE:{en:"Unused amount refunded in 3 working days",ar:"يُعاد المبلغ غير المستخدم خلال ٣ أيام عمل"},
+  rShip:{en:"Delivery in Kuwait",ar:"التوصيل داخل الكويت"},
+  free:{en:"Free",ar:"مجاناً"},
+  rTotal:{en:"Total today",ar:"الإجمالي اليوم"},
+  payWith:{en:"Pay with",ar:"طريقة الدفع"},
+  knet:{en:"KNET debit card",ar:"بطاقة كي نت"},
+  knetE:{en:"Most used in Kuwait",ar:"الأكثر استخداماً في الكويت"},
+  apay:{en:"Apple Pay",ar:"آبل باي"},
+  card:{en:"Visa / Mastercard",ar:"فيزا / ماستركارد"},
+  tabby:{en:"Tabby — 4 payments",ar:"تابي — ٤ أقساط"},
+  phone:{en:"WhatsApp number",ar:"رقم الواتساب"},
+  phoneP:{en:"9XXX XXXX",ar:"9XXX XXXX"},
+  phoneH:{en:"Your stylist sends the look here for approval before it ships.",ar:"ترسل لك المنسّقة الإطلالة هنا للموافقة قبل الشحن."},
+  payBtn:{en:"Pay",ar:"ادفع"},
+  tShip:{en:"3–5 working days",ar:"٣–٥ أيام عمل"},
+  tShipD:{en:"Sourced from Kuwait boutiques after your approval.",ar:"يتم الشراء من بوتيكات الكويت بعد موافقتك."},
+  tSize:{en:"Two sizes",ar:"مقاسان"},
+  tSizeD:{en:"Anything fit-risky comes in two sizes. Return the one that does not fit.",ar:"أي قطعة قد لا تناسب المقاس تُرسل بمقاسين. أرجعي غير المناسب."},
+  tRet:{en:"3-day returns",ar:"إرجاع خلال ٣ أيام"},
+  tRetD:{en:"Free pickup anywhere in Kuwait. Refund to your original card.",ar:"استلام مجاني من أي مكان في الكويت. يُعاد المبلغ لبطاقتك."},
+  demo:{en:"Prototype — no payment is taken.",ar:"نموذج تجريبي — لا يتم أي دفع فعلي."},
+  /* done */
+  doneStamp:{en:"Order OK",ar:"تم الطلب"},
+  doneTag:{en:"Order received",ar:"تم استلام الطلب"},
+  doneH:{en:"You are all set,",ar:"تم كل شيء،"},
+  doneL:{en:"You will get a WhatsApp with your look for approval within 24 hours. After you approve, delivery is 3–5 working days.",ar:"ستصلك رسالة واتساب بإطلالتك للموافقة خلال ٢٤ ساعة. بعد موافقتك، التوصيل ٣–٥ أيام عمل."},
+  doneMail:{en:"A copy of your order and your style profile is on its way to",ar:"نسخة من طلبك وملفك الشخصي في الطريق إلى"},
+  again:{en:"Run it again",ar:"تجربة مرة أخرى"},
+  footer:{en:"Prototype for testing · Kuwait",ar:"نموذج للتجربة · الكويت"}
+};
+
+/* ================= palettes ================= */
+var PAL={
+  warm:{name:{en:"Warm & golden",ar:"دافئة وذهبية"},cols:[
+    ["#6B6B3A",{en:"Olive",ar:"زيتوني"}],["#B98A5B",{en:"Camel",ar:"جملي"}],["#F0E6D2",{en:"Cream",ar:"كريمي"}],
+    ["#A8462A",{en:"Rust",ar:"صدئي"}],["#C9A227",{en:"Gold",ar:"ذهبي"}]]},
+  cool:{name:{en:"Cool & clear",ar:"باردة وصافية"},cols:[
+    ["#1F2A5A",{en:"Navy",ar:"كحلي"}],["#3E6E8E",{en:"Kohl blue",ar:"أزرق كحلي"}],["#E7EAEE",{en:"Ice",ar:"ثلجي"}],
+    ["#6B3A5B",{en:"Plum",ar:"برقوقي"}],["#9AA0A6",{en:"Silver",ar:"فضي"}]]},
+  neutral:{name:{en:"Soft & neutral",ar:"هادئة ومحايدة"},cols:[
+    ["#8B8377",{en:"Taupe",ar:"رمادي بني"}],["#F4F2EC",{en:"Soft white",ar:"أبيض ناعم"}],["#8A9A82",{en:"Sage",ar:"مريمي"}],
+    ["#BE9A98",{en:"Dusty rose",ar:"وردي باهت"}],["#3C3B40",{en:"Charcoal",ar:"فحمي"}]]}
+};
+
+/* ================= questions ================= */
+var Q=[
+{id:"basics",tag:{en:"Basics",ar:"الأساسيات"},
+ q:{en:"Who are we styling, and what for?",ar:"لمن سنقوم بالتنسيق، ولماذا؟"},
+ sub:{en:"The occasion decides almost everything else.",ar:"المناسبة تحدد كل شيء تقريباً."},
+ fields:[
+  {key:"who",type:"one",label:{en:"Styling for",ar:"التنسيق لـ"},opts:[
+    ["women",{en:"Women",ar:"نساء"}],["men",{en:"Men",ar:"رجال"}]]},
+  {key:"occasion",type:"one",needs:"who",label:{en:"The occasion",ar:"المناسبة"},opts:[
+    ["wedding",{en:"Wedding or party",ar:"عرس أو حفلة"}],
+    ["eid",{en:"Eid or Ramadan",ar:"العيد أو رمضان"}],
+    ["grad",{en:"Graduation",ar:"تخرّج"}],
+    ["work",{en:"Work or a new job",ar:"العمل أو وظيفة جديدة"}],
+    ["travel",{en:"Travel",ar:"سفر"}],
+    ["everyday",{en:"Everyday reset",ar:"تجديد اليومي"}]]}]},
+
+{id:"sizes",tag:{en:"Sizes",ar:"المقاسات"},
+ q:{en:"The sizes you buy today.",ar:"المقاسات التي تشترينها اليوم."},
+ sub:{en:"What you actually wear beats any measurement we could guess.",ar:"ما تلبسينه فعلاً أهم من أي قياس نخمّنه."},
+ fields:[
+  {key:"top",type:"one",bare:true,label:{en:"Top",ar:"الأعلى"},opts:[
+    ["XS","XS"],["S","S"],["M","M"],["L","L"],["XL","XL"],["2XL","2XL"],["3XL","3XL"]]},
+  {key:"bottomW",type:"one",bare:true,only:"women",label:{en:"Bottom (EU)",ar:"الأسفل (أوروبي)"},opts:[
+    ["34","34"],["36","36"],["38","38"],["40","40"],["42","42"],["44","44"],["46","46"],["48","48"]]},
+  {key:"bottomM",type:"one",bare:true,only:"men",label:{en:"Waist (inches)",ar:"الوسط (إنش)"},opts:[
+    ["28","28"],["30","30"],["32","32"],["34","34"],["36","36"],["38","38"],["40","40"],["42","42"]]},
+  {key:"bra",type:"one",bare:true,opt:true,only:"women",label:{en:"Bra size",ar:"مقاس حمالة الصدر"},opts:[
+    ["70","70"],["75","75"],["80","80"],["85","85"],["90","90"],["95","95"],["100","100"],
+    ["A","A"],["B","B"],["C","C"],["D","D"],["DD","DD"],["E","E"]]},
+  {key:"shoeW",type:"one",bare:true,only:"women",label:{en:"Shoe (EU)",ar:"الحذاء (أوروبي)"},opts:[
+    ["35","35"],["36","36"],["37","37"],["38","38"],["39","39"],["40","40"],["41","41"],["42","42"]]},
+  {key:"shoeM",type:"one",bare:true,only:"men",label:{en:"Shoe (EU)",ar:"الحذاء (أوروبي)"},opts:[
+    ["39","39"],["40","40"],["41","41"],["42","42"],["43","43"],["44","44"],["45","45"],["46","46"]]},
+  {key:"fitpref",type:"one",label:{en:"How you like clothes to sit",ar:"كيف تحبين أن تكون القصّة"},opts:[
+    ["fitted",{en:"Fitted",ar:"ضيّقة"}],["true",{en:"True to size",ar:"على المقاس"}],
+    ["relaxed",{en:"Relaxed",ar:"واسعة"}],["oversized",{en:"Oversized",ar:"فضفاضة"}]]},
+  {key:"brand",type:"text",label:{en:"A brand and size that fits you well",ar:"ماركة ومقاس يناسبك تماماً"},
+   ph:{en:"e.g. Zara M, Mango 38",ar:"مثال: زارا M، مانجو ٣٨"},
+   hint:{en:"This one line is the single most useful thing you can tell a stylist.",ar:"هذا السطر هو أهم ما يمكنك إخباره للمنسّقة."}}]},
+
+{id:"body",tag:{en:"Body data",ar:"بيانات الجسم"},
+ q:{en:"Your frame.",ar:"بنية جسمك."},
+ sub:{en:"Two people wearing the same size need different cuts. This is where the fit is won.",ar:"شخصان بالمقاس نفسه يحتاجان قَصّتين مختلفتين. هنا يُحسم المقاس."},
+ fields:[
+  {key:"heightW",type:"one",bare:true,only:"women",label:{en:"Height (cm)",ar:"الطول (سم)"},opts:[
+    ["<150","<150"],["150-155","150–155"],["156-160","156–160"],["161-165","161–165"],
+    ["166-170","166–170"],["171-175","171–175"],["176+","176+"]]},
+  {key:"heightM",type:"one",bare:true,only:"men",label:{en:"Height (cm)",ar:"الطول (سم)"},opts:[
+    ["<165","<165"],["165-170","165–170"],["171-175","171–175"],["176-180","176–180"],
+    ["181-185","181–185"],["186-190","186–190"],["191+","191+"]]},
+  {key:"shoulders",type:"one",grid:true,label:{en:"Shoulders",ar:"الكتفان"},opts:[
+    ["narrow",{en:"Narrow",ar:"ضيّقان"},{en:"Straps slip, seams hang past my shoulder",ar:"الحمالات تنزلق والخياطة تتجاوز كتفي"}],
+    ["average",{en:"Average",ar:"متوسطان"},{en:"Shoulder seams usually land right",ar:"خياطة الكتف تقع في مكانها عادة"}],
+    ["broad",{en:"Broad",ar:"عريضان"},{en:"Jackets and shirts pull across my back",ar:"الجاكيتات والقمصان تشد على ظهري"}]]},
+  {key:"arms",type:"one",grid:true,label:{en:"Arm length",ar:"طول الذراع"},opts:[
+    ["short",{en:"Shorter",ar:"أقصر"},{en:"Sleeves are always too long",ar:"الأكمام دائماً أطول من اللازم"}],
+    ["average",{en:"Average",ar:"متوسط"},{en:"Sleeves usually end at the wrist",ar:"الأكمام تنتهي عند المعصم عادة"}],
+    ["long",{en:"Longer",ar:"أطول"},{en:"Sleeves are always too short",ar:"الأكمام دائماً أقصر من اللازم"}]]},
+  {key:"torso",type:"one",grid:true,label:{en:"Torso and legs",ar:"الجذع والساقان"},opts:[
+    ["short",{en:"Short body, long legs",ar:"جذع قصير وساقان طويلتان"},{en:"High-waisted trousers suit me",ar:"البنطلونات عالية الوسط تناسبني"}],
+    ["average",{en:"Fairly even",ar:"متوازن"},{en:"Most waistlines sit where they should",ar:"معظم الخطوط تقع في مكانها"}],
+    ["long",{en:"Long body, shorter legs",ar:"جذع طويل وساقان أقصر"},{en:"Tops ride up, dresses sit low",ar:"البلوزات ترتفع والفساتين تنزل"}]]},
+  {key:"shapeW",type:"one",grid:true,only:"women",label:{en:"Where you carry your width",ar:"أين يتمركز عرض جسمك"},opts:[
+    ["hourglass",{en:"Waist is the narrowest",ar:"الوسط هو الأنحف"},{en:"Bust and hips fairly balanced",ar:"الصدر والأرداف متوازنان"}],
+    ["pear",{en:"Hips widest",ar:"الأرداف الأعرض"},{en:"Smaller on top than on the bottom",ar:"الأعلى أصغر من الأسفل"}],
+    ["rectangle",{en:"Straight up and down",ar:"مستقيم"},{en:"Shoulders, waist and hips similar",ar:"الكتفان والوسط والأرداف متشابهة"}],
+    ["apple",{en:"Middle widest",ar:"الوسط الأعرض"},{en:"Slimmer arms and legs",ar:"ذراعان وساقان أنحف"}],
+    ["inverted",{en:"Shoulders widest",ar:"الكتفان الأعرض"},{en:"Narrower through the hips",ar:"الأرداف أضيق"}],
+    ["unsure",{en:"Not sure",ar:"غير متأكدة"},{en:"Let the stylist decide from the rest",ar:"اتركي القرار للمنسّقة"}]]},
+  {key:"shapeM",type:"one",grid:true,only:"men",label:{en:"Your build",ar:"بنيتك"},opts:[
+    ["slim",{en:"Slim",ar:"نحيف"},{en:"Clothes hang loose on me",ar:"الملابس واسعة عليّ"}],
+    ["athletic",{en:"Athletic",ar:"رياضي"},{en:"Broad chest, narrower waist",ar:"صدر عريض ووسط أضيق"}],
+    ["average",{en:"Average",ar:"متوسط"},{en:"Standard cuts mostly work",ar:"القَصّات العادية تناسبني"}],
+    ["broad",{en:"Solid",ar:"ممتلئ"},{en:"Fuller through chest and middle",ar:"أعرض في الصدر والوسط"}],
+    ["unsure",{en:"Not sure",ar:"غير متأكد"},{en:"Let the stylist decide from the rest",ar:"اتركي القرار للمنسّق"}]]},
+  {key:"__exact",type:"exact",label:{en:"Exact measurements",ar:"المقاسات الدقيقة"}}]},
+
+{id:"cut",tag:{en:"Coverage",ar:"التغطية"},
+ q:{en:"What must the look respect?",ar:"ما القواعد التي يجب أن تحترمها الإطلالة؟"},
+ sub:{en:"Tell us your rules once and we never break them.",ar:"أخبرينا بقواعدك مرة واحدة ولن نخالفها."},
+ fields:[
+  {key:"sleeve",type:"one",label:{en:"Sleeves",ar:"الأكمام"},opts:[
+    ["long",{en:"Long only",ar:"طويلة فقط"}],["threequarter",{en:"Elbow or longer",ar:"إلى الكوع أو أطول"}],["any",{en:"Anything",ar:"أي نوع"}]]},
+  {key:"length",type:"one",only:"women",label:{en:"Length",ar:"الطول"},opts:[
+    ["maxi",{en:"Ankle length",ar:"إلى الكاحل"}],["midi",{en:"Midi or longer",ar:"ميدي أو أطول"}],["any",{en:"Anything",ar:"أي طول"}]]},
+  {key:"modest",type:"many",opt:true,only:"women",label:{en:"Also plan for",ar:"مع مراعاة"},opts:[
+    ["hijab",{en:"Hijab-friendly",ar:"مناسب للحجاب"}],["abaya",{en:"Layers under abaya",ar:"طبقات تحت العباية"}],
+    ["opaque",{en:"Nothing sheer",ar:"غير شفاف"}],["nolayer",{en:"None of these",ar:"لا شيء من هذه"}]]},
+  {key:"cover",type:"many",opt:true,label:{en:"I would rather not show",ar:"أفضّل عدم إبراز"},opts:[
+    ["arms",{en:"Arms",ar:"الذراعين"}],["waist",{en:"Waist",ar:"الوسط"}],["legs",{en:"Legs",ar:"الساقين"}],
+    ["shoulders",{en:"Shoulders",ar:"الكتفين"}],["chest",{en:"Chest",ar:"الصدر"}],
+    ["back",{en:"Back",ar:"الظهر"}],["nothing",{en:"Nothing — show it all",ar:"لا شيء — أبرزي الكل"}]]},
+  {key:"never",type:"many",opt:true,label:{en:"Never send me",ar:"لا ترسلي لي أبداً"},opts:[
+    ["tight",{en:"Anything tight",ar:"قطع ضيّقة"}],["prints",{en:"Loud prints",ar:"نقشات صارخة"}],
+    ["heels",{en:"High heels",ar:"كعب عالٍ"}],["neon",{en:"Neon colours",ar:"ألوان فاقعة"}],
+    ["crop",{en:"Crop tops",ar:"بلوزات قصيرة"}],["logos",{en:"Big logos",ar:"شعارات كبيرة"}]]}]},
+
+{id:"colour",tag:{en:"Colour",ar:"اللون"},
+ q:{en:"Which of these looks like your skin in daylight?",ar:"أيٌّ من هذه يشبه لون بشرتك في ضوء النهار؟"},
+ sub:{en:"You do not need to know your palette. We work it out from this.",ar:"لا حاجة لمعرفة لوحة ألوانك. سنستنتجها من هنا."},
+ fields:[
+  {key:"tone",type:"tone",label:{en:"Skin undertone",ar:"درجة لون البشرة"},opts:[
+    ["warm",{en:"Golden or olive",ar:"ذهبية أو زيتونية"},{en:"Gold jewellery suits you. You tan easily.",ar:"الذهب يناسبك. تسمرّين بسهولة."},["#F0D9B5","#DEB887","#B98A5B","#8C6239"]],
+    ["cool",{en:"Pink or blue-ish",ar:"وردية أو مائلة للأزرق"},{en:"Silver suits you. You burn before you tan.",ar:"الفضة تناسبك. تحترق بشرتك قبل أن تسمرّ."},["#F6DDD8","#E0B7AE","#B98A8A","#7A5450"]],
+    ["neutral",{en:"Somewhere between",ar:"بين الاثنين"},{en:"Gold and silver both work on you.",ar:"الذهب والفضة يناسبانك معاً."},["#F2E3D0","#D9BFA6","#AD8E74","#6E5744"]]]},
+  {key:"lovecol",type:"many",opt:true,label:{en:"Colours you already reach for",ar:"ألوان تختارينها دائماً"},opts:[
+    ["black",{en:"Black & white",ar:"أسود وأبيض"}],["earth",{en:"Beige & brown",ar:"بيج وبني"}],
+    ["blue",{en:"Blues",ar:"أزرق"}],["green",{en:"Greens",ar:"أخضر"}],
+    ["jewel",{en:"Deep jewel tones",ar:"ألوان جوهرية غامقة"}],["pastel",{en:"Pastels",ar:"باستيل"}]]}]},
+
+{id:"life",tag:{en:"Life",ar:"نمط الحياة"},
+ q:{en:"Where will you actually wear this?",ar:"أين ستلبسين هذه الإطلالة فعلاً؟"},
+ sub:{en:"A look you never wear is a look we styled wrong.",ar:"الإطلالة التي لا تُلبس هي إطلالة أخطأنا فيها."},
+ fields:[
+  {key:"life",type:"many",label:{en:"Most of my week is",ar:"معظم أسبوعي"},opts:[
+    ["office",{en:"Office",ar:"المكتب"}],["uni",{en:"University",ar:"الجامعة"}],
+    ["home",{en:"At home",ar:"في البيت"}],["outings",{en:"Going out & family",ar:"خروج وعائلة"}],
+    ["travel",{en:"Travelling",ar:"سفر"}],["active",{en:"Active & moving",ar:"حركة ونشاط"}]]},
+  {key:"bold",type:"one",grid:true,label:{en:"How much attention should the look get?",ar:"كم من الانتباه تريدين للإطلالة؟"},opts:[
+    ["quiet",{en:"Quiet",ar:"هادئة"},{en:"Nobody comments, everybody notices",ar:"لا أحد يعلّق، والجميع يلاحظ"}],
+    ["polished",{en:"Polished",ar:"أنيقة"},{en:"Clearly put together",ar:"واضح أنها منسّقة"}],
+    ["statement",{en:"Statement",ar:"جذّابة"},{en:"I want to be asked about it",ar:"أريد أن يسألوني عنها"}]]}]},
+
+{id:"order",tag:{en:"Order",ar:"الطلب"},
+ q:{en:"How many looks, and what may we spend?",ar:"كم إطلالة، وما الميزانية؟"},
+ sub:{en:"Styling is 10.000 KD per look. The clothing budget is yours to set.",ar:"التنسيق ١٠٫٠٠٠ د.ك لكل إطلالة. ميزانية الملابس تحددينها أنت."},
+ fields:[
+  {key:"looks",type:"one",label:{en:"Number of looks",ar:"عدد الإطلالات"},opts:[
+    ["1",{en:"1 look",ar:"إطلالة واحدة"}],["2",{en:"2 looks",ar:"إطلالتان"}],["3",{en:"3 looks",ar:"٣ إطلالات"}]]},
+  {key:"budget",type:"one",grid:true,label:{en:"Clothing budget per look",ar:"ميزانية الملابس لكل إطلالة"},opts:[
+    ["40",{en:"Up to 40 KD",ar:"حتى ٤٠ د.ك"},{en:"High street, 3–4 pieces",ar:"ماركات اقتصادية، ٣–٤ قطع"}],
+    ["80",{en:"40 – 80 KD",ar:"٤٠ – ٨٠ د.ك"},{en:"Most popular",ar:"الأكثر طلباً"}],
+    ["150",{en:"80 – 150 KD",ar:"٨٠ – ١٥٠ د.ك"},{en:"Better fabrics, shoes included",ar:"أقمشة أفضل، مع الحذاء"}],
+    ["250",{en:"150 KD +",ar:"١٥٠ د.ك +"},{en:"Designer pieces",ar:"قطع مصمّمين"}]]}]}
+];
+
+/* exact measurement fields */
+var EXACT=[
+  ["bust",UI.mBust,"women"],["chest",UI.mChest,"men"],
+  ["waist",UI.mWaist,null],["hip",UI.mHip,null],
+  ["shoulderCm",UI.mShoulder,null],["armCm",UI.mArm,null],["inseam",UI.mInseam,null]
+];
+
+/* ================= helpers ================= */
+function el(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e;}
+function kd(n){return n.toFixed(3);}
+function cur(n){return kd(n)+(lang==="ar"?" د.ك":" KD");}
+function who(){return A.who||"women";}
+function activeFields(step){return step.fields.filter(function(f){return !f.only||f.only===who();});}
+function fieldReady(f){
+  if(f.type==="text"||f.type==="exact"||f.opt) return true;
+  if(f.type==="many") return (A[f.key]||[]).length>0;
+  return !!A[f.key];
+}
+function stepReady(step){return activeFields(step).every(fieldReady);}
+function lastPickable(step){var f=activeFields(step).slice(-1)[0];return (f&&f.type==="one")?f:null;}
+function blocks(done,total){
+  var s="";for(var i=0;i<total;i++)s+="█";return s;
+}
+
+/* ================= render ================= */
+function render(){
+  document.body.setAttribute("dir",lang==="ar"?"rtl":"ltr");
+  document.body.lang=lang;
+  document.getElementById("lang").textContent=lang==="ar"?"English":"العربية";
+  document.getElementById("foot").textContent=t(UI.footer);
+
+  var rail=document.getElementById("rail");rail.innerHTML="";
+  rail.className=(view==="quiz")?"rail on":"rail";
+  if(view==="quiz"){
+    rail.appendChild(el("b",null,t(UI.file)+" "+(qi+1)+"/"+Q.length));
+    var bar=el("span");
+    bar.appendChild(el("u",null,blocks(0,qi+1)));
+    if(qi+1<Q.length) bar.appendChild(el("s",null,blocks(0,Q.length-qi-1)));
+    rail.appendChild(bar);
+    rail.appendChild(el("span",null,t(Q[qi].tag).toUpperCase()));
+  }
+
+  var w=document.getElementById("who");w.innerHTML="";
+  w.className=(view!=="login"&&signedIn())?"who on":"who";
+  if(view!=="login"&&signedIn()){
+    w.appendChild(el("i",null,initials()));
+    w.appendChild(el("em",null,firstName()));
+    var so=el("button",null,t(UI.signout));so.type="button";
+    so.onclick=function(){U={name:"",email:""};A={};qi=0;loginErr=false;showExact=false;view="login";render();};
+    w.appendChild(so);
+  }
+
+  var app=document.getElementById("app");app.innerHTML="";
+  var v = view==="login"?login():view==="landing"?landing():view==="quiz"?quiz():
+          view==="profile"?profile():view==="pay"?pay():done();
+  app.appendChild(v);
+  window.scrollTo(0,0);
+}
+
+function panel(){
+  var c=el("div","card");
+  var tb=el("div","tb");
+  tb.appendChild(el("span",null,t(UI.sys)));
+  tb.appendChild(el("span",null,t(UI.ver)));
+  c.appendChild(tb);
+  var p=el("div","pad");c.appendChild(p);
+  c.body=p;
+  return c;
+}
+
+/* ---------------- front page ---------------- */
+function login(){
+  var c=panel(),p=c.body;
+  p.appendChild(el("div","eyebrow",t(UI.fpTag)));
+  var h=el("h1","crt");h.textContent=t(UI.fpH);
+  h.appendChild(document.createTextNode(" "));
+  h.appendChild(el("span","cursor"));
+  p.appendChild(h);
+  p.appendChild(el("p","sub",t(UI.fpL)));
+
+  function go(){ if(signedIn()){loginErr=false;view="landing";render();} else {loginErr=true;render();} }
+
+  var f1=el("div","field first");
+  f1.appendChild(el("span","label",t(UI.fName)));
+  var n=document.createElement("input");n.type="text";n.placeholder=t(UI.fNameP);
+  n.value=U.name;n.autocomplete="name";
+  n.oninput=function(){U.name=n.value;};
+  n.onkeydown=function(e){if(e.key==="Enter")go();};
+  f1.appendChild(n);p.appendChild(f1);
+
+  var f2=el("div","field");
+  f2.appendChild(el("span","label",t(UI.fEmail)));
+  var m=document.createElement("input");m.type="text";m.placeholder=t(UI.fEmailP);
+  m.value=U.email;m.autocomplete="email";m.setAttribute("inputmode","email");m.dir="ltr";
+  m.oninput=function(){U.email=m.value;};
+  m.onkeydown=function(e){if(e.key==="Enter")go();};
+  f2.appendChild(m);f2.appendChild(el("p","hint",t(UI.fEmailH)));
+  p.appendChild(f2);
+
+  if(loginErr) p.appendChild(el("p","err","! "+t(UI.fBad)));
+
+  var tags=el("div","tags");
+  t(UI.tr).forEach(function(x){tags.appendChild(el("span","tag",x));});
+  p.appendChild(tags);
+
+  var nav=el("div","nav");
+  var b=el("button","btn wide",t(UI.fGo));b.type="button";b.onclick=go;
+  nav.appendChild(b);p.appendChild(nav);
+  p.appendChild(el("p","hint",t(UI.fReturn)));
+  return c;
+}
+
+/* ---------------- landing ---------------- */
+function landing(){
+  var c=panel(),p=c.body;
+  var eb=el("div","eyebrow");
+  eb.appendChild(el("b",null,t(UI.hi)+": "+firstName().toUpperCase()));
+  eb.appendChild(document.createTextNode(" · "+t(UI.fpTag)));
+  p.appendChild(eb);
+  var h=el("h1","crt");h.textContent=t(UI.h1);p.appendChild(h);
+  p.appendChild(el("p","sub",t(UI.fpL)));
+
+  var pl=el("div","priceline");
+  pl.appendChild(el("b",null,lang==="ar"?"١٠٫٠٠٠ د.ك":"10.000 KD"));
+  pl.appendChild(el("span",null,t(UI.fee)));
+  p.appendChild(pl);
+  p.appendChild(el("p","hint",t(UI.feeNote)));
+
+  var ul=el("ul","steps");
+  [[UI.p1,UI.p1s],[UI.p2,UI.p2s],[UI.p3,UI.p3s]].forEach(function(x,i){
+    var li=el("li");li.appendChild(el("b",null,"0"+(i+1)));
+    var d=el("div");d.appendChild(el("strong",null,t(x[0])));d.appendChild(el("em",null,t(x[1])));
+    li.appendChild(d);ul.appendChild(li);
+  });
+  p.appendChild(ul);
+
+  var nav=el("div","nav");
+  var go=el("button","btn wide",t(UI.start));go.type="button";
+  go.onclick=function(){view="quiz";qi=0;render();};
+  nav.appendChild(go);p.appendChild(nav);
+  return c;
+}
+
+/* ---------------- quiz ---------------- */
+function quiz(){
+  var step=Q[qi],c=panel(),p=c.body,firstDone=false;
+  var eb=el("div","eyebrow");
+  eb.appendChild(el("b",null,t(UI.file)+" "+(qi+1)+"/"+Q.length));
+  eb.appendChild(document.createTextNode(" · "+t(step.tag)));
+  p.appendChild(eb);
+  p.appendChild(el("h2","q",t(step.q)));
+  p.appendChild(el("p","sub",t(step.sub)));
+
+  activeFields(step).forEach(function(f){
+    if(f.needs&&!A[f.needs]) return;
+    var wrap=el("div","field"+(firstDone?"":" first"));firstDone=true;
+
+    if(f.type!=="exact"){
+      var lab=el("span","label");
+      lab.appendChild(document.createTextNode(t(f.label)));
+      if(f.opt||f.type==="text") lab.appendChild(el("i",null," · "+t(UI.optional)));
+      else lab.appendChild(el("u",null," *"));
+      wrap.appendChild(lab);
+    }
+
+    if(f.type==="text"){
+      var inp=document.createElement("input");inp.type="text";
+      inp.placeholder=t(f.ph);inp.value=A[f.key]||"";
+      inp.oninput=function(){A[f.key]=inp.value;};
+      wrap.appendChild(inp);
+      wrap.appendChild(el("p","hint",t(f.hint)));
+
+    }else if(f.type==="exact"){
+      var tg=el("button","toggle");tg.type="button";
+      tg.appendChild(el("var",null,showExact?"[-]":"[+]"));
+      tg.appendChild(document.createTextNode(showExact?t(UI.exactClose):t(UI.exactOpen)));
+      tg.onclick=function(){showExact=!showExact;render();};
+      wrap.appendChild(tg);
+      if(showExact){
+        var g=el("div","mgrid");g.style.marginTop="10px";
+        EXACT.forEach(function(m2){
+          if(m2[2]&&m2[2]!==who()) return;
+          var r=el("div","mrow");
+          var lb=document.createElement("label");lb.textContent=t(m2[1]);
+          var i2=document.createElement("input");i2.type="text";i2.setAttribute("inputmode","numeric");
+          i2.placeholder="—";i2.value=A[m2[0]]||"";i2.dir="ltr";
+          i2.oninput=function(){A[m2[0]]=i2.value.replace(/[^\d.]/g,"");};
+          r.appendChild(lb);r.appendChild(i2);r.appendChild(el("em",null,t(UI.cm)));
+          g.appendChild(r);
+        });
+        wrap.appendChild(g);
+        wrap.appendChild(el("p","hint",t(UI.exactH)));
+      }
+
+    }else if(f.type==="tone"){
+      var box=el("div","tones");
+      f.opts.forEach(function(o){
+        var btn=el("button","tone");btn.type="button";
+        var on=A[f.key]===o[0];
+        btn.setAttribute("aria-pressed",on?"true":"false");
+        var sw=el("div","sw");o[3].forEach(function(hex){var i3=el("i");i3.style.background=hex;sw.appendChild(i3);});
+        btn.appendChild(sw);
+        var bb=el("b");bb.appendChild(el("var",null,on?"(•)":"( )"));
+        bb.appendChild(document.createTextNode(t(o[1])));btn.appendChild(bb);
+        btn.appendChild(el("em",null,t(o[2])));
+        btn.onclick=function(){A[f.key]=o[0];render();};
+        box.appendChild(btn);
+      });
+      wrap.appendChild(box);
+
+    }else{
+      var chips=el("div","chips"+(f.grid?" grid":""));
+      f.opts.forEach(function(o){
+        var btn=el("button","chip"+(f.bare?" sz":""));btn.type="button";
+        var on2=f.type==="many"?(A[f.key]||[]).indexOf(o[0])>-1:A[f.key]===o[0];
+        btn.setAttribute("aria-pressed",on2?"true":"false");
+        if(!f.bare) btn.appendChild(el("var",null,f.type==="many"?(on2?"[x]":"[ ]"):(on2?"(•)":"( )")));
+        btn.appendChild(document.createTextNode(typeof o[1]==="string"?o[1]:t(o[1])));
+        if(o[2]) btn.appendChild(el("small",null,t(o[2])));
+        btn.onclick=function(){
+          if(f.type==="many"){
+            var arr=A[f.key]||[],ix=arr.indexOf(o[0]),solo=(o[0]==="nolayer"||o[0]==="nothing");
+            if(solo){arr=ix>-1?[]:[o[0]];}
+            else{if(ix>-1)arr.splice(ix,1);else arr.push(o[0]);
+                 arr=arr.filter(function(v){return v!=="nolayer"&&v!=="nothing";});}
+            A[f.key]=arr;render();
+          }else{
+            A[f.key]=o[0];
+            if(f===lastPickable(step)&&qi<Q.length-1&&stepReady(step)) advance();
+            else render();
+          }
+        };
+        chips.appendChild(btn);
+      });
+      wrap.appendChild(chips);
+    }
+    p.appendChild(wrap);
+  });
+
+  if(qi===Q.length-1){var mb=el("div","field");mb.appendChild(orderSummary(false));p.appendChild(mb);}
+
+  var nav=el("div","nav");
+  var back=el("button","back","‹ "+t(UI.back));back.type="button";
+  back.onclick=function(){if(qi===0)view="landing";else qi--;render();};
+  nav.appendChild(back);
+  var ready=stepReady(step);
+  var nx=el("button","btn",(qi===Q.length-1?t(UI.prGo):t(UI.next))+" ›");nx.type="button";
+  nx.disabled=!ready;nx.onclick=advance;
+  nav.appendChild(nx);
+  p.appendChild(nav);
+  if(!ready) p.appendChild(el("p","hint","* "+t(UI.pick)));
+  return c;
+}
+function advance(){ if(qi<Q.length-1)qi++; else view="profile"; render(); }
+
+/* ---------------- money ---------------- */
+function money(){
+  var looks=parseInt(A.looks||"1",10),hold=parseInt(A.budget||"80",10);
+  var styling=looks*10,clothes=looks*hold,ship=(styling+clothes)>=100?0:2;
+  return {looks:looks,styling:styling,clothes:clothes,ship:ship,total:styling+clothes+ship};
+}
+function row(a,b,sub){
+  var r=el("div","row"),L=el("span");
+  L.appendChild(document.createTextNode(a));
+  if(sub)L.appendChild(el("em",null,sub));
+  r.appendChild(L);r.appendChild(el("span",null,b));
+  return r;
+}
+function orderSummary(withShip){
+  var m=money(),s=el("div","summary");
+  s.appendChild(row(t(UI.rStyle)+" × "+m.looks,cur(m.styling)));
+  s.appendChild(row(t(UI.rBudget)+" × "+m.looks,cur(m.clothes),t(UI.rBudgetE)));
+  if(withShip) s.appendChild(row(t(UI.rShip),m.ship?cur(m.ship):t(UI.free),t(UI.tShip)));
+  var tt=row(t(UI.rTotal),cur(withShip?m.total:m.styling+m.clothes));
+  tt.className="row total";s.appendChild(tt);
+  return s;
+}
+
+/* ---------------- profile ---------------- */
+function profile(){
+  var c=panel(),p=c.body;
+  p.appendChild(el("div","eyebrow",t(UI.prTag)));
+  p.appendChild(el("h2","q",t(UI.prH)));
+  p.appendChild(el("p","sub",t(UI.prSub)));
+
+  /* measurement readout */
+  var f0=el("div","field first");
+  f0.appendChild(el("span","label",t(UI.prData)));
+  var rd=el("div","readout");
+  readoutRows().forEach(function(r2){
+    var d=el("div");
+    var dt=el("dt",null,r2[0]);var dd=el("dd",null,r2[1]);
+    d.appendChild(dt);d.appendChild(dd);rd.appendChild(d);
+  });
+  f0.appendChild(rd);p.appendChild(f0);
+
+  var pal=PAL[A.tone||"neutral"];
+  var f1=el("div","field");
+  f1.appendChild(el("span","label",t(UI.prPal)+" — "+t(pal.name)));
+  var sw=el("div","rsw");
+  pal.cols.forEach(function(cl){
+    var d=el("div"),i4=el("i");i4.style.background=cl[0];
+    d.appendChild(i4);d.appendChild(el("span",null,t(cl[1])));sw.appendChild(d);
+  });
+  f1.appendChild(sw);p.appendChild(f1);
+
+  var f2=el("div","field");
+  f2.appendChild(el("span","label",t(UI.prSil)));
+  f2.appendChild(el("p","hint",silhouette()));
+  p.appendChild(f2);
+
+  var two=el("div","two");two.style.marginTop="16px";
+  var yes=el("div","box yes");yes.appendChild(el("h3",null,t(UI.prYes)));
+  var uy=el("ul");rulesYes().forEach(function(x){var li=el("li");li.appendChild(el("span",null,x));uy.appendChild(li);});
+  yes.appendChild(uy);
+  var no=el("div","box no");no.appendChild(el("h3",null,t(UI.prNo)));
+  var un=el("ul");rulesNo().forEach(function(x){var li=el("li");li.appendChild(el("span",null,x));un.appendChild(li);});
+  no.appendChild(un);
+  two.appendChild(yes);two.appendChild(no);p.appendChild(two);
+
+  var mf=el("div","field");mf.appendChild(orderSummary(false));p.appendChild(mf);
+
+  var nav=el("div","nav");
+  var back=el("button","back","‹ "+t(UI.prEdit));back.type="button";
+  back.onclick=function(){view="quiz";qi=Q.length-1;render();};
+  nav.appendChild(back);
+  var go=el("button","btn",t(UI.prGo)+" ›");go.type="button";
+  go.onclick=function(){view="pay";render();};
+  nav.appendChild(go);p.appendChild(nav);
+  return c;
+}
+
+function readoutRows(){
+  var out=[],w=who();
+  var H=w==="women"?A.heightW:A.heightM;
+  if(H) out.push([t(UI.dHeight),H+" "+(lang==="ar"?"سم":"cm")]);
+  var sizes=[];
+  if(A.top) sizes.push(A.top);
+  var bot=w==="women"?A.bottomW:A.bottomM;
+  if(bot) sizes.push((w==="women"?"EU ":"W")+bot);
+  var sh=w==="women"?A.shoeW:A.shoeM;
+  if(sh) sizes.push((lang==="ar"?"حذاء ":"shoe ")+sh);
+  if(A.bra) sizes.push((lang==="ar"?"صدر ":"bra ")+A.bra);
+  if(sizes.length) out.push([t(UI.dSize),sizes.join(" · ")]);
+
+  var FR={narrow:{en:"narrow shoulders",ar:"كتفان ضيّقان"},average:{en:"average shoulders",ar:"كتفان متوسطان"},broad:{en:"broad shoulders",ar:"كتفان عريضان"}};
+  var AR2={short:{en:"shorter arms",ar:"ذراعان أقصر"},average:{en:"average arms",ar:"ذراعان متوسطتان"},long:{en:"longer arms",ar:"ذراعان أطول"}};
+  var TO={short:{en:"short body, long legs",ar:"جذع قصير وساقان طويلتان"},average:{en:"even proportions",ar:"تناسب متوازن"},long:{en:"long body, shorter legs",ar:"جذع طويل وساقان أقصر"}};
+  var fr=[];
+  if(A.shoulders) fr.push(t(FR[A.shoulders]));
+  if(A.arms) fr.push(t(AR2[A.arms]));
+  if(A.torso) fr.push(t(TO[A.torso]));
+  if(fr.length) out.push([t(UI.dFrame),fr.join(" · ")]);
+
+  var SW={hourglass:{en:"Waist narrowest",ar:"الوسط الأنحف"},pear:{en:"Hips widest",ar:"الأرداف الأعرض"},
+          rectangle:{en:"Straight",ar:"مستقيم"},apple:{en:"Middle widest",ar:"الوسط الأعرض"},
+          inverted:{en:"Shoulders widest",ar:"الكتفان الأعرض"},unsure:{en:"Stylist to judge",ar:"تقرر المنسّقة"}};
+  var SM={slim:{en:"Slim",ar:"نحيف"},athletic:{en:"Athletic",ar:"رياضي"},average:{en:"Average",ar:"متوسط"},
+          broad:{en:"Solid",ar:"ممتلئ"},unsure:{en:"Stylist to judge",ar:"يقرر المنسّق"}};
+  var shp=w==="women"?(A.shapeW&&t(SW[A.shapeW])):(A.shapeM&&t(SM[A.shapeM]));
+  if(shp) out.push([t(UI.dShape),shp]);
+
+  var ex=[];
+  EXACT.forEach(function(m2){
+    if(m2[2]&&m2[2]!==w) return;
+    if(A[m2[0]]) ex.push(t(m2[1]).split(",")[0]+" "+A[m2[0]]);
+  });
+  if(ex.length) out.push([t(UI.dExact),ex.join(" · ")+" "+(lang==="ar"?"سم":"cm")]);
+  if(A.brand) out.push([lang==="ar"?"ماركة":"Fits",A.brand]);
+  return out;
+}
+
+function silhouette(){
+  var fit=A.fitpref,parts=[];
+  var SH={narrow:{en:"soft shoulder seams and no padding, so nothing hangs past your frame",ar:"خياطة كتف ناعمة بلا حشوة، حتى لا يتجاوز شيء بنيتك"},
+          average:{en:"standard shoulder seams, which land where they should on you",ar:"خياطة كتف عادية تقع في مكانها الصحيح عليك"},
+          broad:{en:"raglan and dropped shoulders instead of set-in seams, so nothing pulls across the back",ar:"أكمام راجلان ومسدلة بدل المبطنة، حتى لا يشد شيء على الظهر"}};
+  var AM={short:{en:"sleeves ordered short or turned up at the cuff",ar:"أكمام قصيرة أو مثنية عند الأسوار"},
+          average:{en:"standard sleeve lengths",ar:"أطوال أكمام عادية"},
+          long:{en:"long-sleeve cuts and shirts with real cuff length",ar:"قَصّات طويلة الأكمام مع طول أسوار حقيقي"}};
+  var TO={short:{en:"high-waisted bottoms to use the leg line you have",ar:"بنطلونات عالية الوسط لاستثمار خط ساقك"},
+          average:{en:"waistlines where the garment intends them",ar:"خطوط وسط في موضعها الطبيعي"},
+          long:{en:"lower waistlines and tops long enough to stay put",ar:"خطوط وسط أخفض وبلوزات أطول تبقى في مكانها"}};
+  var SP={hourglass:{en:"Cuts that follow the waist rather than hide it",ar:"قَصّات تتبع الوسط بدل إخفائه"},
+          pear:{en:"Structure and interest on top, clean lines below",ar:"بنية وتفاصيل في الأعلى وخطوط نظيفة في الأسفل"},
+          rectangle:{en:"Belts, wrap fronts and seams that create a waist",ar:"أحزمة وقَصّات ملفوفة وخياطة تصنع وسطاً"},
+          apple:{en:"Vertical lines and pieces that skim rather than cling",ar:"خطوط عمودية وقطع تنسدل بلا التصاق"},
+          inverted:{en:"Volume moved to the lower half to balance the shoulder",ar:"نقل الحجم للنصف الأسفل لموازنة الكتف"},
+          unsure:{en:"A first look that plays safe, then we learn from your feedback",ar:"إطلالة أولى آمنة، ثم نتعلم من ملاحظاتك"}};
+  var SM={slim:{en:"Layers and structure to add weight to the frame",ar:"طبقات وبنية لإضافة حجم للبنية"},
+          athletic:{en:"Tapered cuts that follow the shoulder-to-waist line",ar:"قَصّات مضيّقة تتبع خط الكتف للوسط"},
+          average:{en:"Standard cuts, tailored at the waist",ar:"قَصّات عادية معدّلة عند الوسط"},
+          broad:{en:"Straight cuts in fabric with body, nothing clingy",ar:"قَصّات مستقيمة بقماش له قوام، بلا التصاق"},
+          unsure:{en:"A first look that plays safe, then we learn from your feedback",ar:"إطلالة أولى آمنة، ثم نتعلم من ملاحظاتك"}};
+
+  var head = who()==="women" ? (A.shapeW&&t(SP[A.shapeW])) : (A.shapeM&&t(SM[A.shapeM]));
+  if(head) parts.push(head);
+  var det=[];
+  if(A.shoulders) det.push(t(SH[A.shoulders]));
+  if(A.arms) det.push(t(AM[A.arms]));
+  if(A.torso) det.push(t(TO[A.torso]));
+  var FP={fitted:{en:"a close cut",ar:"قَصّة ضيّقة"},
+          true:{en:"a true-to-size cut",ar:"قَصّة على المقاس"},
+          relaxed:{en:"an easy cut with structure at the shoulder",ar:"قَصّة مريحة مع بنية عند الكتف"},
+          oversized:{en:"volume on top and narrow below",ar:"حجم في الأعلى وضيق في الأسفل"}};
+  if(A.fitpref) det.unshift(t(FP[A.fitpref]));
+  var CV={arms:{en:"covered arms",ar:"ذراعان مغطاتان"},waist:{en:"a skimming waist",ar:"وسط منسدل"},
+          legs:{en:"longer lengths",ar:"أطوال أطول"},shoulders:{en:"soft shoulders",ar:"أكتاف ناعمة"},
+          chest:{en:"higher necklines",ar:"فتحات رقبة مرتفعة"},back:{en:"a closed back",ar:"ظهر مغلق"}};
+  (A.cover||[]).forEach(function(k){if(CV[k])det.push(t(CV[k]));});
+  det=det.slice(0,3);
+  var s=(parts.length?parts[0]+". ":"");
+  if(det.length){
+    var joined = det.length>1
+      ? det.slice(0,-1).join(lang==="ar"?"، ":", ")+(lang==="ar"?" و":" and ")+det[det.length-1]
+      : det[0];
+    s+=(lang==="ar"?"مع ":"With ")+joined+". ";
+  }
+  var B={quiet:{en:"The loudest thing on you will be the fit.",ar:"أبرز شيء فيك سيكون دقة المقاس."},
+         polished:{en:"One considered detail carries the look — a shoe, a belt, a sleeve.",ar:"تفصيلة واحدة مدروسة تحمل الإطلالة — حذاء، حزام، أو كم."},
+         statement:{en:"One piece does the talking; everything around it stays quiet.",ar:"قطعة واحدة تتحدث، وكل ما حولها هادئ."}};
+  if(A.bold) s+=t(B[A.bold]);
+  return s;
+}
+function rulesYes(){
+  var out=[],occ=A.occasion,life=A.life||[],love=A.lovecol||[],pal=PAL[A.tone||"neutral"],w=who();
+  var O={wedding:{en:"Floor-length with a structured shoulder",ar:"طول إلى الأرض مع كتف مبني"},
+         eid:{en:"Something new in a soft, formal fabric",ar:"قطعة جديدة بقماش ناعم رسمي"},
+         grad:{en:"A clean silhouette that photographs well",ar:"قَصّة نظيفة تظهر جيداً في الصور"},
+         work:{en:"Three pieces that mix into six outfits",ar:"ثلاث قطع تتحول إلى ست إطلالات"},
+         travel:{en:"Fabrics that survive a suitcase",ar:"أقمشة لا تتجعّد في الحقيبة"},
+         everyday:{en:"Pieces you can wear twice a week without thinking",ar:"قطع تلبسينها مرتين أسبوعياً بلا تفكير"}};
+  if(occ) out.push(t(O[occ]));
+  out.push((lang==="ar"?"ألوان لوحتك: ":"Your palette: ")+pal.cols.slice(0,3).map(function(c2){return t(c2[1]);}).join(lang==="ar"?"، ":", "));
+  var H=w==="women"?A.heightW:A.heightM;
+  if(H&&/^<1|^150|^156|^165/.test(H)) out.push(lang==="ar"?"خطوط عمودية غير مقطوعة لإطالة القامة":"unbroken vertical lines to lengthen the line");
+  if(H&&/176\+|186|191\+/.test(H)) out.push(lang==="ar"?"أطوال مطوّلة ومقاسات طويلة عند توفرها":"extra-long lengths and tall sizing where it exists");
+  if(life.indexOf("office")>-1) out.push(lang==="ar"?"قطعة خارجية تجعل أي إطلالة رسمية":"one outer layer that makes any outfit office-ready");
+  if(life.indexOf("uni")>-1) out.push(lang==="ar"?"حذاء مريح للمشي طول اليوم":"a shoe you can walk in all day");
+  if(life.indexOf("active")>-1||life.indexOf("travel")>-1) out.push(lang==="ar"?"أقمشة تتمدد وتتنفس":"fabrics that stretch and breathe");
+  if(love.indexOf("black")>-1) out.push(lang==="ar"?"الأسود والأبيض كأساس واللون في قطعة واحدة":"black and white as the base, colour in one piece");
+  if(A.modest&&A.modest.indexOf("hijab")>-1) out.push(lang==="ar"?"فتحات رقبة وأطوال مناسبة للحجاب":"necklines and lengths that work with hijab");
+  if(A.modest&&A.modest.indexOf("abaya")>-1) out.push(lang==="ar"?"طبقات خفيفة تُلبس تحت العباية":"light layers that sit under an abaya");
+  return out.slice(0,5);
+}
+function rulesNo(){
+  var out=[],nv=A.never||[];
+  var M={tight:{en:"anything tight",ar:"القطع الضيّقة"},prints:{en:"loud prints",ar:"النقشات الصارخة"},
+         heels:{en:"high heels",ar:"الكعب العالي"},neon:{en:"neon",ar:"الألوان الفاقعة"},
+         crop:{en:"crop tops",ar:"البلوزات القصيرة"},logos:{en:"big logos",ar:"الشعارات الكبيرة"}};
+  nv.forEach(function(k){if(M[k])out.push(t(M[k]));});
+  if(A.sleeve==="long") out.push(lang==="ar"?"أي كم أقصر من الطويل":"any sleeve shorter than full length");
+  if(A.sleeve==="threequarter") out.push(lang==="ar"?"الأكمام القصيرة وبلا أكمام":"short sleeves and sleeveless");
+  if(A.length==="maxi") out.push(lang==="ar"?"أي طول أعلى من الكاحل":"anything above the ankle");
+  if(A.length==="midi") out.push(lang==="ar"?"أي طول أعلى من الركبة":"anything above the knee");
+  if(A.shoulders==="broad") out.push(lang==="ar"?"الأكتاف المبطنة والأكمام المنتفخة":"shoulder pads and puff sleeves");
+  if(A.torso==="long") out.push(lang==="ar"?"البلوزات القصيرة التي ترتفع":"short tops that ride up");
+  if(A.modest&&A.modest.indexOf("opaque")>-1) out.push(lang==="ar"?"الأقمشة الشفافة":"sheer fabrics");
+  if(!out.length) out.push(lang==="ar"?"لا قيود — للمنسّقة حرية كاملة":"no restrictions — the stylist has a free hand");
+  return out.slice(0,5);
+}
+
+/* ---------------- payment ---------------- */
+function pay(){
+  var m=money(),c=panel(),p=c.body,nx;
+  p.appendChild(el("div","eyebrow",t(UI.payTag)));
+  p.appendChild(el("h2","q",t(UI.payH)));
+  p.appendChild(el("p","sub",t(UI.demo)));
+
+  var f0=el("div","field first");
+  var s=el("div","summary");
+  s.appendChild(row(t(UI.acct),firstName(),U.email));
+  s.appendChild(row(t(UI.rStyle)+" × "+m.looks,cur(m.styling)));
+  s.appendChild(row(t(UI.rBudget)+" × "+m.looks,cur(m.clothes),t(UI.rBudgetE)));
+  s.appendChild(row(t(UI.rShip),m.ship?cur(m.ship):t(UI.free),t(UI.tShip)));
+  var tt=row(t(UI.rTotal),cur(m.total));tt.className="row total";s.appendChild(tt);
+  f0.appendChild(s);p.appendChild(f0);
+
+  function ok(){return !!(A.method&&(A.phone||"").replace(/\D/g,"").length>=8);}
+
+  var pf=el("div","field");
+  pf.appendChild(el("span","label",t(UI.phone)));
+  var inp=document.createElement("input");inp.type="text";inp.placeholder=t(UI.phoneP);
+  inp.value=A.phone||"";inp.dir="ltr";inp.setAttribute("inputmode","tel");
+  inp.oninput=function(){A.phone=inp.value;if(nx)nx.disabled=!ok();};
+  pf.appendChild(inp);pf.appendChild(el("p","hint",t(UI.phoneH)));
+  p.appendChild(pf);
+
+  var mf=el("div","field");
+  mf.appendChild(el("span","label",t(UI.payWith)));
+  var box=el("div","pay");
+  [["knet",UI.knet,"KNET",UI.knetE],["apple",UI.apay,"PAY",null],["card",UI.card,"VISA",null],
+   ["tabby",UI.tabby,"TABBY",{en:kd(m.total/4)+" KD × 4",ar:"٤ × "+kd(m.total/4)+" د.ك"}]].forEach(function(mm){
+    var b=el("button","paybtn");b.type="button";
+    b.setAttribute("aria-pressed",A.method===mm[0]?"true":"false");
+    b.appendChild(el("u",null,mm[2]));
+    b.appendChild(el("span",null,t(mm[1])));
+    if(mm[3]) b.appendChild(el("em",null,t(mm[3])));
+    b.onclick=function(){A.method=mm[0];render();};
+    box.appendChild(b);
+  });
+  mf.appendChild(box);p.appendChild(mf);
+
+  var terms=el("div","terms");
+  [[UI.tShip,UI.tShipD],[UI.tSize,UI.tSizeD],[UI.tRet,UI.tRetD]].forEach(function(x){
+    var r2=el("p");r2.appendChild(el("b",null,t(x[0])));
+    r2.appendChild(document.createTextNode(t(x[1])));terms.appendChild(r2);
+  });
+  p.appendChild(terms);
+
+  var nav=el("div","nav");
+  var back=el("button","back","‹ "+t(UI.back));back.type="button";
+  back.onclick=function(){view="profile";render();};
+  nav.appendChild(back);
+  nx=el("button","btn",t(UI.payBtn)+" "+cur(m.total));nx.type="button";
+  nx.disabled=!ok();
+  nx.onclick=function(){view="done";render();};
+  nav.appendChild(nx);p.appendChild(nav);
+  return c;
+}
+
+/* ---------------- done ---------------- */
+function done(){
+  var c=panel(),p=c.body;
+  p.appendChild(el("div","stamp","✓ "+t(UI.doneStamp)));
+  p.appendChild(el("div","eyebrow",t(UI.doneTag)));
+  p.appendChild(el("h2","q",t(UI.doneH)+" "+firstName()+"."));
+  p.appendChild(el("p","sub",t(UI.doneL)));
+  var mail=el("p","hint");
+  mail.appendChild(document.createTextNode(t(UI.doneMail)+" "));
+  var b2=el("b",null,U.email);b2.style.color="var(--brown)";mail.appendChild(b2);
+  p.appendChild(mail);
+  var f=el("div","field");f.appendChild(orderSummary(true));p.appendChild(f);
+  var nav=el("div","nav");
+  var again=el("button","btn wide",t(UI.again));again.type="button";
+  again.onclick=function(){A={};showExact=false;view="landing";qi=0;render();};
+  nav.appendChild(again);p.appendChild(nav);
+  return c;
+}
+
+document.getElementById("lang").onclick=function(){lang=lang==="ar"?"en":"ar";render();};
+render();
+</script>
+
+</body>
+</html>

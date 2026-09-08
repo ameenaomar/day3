@@ -3,6 +3,11 @@ import type { NextConfig } from "next";
 const config: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  // `/` serves the prototype in public/ — the working single-file app, which is
+  // also the source of truth for the port under /en and /ar.
+  async rewrites() {
+    return [{ source: "/", destination: "/whatcaniwear.html" }];
+  },
   async headers() {
     return [
       {
