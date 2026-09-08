@@ -1,7 +1,6 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { LOCALE_COOKIE, isLocale } from "@/lib/i18n/config";
 import { THEME_COOKIE, isTheme } from "@/lib/theme";
 
 const ONE_YEAR = 60 * 60 * 24 * 365;
@@ -10,17 +9,6 @@ export async function setTheme(value: string): Promise<void> {
   if (!isTheme(value)) return;
   const store = await cookies();
   store.set(THEME_COOKIE, value, {
-    maxAge: ONE_YEAR,
-    sameSite: "lax",
-    path: "/",
-    httpOnly: false,
-  });
-}
-
-export async function setLocale(value: string): Promise<void> {
-  if (!isLocale(value)) return;
-  const store = await cookies();
-  store.set(LOCALE_COOKIE, value, {
     maxAge: ONE_YEAR,
     sameSite: "lax",
     path: "/",

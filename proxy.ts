@@ -43,5 +43,10 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!api|admin|_next|fonts|favicon\\.ico|robots\\.txt|sitemap\\.xml).*)"],
+  // Skip the API, the stylist's tool, Next's internals, and anything with a
+  // file extension. Matching on the extension rather than an explicit list of
+  // filenames matters: the list version silently missed /icon.svg, which was
+  // redirected to /en/icon.svg and 404ed, and it would have missed every
+  // static asset added later too.
+  matcher: ["/((?!api|admin|_next|.*\\.[a-zA-Z0-9]+$).*)"],
 };

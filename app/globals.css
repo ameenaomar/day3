@@ -136,7 +136,11 @@
   --color-red: var(--red);
 
   --font-display: "VT323", ui-monospace, monospace;
-  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
+  /* Plex Mono carries no Arabic, so the Arabic face sits in the stack behind
+     it: latin still comes from Plex Mono, and Arabic inside a font-mono
+     element (every button and chrome label) gets a face that can actually
+     shape it instead of falling through to a generic monospace. */
+  --font-mono: "IBM Plex Mono", "IBM Plex Sans Arabic", ui-monospace, SFMono-Regular, monospace;
   --font-arabic: "IBM Plex Sans Arabic", "IBM Plex Mono", sans-serif;
 
   --shadow-hard: var(--shadow-x) 2px 0 0 var(--rule);

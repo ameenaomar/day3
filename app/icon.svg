@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- The beige machine with a green cursor on it. Square, 1px rules, no curves. -->
+  <rect width="32" height="32" fill="#E5DCC6"/>
+  <rect x="3.5" y="3.5" width="25" height="25" fill="#FCF9F1" stroke="#33200F"/>
+  <rect x="7" y="9" width="4" height="3" fill="#33200F"/>
+  <rect x="13" y="9" width="12" height="3" fill="#B5A382"/>
+  <rect x="7" y="15" width="9" height="3" fill="#B5A382"/>
+  <rect x="7" y="21" width="6" height="3" fill="#1D6B3B"/>
+</svg>
