@@ -2,38 +2,73 @@
 
 ## Current deployment
 
-Latest production deployment, by direct file upload:
+Latest production deployment:
 
-- **https://simply-styled-pov9wjm5o-t054175-1826.vercel.app**
+- **https://simply-styled-kplxait8t-t054175-1826.vercel.app**
 - alias: `simply-styled-t054175-1826.vercel.app` (points at the newest
   successful production deployment)
-- inspector: <https://vercel.com/t054175-1826/simply-styled/gY7yW1KP5SsTBL5GWoytSCDPw3Sf>
+- inspector: <https://vercel.com/t054175-1826/simply-styled/7kNoZgdTF9WgFp7SCBQLqSDYuE3c>
 
-Earlier attempts, same project:
-[1](https://vercel.com/t054175-1826/simply-styled/DJ5GsJhgGGNLQG8a5GuxP3AKpDn4),
-[2](https://vercel.com/t054175-1826/simply-styled/GvDzB4x3Wi5gqERaKaz2eCEb4t4f),
-[3](https://vercel.com/t054175-1826/simply-styled/2ooCT1ab4CvxofXTHUaAZ3o18pqt)
+It builds `9b49c31` — the merge of
+[#1](https://github.com/ameenaomar/day3/pull/1) into
+`claude/simply-styled-plan-8fumfc`, the default branch.
 
-Node is pinned to 22 via `engines.node`, so the build machine uses the version
-everything here was verified on.
+Node is pinned to 22 via `engines.node` and `.nvmrc`, so the build machine uses
+the version everything here was verified on.
 
-**Unverified from this session.** The deployment is accepted, but nothing here
-can confirm it built:
+### How it is built
 
-- `vercel.app` is blocked by this environment's egress policy, for both `curl`
-  and the web-fetch tool.
-- Every Vercel *read* API returns 403 for this scope — `get_deployment`,
-  `get_deployment_build_logs`, `web_fetch_vercel_url` and
-  `create_git_project` (which needs a read to look up linked projects) all
-  fail with "You must re-authenticate to this scope". The connection can
-  create a deployment but not read one back, which is also why the git-linked
-  project below has to be set up by hand.
+The Vercel connection available from this environment can create deployments
+but cannot read anything back, so a git-linked project cannot be set up from
+here (see below). What it can do is upload files — and an upload that carries
+only a hand-written `package.json` would drift from the repo, which is what the
+earlier uploads did.
 
-Check the inspector link for the build result. The whole path a build machine
-takes was verified locally from an empty `node_modules` first: install (which
-runs `prisma generate`), then the font build, then `next build`, plus the tests
-and a typecheck. Every route was then probed on the built app — see the table
-in "Route check" below.
+So the upload is a two-line stub (`package.json`, `.nvmrc`) and the install step
+fetches the repo itself, pinned to the commit:
+
+```
+installCommand: curl -fsSL https://codeload.github.com/ameenaomar/day3/tar.gz/<sha> \
+                  -o /tmp/repo.tgz && tar -xzf /tmp/repo.tgz --strip-components=1 \
+                  && npm ci --include=dev
+buildCommand:   npm run build
+```
+
+The repository is public, so the fetch needs no credentials. Two consequences
+worth knowing:
+
+- The build uses `package-lock.json` and the committed font binaries — the two
+  things the earlier uploads dropped. This upload no longer drifts from the
+  repo.
+- `--include=dev` is not optional. Vercel's build environment sets
+  `NODE_ENV=production`, and without the flag `npm ci` omits the dev
+  dependencies, so `scripts/build-fonts.mjs` fails on a missing `subset-font`
+  before `next build` ever runs.
+
+That whole sequence was run locally from an empty directory first: the tarball
+fetch, the extraction (the fetched `public/whatcaniwear.html` hashes identically
+to the committed one), `npm ci --include=dev` under `NODE_ENV=production` and
+`NPM_CONFIG_PRODUCTION=true`, then `npm run build` — which compiled and listed
+every route.
+
+**Still unverified from this session: whether the build actually ran on
+Vercel.** The deployment is accepted, and the build command is verified, but
+nothing here can observe the result:
+
+- `vercel.app` is blocked by this environment's egress policy — `curl` gets a
+  403 from the proxy's CONNECT, and the web-fetch tools cannot reach it either.
+- Every Vercel *read* API returns 403 for scope `t054175-1826`
+  ("You must re-authenticate to this scope"): `get_deployment`,
+  `get_deployment_build_logs`, `list_projects`, `web_fetch_vercel_url` and
+  `create_git_project`, which needs a read to look up linked projects.
+  Deployments can be *created* only because omitting the scope falls back to
+  the same account implicitly.
+
+Check the inspector link for the build result.
+
+There is also a stray project called **`wciw-deploy-probe`** on the account —
+a two-line static page used to find out whether deployments still worked at
+all after every read failed. Nothing points at it; delete it whenever.
 
 ## Route check
 
@@ -41,7 +76,7 @@ Probed against a local production build:
 
 | Path | Expected |
 | --- | --- |
-| `/` | 307 to `/en` or `/ar`, by cookie then `Accept-Language` |
+| `/` | 200, the prototype (`public/whatcaniwear.html`), byte-identical |
 | `/en`, `/ar` | 200, correct `lang`/`dir`, canonical + hreflang |
 | `/en/design`, `/ar/design` | 200, `noindex` |
 | `/icon.svg` | 200 |
@@ -58,29 +93,21 @@ links are correct without configuration.
 Set `APP_URL` once there is a custom domain, so those URLs point at it rather
 than at the `.vercel.app` host.
 
-### How that upload differs from the repo
-
-The upload carried source only, so two things differ from a git-linked build
-and are worth closing by importing the repo:
-
-- **No `package-lock.json`** — Vercel resolved the dependency ranges fresh.
-- **No test tooling** — `vitest` and `@playwright/test`, and the `test` and
-  `db:*` scripts, were left out of the uploaded `package.json`. The font
-  binaries were left out too, and the build regenerated them.
-
 ## Import the repo instead — the better setup
 
-Importing the repository gives you a deploy on every push, a preview URL per
-branch, and the lockfile — none of which a one-off upload gives you. The Vercel
-scope here is `t054175-1826`.
+Importing the repository gives you a deploy on every push and a preview URL per
+branch — neither of which a one-off upload gives you, and neither of which can
+be set up from here while the Vercel reads return 403. The Vercel scope is
+`t054175-1826`. Re-authenticating that connection would also let me do it from
+here.
 
 1. Go to <https://vercel.com/new>
 2. Import `ameenaomar/day3`
 3. Framework preset: **Next.js** (auto-detected). Root directory: `./`.
    Build command, install command and output directory all stay on their
    defaults — `prisma generate` runs from the `postinstall` script.
-4. Set the production branch to `claude/simply-styled-plan-8fumfc`
-   (Settings → Git → Production Branch) until this work merges.
+4. The production branch is `claude/simply-styled-plan-8fumfc`, the repo's
+   default — Vercel picks that up on its own.
 5. Deploy.
 
 **No environment variables are needed for the current snapshot.** Nothing on the
@@ -91,9 +118,10 @@ Alternatively, create a Vercel team and I can do all of the above from here.
 
 ## What is actually on it right now
 
-- `/` → redirects to `/en` or `/ar` by cookie, then `Accept-Language`
-- `/en`, `/ar` — scaffold front page. Not final copy: the real wording comes
-  verbatim from `simply-styled.html`, which is not in the repo yet.
+- `/` → the working prototype, `public/whatcaniwear.html`: the whole flow,
+  both languages, both themes. This is the site.
+- `/en`, `/ar` — scaffold front page of the port, which is being built against
+  the prototype's wording rather than presenting final copy yet.
 - `/en/design`, `/ar/design` — every UI primitive on one screen, for checking
   both themes, RTL and 375px on a real phone. `noindex`.
 
