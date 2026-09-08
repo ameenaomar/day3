@@ -41,7 +41,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       </section>
 
       <section className="border border-rule bg-well p-4">
-        <p className="text-dim text-xs uppercase tracking-widest">
+        <p className="text-dim text-xs ui-caps">
           {locale === "ar" ? "فحص الأسعار" : "Pricing check"}
         </p>
         <dl className="mt-2 space-y-1">

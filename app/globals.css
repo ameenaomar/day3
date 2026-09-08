@@ -175,6 +175,7 @@
     font-family: var(--font-arabic);
   }
 
+
   /* The wordmark stays LTR even in Arabic. */
   .wordmark {
     direction: ltr;
@@ -198,6 +199,15 @@
     font: inherit;
     color: inherit;
   }
+}
+
+/* Terminal-style chrome labels. Uppercase and wide tracking are latin
+   conventions: Arabic has no uppercase, and letter-spacing actively breaks the
+   cursive joins between Arabic letters. So both are dropped in Arabic rather
+   than applied and hoped for. */
+@utility ui-caps {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
 }
 
 @utility rule-b {
@@ -237,4 +247,27 @@
     animation: none;
     opacity: 1;
   }
+}
+
+/* ---------------------------------------------------------------------------
+   Arabic typography corrections.
+   Deliberately unlayered: Tailwind's utilities layer would otherwise win over
+   these, and both of them are correctness rather than preference.
+   --------------------------------------------------------------------------- */
+
+/* VT323 carries no Arabic glyphs, so an Arabic display heading falls through to
+   a generic monospace that does not shape Arabic properly. Arabic headings use
+   the Arabic face at 600, which is what gives them their display presence. */
+html[lang="ar"] .font-display,
+html[lang="ar"] h1,
+html[lang="ar"] h2 {
+  font-family: var(--font-arabic);
+  font-weight: 600;
+}
+
+/* Uppercase and wide tracking are latin conventions. Arabic has no uppercase,
+   and letter-spacing breaks the cursive joins between Arabic letters. */
+html[lang="ar"] .ui-caps {
+  text-transform: none;
+  letter-spacing: normal;
 }
