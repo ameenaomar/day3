@@ -3,7 +3,8 @@ import { formatKwd } from "@/lib/money";
 
 /**
  * The live total, pinned to the bottom of the order screen. Brown, because
- * brown is the total bar; the amount itself is red, because red is price.
+ * brown is the total bar. The amount is paper-on-brown rather than red: red is
+ * the price colour, but red on brown fails contrast, and legibility wins.
  */
 export function TotalBar({
   label,
