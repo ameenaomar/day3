@@ -4,13 +4,14 @@
 
 Latest production deployment, by direct file upload:
 
-- **https://simply-styled-g7z3x1wn1-t054175-1826.vercel.app**
+- **https://simply-styled-e5aj87q1y-t054175-1826.vercel.app**
 - alias: `simply-styled-t054175-1826.vercel.app` (points at the newest
   successful production deployment)
-- inspector: <https://vercel.com/t054175-1826/simply-styled/GvDzB4x3Wi5gqERaKaz2eCEb4t4f>
+- inspector: <https://vercel.com/t054175-1826/simply-styled/2ooCT1ab4CvxofXTHUaAZ3o18pqt>
 
-Earlier attempt, same project:
-<https://vercel.com/t054175-1826/simply-styled/DJ5GsJhgGGNLQG8a5GuxP3AKpDn4>
+Earlier attempts, same project:
+[1](https://vercel.com/t054175-1826/simply-styled/DJ5GsJhgGGNLQG8a5GuxP3AKpDn4),
+[2](https://vercel.com/t054175-1826/simply-styled/GvDzB4x3Wi5gqERaKaz2eCEb4t4f)
 
 **Unverified from this session.** The deployment is accepted, but nothing here
 can confirm it built:
@@ -27,7 +28,31 @@ can confirm it built:
 Check the inspector link for the build result. The whole path a build machine
 takes was verified locally from an empty `node_modules` first: install (which
 runs `prisma generate`), then the font build, then `next build`, plus the tests
-and a typecheck.
+and a typecheck. Every route was then probed on the built app — see the table
+in "Route check" below.
+
+## Route check
+
+Probed against a local production build:
+
+| Path | Expected |
+| --- | --- |
+| `/` | 307 to `/en` or `/ar`, by cookie then `Accept-Language` |
+| `/en`, `/ar` | 200, correct `lang`/`dir`, canonical + hreflang |
+| `/en/design`, `/ar/design` | 200, `noindex` |
+| `/icon.svg` | 200 |
+| `/robots.txt`, `/sitemap.xml` | 200, absolute URLs from `APP_URL` or Vercel's |
+| anything else under a locale | 404, styled, correct language and direction |
+| `/admin`, `/api/*` | 404 (not built yet; excluded from the locale proxy) |
+
+## Environment variables
+
+None are required — nothing deployed touches the database yet, and
+`siteUrl()` falls back to the URL Vercel injects, so the sitemap and canonical
+links are correct without configuration.
+
+Set `APP_URL` once there is a custom domain, so those URLs point at it rather
+than at the `.vercel.app` host.
 
 ### How that upload differs from the repo
 
