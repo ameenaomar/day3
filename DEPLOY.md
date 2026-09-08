@@ -4,14 +4,18 @@
 
 Latest production deployment, by direct file upload:
 
-- **https://simply-styled-e5aj87q1y-t054175-1826.vercel.app**
+- **https://simply-styled-pov9wjm5o-t054175-1826.vercel.app**
 - alias: `simply-styled-t054175-1826.vercel.app` (points at the newest
   successful production deployment)
-- inspector: <https://vercel.com/t054175-1826/simply-styled/2ooCT1ab4CvxofXTHUaAZ3o18pqt>
+- inspector: <https://vercel.com/t054175-1826/simply-styled/gY7yW1KP5SsTBL5GWoytSCDPw3Sf>
 
 Earlier attempts, same project:
 [1](https://vercel.com/t054175-1826/simply-styled/DJ5GsJhgGGNLQG8a5GuxP3AKpDn4),
-[2](https://vercel.com/t054175-1826/simply-styled/GvDzB4x3Wi5gqERaKaz2eCEb4t4f)
+[2](https://vercel.com/t054175-1826/simply-styled/GvDzB4x3Wi5gqERaKaz2eCEb4t4f),
+[3](https://vercel.com/t054175-1826/simply-styled/2ooCT1ab4CvxofXTHUaAZ3o18pqt)
+
+Node is pinned to 22 via `engines.node`, so the build machine uses the version
+everything here was verified on.
 
 **Unverified from this session.** The deployment is accepted, but nothing here
 can confirm it built:
