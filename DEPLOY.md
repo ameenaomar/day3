@@ -1,21 +1,43 @@
 # Deploying to Vercel
 
-## Why this is not already done
+## Current deployment
 
-Two routes exist and neither is available from this session:
+A production deployment was created by direct file upload:
 
-- **Git-linked project** (the one you want): the Vercel integration here requires a
-  *team* scope, and this Vercel account has no teams — only a personal account.
-  The API refuses to create a project without one.
-- **Direct file upload**: this works without a team, but it sends the whole
-  source tree inline, and the two Arabic font files (58KB of woff2) are larger
-  than this environment allows in a single call. Deploying without them would
-  put the Arabic pages up in a fallback system font, which is not worth doing.
+- **https://simply-styled-5aplnclop-t054175-1826.vercel.app**
+- alias: `simply-styled-t054175-1826.vercel.app`
+- inspector: <https://vercel.com/t054175-1826/simply-styled/DJ5GsJhgGGNLQG8a5GuxP3AKpDn4>
 
-## The 60-second fix, and it is the better setup anyway
+**Unverified.** The deployment was accepted, but nothing here could confirm it
+built:
 
-Importing the repository gives you a deploy on every push plus a preview URL per
-branch, which a one-off upload does not.
+- `vercel.app` is blocked by this environment's egress policy, so the URL
+  cannot be fetched from the session (`CONNECT tunnel failed, response 403`).
+- Every Vercel *read* API returns 403 for this scope — `get_deployment`,
+  `get_deployment_build_logs` and `web_fetch_vercel_url` all fail with
+  "You must re-authenticate to this scope". The connection can create a
+  deployment but not read one back.
+
+Check the inspector link for the build result. Both risky build steps were
+verified locally first: `prisma generate` runs without a database, and
+`node scripts/build-fonts.mjs --if-missing` regenerates all five font files
+byte-identically from a clean tree.
+
+### How that upload differs from the repo
+
+The upload carried source only, so two things differ from a git-linked build
+and are worth closing by importing the repo:
+
+- **No `package-lock.json`** — Vercel resolved the dependency ranges fresh.
+- **No test tooling** — `vitest` and `@playwright/test`, and the `test` and
+  `db:*` scripts, were left out of the uploaded `package.json`. The font
+  binaries were left out too, and the build regenerated them.
+
+## Import the repo instead — the better setup
+
+Importing the repository gives you a deploy on every push, a preview URL per
+branch, and the lockfile — none of which a one-off upload gives you. The Vercel
+scope here is `t054175-1826`.
 
 1. Go to <https://vercel.com/new>
 2. Import `ameenaomar/day3`
