@@ -67,10 +67,13 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       <div className="flex flex-wrap gap-3">
         <Button variant="primary">{locale === "ar" ? "ابدأ" : "Start"}</Button>
         <Button variant="secondary">{locale === "ar" ? "كيف يعمل" : "How it works"}</Button>
-        <Button variant="primary" disabled>
-          {locale === "ar" ? "معطّل" : "Disabled"}
-        </Button>
       </div>
+
+      <p className="text-xs text-dim">
+        <a className="underline decoration-dotted underline-offset-4" href={`/${locale}/design`}>
+          {locale === "ar" ? "فحص نظام التصميم" : "Design system check"}
+        </a>
+      </p>
     </main>
   );
 }
