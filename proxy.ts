@@ -26,7 +26,7 @@ function preferredLocale(request: NextRequest): Locale {
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // The prototype is the site: `/` is rewritten to public/whatcaniwear.html by
+  // The prototype is the site: `/` is rewritten to public/simply-styled.html by
   // next.config.ts, and it carries its own language switch, so it must not be
   // redirected into a locale prefix.
   if (pathname === "/") return NextResponse.next();

@@ -46,7 +46,7 @@ worth knowing:
   before `next build` ever runs.
 
 That whole sequence was run locally from an empty directory first: the tarball
-fetch, the extraction (the fetched `public/whatcaniwear.html` hashes identically
+fetch, the extraction (the fetched `public/simply-styled.html` hashes identically
 to the committed one), `npm ci --include=dev` under `NODE_ENV=production` and
 `NPM_CONFIG_PRODUCTION=true`, then `npm run build` — which compiled and listed
 every route.
@@ -76,7 +76,8 @@ Probed against a local production build:
 
 | Path | Expected |
 | --- | --- |
-| `/` | 200, the prototype (`public/whatcaniwear.html`), byte-identical |
+| `/` | 200, the prototype (`public/simply-styled.html`), byte-identical |
+| `/whatcaniwear.html` | 308 to `/` — the page's name before the product had one |
 | `/en`, `/ar` | 200, correct `lang`/`dir`, canonical + hreflang |
 | `/en/design`, `/ar/design` | 200, `noindex` |
 | `/icon.svg` | 200 |
@@ -118,8 +119,8 @@ Alternatively, create a Vercel team and I can do all of the above from here.
 
 ## What is actually on it right now
 
-- `/` → the working prototype, `public/whatcaniwear.html`: the whole flow,
-  both languages, both themes. This is the site.
+- `/` → the working prototype, `public/simply-styled.html`: the whole flow,
+  both languages, both themes, Swiss typographic system. This is the site.
 - `/en`, `/ar` — scaffold front page of the port, which is being built against
   the prototype's wording rather than presenting final copy yet.
 - `/en/design`, `/ar/design` — every UI primitive on one screen, for checking

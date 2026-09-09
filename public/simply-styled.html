@@ -1,0 +1,1910 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SIMPLY STYLED</title>
+<meta name="description" content="A personal stylist for Kuwait. Answer eight short screens, give us your measurements, and a stylist shops Kuwait for a look that fits — delivered to your door.">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme:light)">
+<meta name="theme-color" content="#0b0b0b" media="(prefers-color-scheme:dark)">
+<link rel="icon" href="/icon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+
+<style>
+/* ==========================================================================
+   SIMPLY STYLED
+   International Typographic Style: one grid, one grotesque, one accent.
+   Hairline rules do the dividing, negative space does the grouping, and
+   nothing is decorative — every red mark means something.
+   ========================================================================== */
+
+/* ---------------------------------- tokens -------------------------------- */
+:root{
+  --bg:#FFFFFF;
+  --bg-2:#F4F4F2;
+  --bg-3:#E9E9E4;
+  --ink:#0B0B0B;
+  --ink-2:#43433F;
+  --ink-3:#78787A;
+  --line:#CFCFC9;
+  --hair:#E4E4DF;
+  --accent:#E1140A;
+  --accent-soft:#FBE8E6;
+  --on-accent:#FFFFFF;
+  --focus:#0047FF;
+  --sans:"Inter","Helvetica Neue",Helvetica,Arial,system-ui,sans-serif;
+  --ar:"IBM Plex Sans Arabic","Segoe UI",Tahoma,sans-serif;
+  --tap:44px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0B0B0B;
+    --bg-2:#151513;
+    --bg-3:#20201D;
+    --ink:#F5F5F3;
+    --ink-2:#C4C4BF;
+    --ink-3:#8C8C87;
+    --line:#33332F;
+    --hair:#242421;
+    --accent:#FF3D2E;
+    --accent-soft:#2A100D;
+    --on-accent:#0B0B0B;
+    --focus:#7FA9FF;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0B0B0B;
+  --bg-2:#151513;
+  --bg-3:#20201D;
+  --ink:#F5F5F3;
+  --ink-2:#C4C4BF;
+  --ink-3:#8C8C87;
+  --line:#33332F;
+  --hair:#242421;
+  --accent:#FF3D2E;
+  --accent-soft:#2A100D;
+  --on-accent:#0B0B0B;
+  --focus:#7FA9FF;
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:var(--sans);font-size:15px;line-height:1.5;
+  font-feature-settings:"cv05","ss01";
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+}
+body[dir="rtl"]{font-family:var(--ar);font-feature-settings:normal}
+[hidden]{display:none !important}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+::selection{background:var(--accent);color:var(--on-accent)}
+@media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important;scroll-behavior:auto !important}}
+
+.shell{max-width:1140px;margin:0 auto;padding:0 clamp(16px,4vw,44px)}
+.sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.skip{
+  position:absolute;inset-inline-start:-9999px;top:0;z-index:9;
+  background:var(--ink);color:var(--bg);padding:12px 18px;
+  font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+}
+.skip:focus{inset-inline-start:0}
+
+/* -------------------------------- masthead -------------------------------- */
+.mast{
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  padding:18px 0 12px;border-bottom:2px solid var(--ink);
+}
+.brand{
+  font-size:clamp(19px,2.5vw,25px);font-weight:800;letter-spacing:-.025em;
+  text-transform:uppercase;line-height:1;margin-inline-end:auto;
+  display:flex;align-items:baseline;gap:.12em;direction:ltr;
+}
+.brand i{font-style:normal;color:var(--accent)}
+.mast-tools{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.tool{
+  font:inherit;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  background:none;border:1px solid var(--line);color:var(--ink-2);
+  min-height:34px;padding:0 11px;cursor:pointer;
+}
+.tool:hover{border-color:var(--ink);color:var(--ink)}
+.acct{
+  display:flex;align-items:center;gap:8px;border:1px solid var(--line);
+  min-height:34px;padding:0 4px 0 0;font-size:11px;font-weight:600;
+}
+body[dir="rtl"] .acct{padding:0 0 0 4px}
+.acct i{
+  font-style:normal;background:var(--ink);color:var(--bg);font-weight:800;
+  font-size:10.5px;letter-spacing:.04em;padding:0 7px;align-self:stretch;
+  display:flex;align-items:center;direction:ltr;
+}
+.acct em{
+  font-style:normal;text-transform:uppercase;letter-spacing:.06em;
+  max-width:10ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.acct button{
+  font:inherit;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  background:none;border:0;border-inline-start:1px solid var(--line);
+  color:var(--ink-3);cursor:pointer;padding:8px 8px;
+}
+.acct button:hover{color:var(--accent)}
+
+/* -------------------------------- progress -------------------------------- */
+.progress{display:none;padding:14px 0 0}
+.progress.on{display:block}
+.pbar{display:flex;gap:3px;direction:ltr}
+.pbar span{flex:1;height:4px;background:var(--bg-3)}
+.pbar span.done{background:var(--accent)}
+.pbar span.at{background:var(--ink)}
+.pmeta{
+  display:flex;justify-content:space-between;gap:12px;padding-top:7px;
+  font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);
+}
+.pmeta b{color:var(--ink);font-variant-numeric:tabular-nums}
+body[dir="rtl"] .pmeta{letter-spacing:.02em}
+
+/* ---------------------------------- sheet --------------------------------- */
+.sheet{
+  display:grid;grid-template-columns:minmax(150px,2fr) minmax(0,7fr);
+  gap:clamp(22px,4.5vw,60px);padding:clamp(26px,5vw,54px) 0 40px;align-items:start;
+}
+.rail{position:sticky;top:22px}
+.stepno{
+  font-size:clamp(60px,9vw,110px);font-weight:800;letter-spacing:-.055em;line-height:.78;
+  font-variant-numeric:tabular-nums;direction:ltr;
+}
+.stepno.mark{display:block;height:14px;width:56px;background:var(--accent)}
+.railtag{
+  font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  margin-top:14px;padding-top:10px;border-top:2px solid var(--ink);
+}
+body[dir="rtl"] .railtag{letter-spacing:.02em}
+.railnote{font-size:12.5px;color:var(--ink-3);margin-top:8px;max-width:26ch}
+.jump{list-style:none;margin:18px 0 0;padding:0;display:grid;gap:1px}
+.jump li{display:flex}
+.jump button{
+  font:inherit;font-size:11.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;
+  background:none;border:0;color:var(--ink-3);cursor:pointer;
+  padding:5px 0;display:flex;gap:9px;width:100%;text-align:start;align-items:baseline;
+}
+.jump button var{font-style:normal;font-variant-numeric:tabular-nums;color:var(--line)}
+.jump button:hover:not([disabled]){color:var(--accent)}
+.jump button[disabled]{cursor:default;color:var(--line)}
+.jump li.now button{color:var(--ink);font-weight:700}
+.jump li.now button var{color:var(--accent)}
+@media (max-width:820px){
+  .sheet{grid-template-columns:1fr;gap:0;padding-top:22px}
+  .rail{position:static;display:grid;grid-template-columns:auto 1fr;gap:0 16px;align-items:end;margin-bottom:22px}
+  .stepno{font-size:52px}
+  .railtag{margin:0;border-top:0;padding-top:0;align-self:end;padding-bottom:6px}
+  .railnote,.jump{display:none}
+}
+
+/* --------------------------------- headings ------------------------------- */
+.display{
+  font-size:clamp(38px,6.4vw,76px);font-weight:800;letter-spacing:-.035em;line-height:.94;
+  margin:0 0 18px;text-wrap:balance;
+}
+body[dir="rtl"] .display{font-size:clamp(28px,4.6vw,50px);font-weight:700;letter-spacing:0;line-height:1.18}
+.qh{
+  font-size:clamp(26px,3.4vw,42px);font-weight:700;letter-spacing:-.03em;line-height:1.05;
+  margin:0 0 12px;text-wrap:balance;
+}
+body[dir="rtl"] .qh{font-size:clamp(22px,3vw,32px);letter-spacing:0;line-height:1.3}
+.lede{font-size:clamp(15px,1.6vw,18px);color:var(--ink-2);margin:0;max-width:56ch;line-height:1.45}
+.note{font-size:13px;color:var(--ink-3);margin:10px 0 0;max-width:62ch}
+.note b{color:var(--ink)}
+
+/* ---------------------------------- blocks -------------------------------- */
+.block{margin-top:26px;padding-top:22px;border-top:1px solid var(--hair)}
+.block.first{margin-top:30px;padding-top:22px;border-top:2px solid var(--ink)}
+.lab{
+  display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;
+  font-size:11.5px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;margin-bottom:12px;
+}
+body[dir="rtl"] .lab{letter-spacing:.02em}
+.lab u{text-decoration:none;color:var(--accent)}
+.lab i{font-style:normal;font-weight:500;letter-spacing:.06em;color:var(--ink-3)}
+.hint{font-size:12.5px;color:var(--ink-3);margin:10px 0 0;max-width:64ch}
+.err{
+  font-size:12.5px;font-weight:600;color:var(--accent);margin:10px 0 0;
+  border-inline-start:3px solid var(--accent);padding:6px 0 6px 10px;background:var(--accent-soft);
+}
+body[dir="rtl"] .err{padding:6px 10px 6px 0}
+.block[data-missing="1"] .lab{color:var(--accent)}
+
+/* ---------------------------------- options ------------------------------- */
+.opts{display:flex;flex-wrap:wrap;gap:6px}
+.opts.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+.opts.tight{display:grid;grid-template-columns:repeat(auto-fit,minmax(64px,1fr))}
+.opt{
+  font:inherit;font-size:14px;font-weight:500;text-align:start;cursor:pointer;
+  background:var(--bg);border:1px solid var(--line);color:var(--ink);
+  min-height:var(--tap);padding:10px 13px;display:flex;gap:9px;align-items:baseline;
+  transition:background .12s linear,border-color .12s linear,color .12s linear;
+}
+.opt:hover{border-color:var(--ink)}
+.opt var{
+  font-style:normal;font-size:11px;font-weight:700;color:var(--ink-3);
+  flex:none;line-height:1.5;direction:ltr;
+}
+.opt div{display:grid;gap:2px}
+.opt small{font-size:12px;font-weight:400;color:var(--ink-3);line-height:1.3}
+.opt[aria-checked="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg);font-weight:600}
+.opt[aria-checked="true"] var{color:var(--accent)}
+.opt[aria-checked="true"] small{color:var(--bg-3)}
+.opt.tiny{
+  justify-content:center;text-align:center;font-weight:600;
+  font-variant-numeric:tabular-nums;padding:10px 8px;
+}
+
+/* ------------------------------ tone swatches ----------------------------- */
+.tones{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:6px}
+.tone{
+  font:inherit;text-align:start;cursor:pointer;color:var(--ink);
+  background:var(--bg);border:1px solid var(--line);padding:0 0 12px;
+}
+.tone:hover{border-color:var(--ink)}
+.tone[aria-checked="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 2px var(--ink)}
+.tone .sw{display:flex;height:52px}
+.tone .sw i{flex:1}
+.tone b{display:flex;gap:8px;align-items:baseline;font-size:14px;font-weight:600;padding:11px 12px 3px}
+.tone b var{font-style:normal;font-size:11px;font-weight:700;color:var(--ink-3);direction:ltr}
+.tone[aria-checked="true"] b var{color:var(--accent)}
+.tone em{font-style:normal;font-size:12px;color:var(--ink-3);display:block;padding:0 12px;line-height:1.35}
+
+/* ---------------------------------- inputs -------------------------------- */
+input[type=text],input[type=email],input[type=tel]{
+  font:inherit;font-size:16px;width:100%;padding:12px 13px;color:var(--ink);
+  background:var(--bg-2);border:1px solid var(--line);border-radius:0;min-height:var(--tap);
+}
+input::placeholder{color:var(--ink-3)}
+input:focus-visible{outline:2px solid var(--focus);outline-offset:0;border-color:var(--focus)}
+input[aria-invalid="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.tel{display:flex;align-items:stretch}
+.tel span{
+  display:flex;align-items:center;padding:0 12px;background:var(--ink);color:var(--bg);
+  font-size:13px;font-weight:700;letter-spacing:.06em;border:1px solid var(--ink);
+  border-inline-end:0;direction:ltr;
+}
+.tel input{font-variant-numeric:tabular-nums;letter-spacing:.06em}
+
+/* ------------------------------ measurements ------------------------------ */
+.mgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:10px}
+.mrow .mfield{position:relative;display:block}
+.mrow label{
+  display:block;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-2);margin-bottom:6px;
+}
+body[dir="rtl"] .mrow label{letter-spacing:.02em}
+.mrow em{
+  position:absolute;inset-inline-end:12px;top:50%;transform:translateY(-50%);
+  font-style:normal;font-size:12px;font-weight:600;color:var(--ink-3);pointer-events:none;
+}
+.mrow input{padding-inline-end:38px;font-variant-numeric:tabular-nums}
+.mrow small{display:block;font-size:11.5px;color:var(--ink-3);margin-top:5px;line-height:1.3}
+.mrow small.bad{color:var(--accent);font-weight:600}
+.mrow[data-filled="1"] label{color:var(--ink)}
+.mrow[data-filled="1"] label::after{content:" ●";color:var(--accent);font-size:9px;vertical-align:1px}
+
+.meter{border:2px solid var(--ink);padding:14px 15px;margin-bottom:20px;background:var(--bg-2)}
+.meter .top{display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+.meter .top b{font-size:12px;font-weight:700;letter-spacing:.13em;text-transform:uppercase}
+body[dir="rtl"] .meter .top b{letter-spacing:.02em}
+.meter .top span{font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--accent);direction:ltr}
+.meter .segs{display:flex;gap:3px;margin:10px 0 0;direction:ltr}
+.meter .segs i{flex:1;height:8px;background:var(--line)}
+.meter .segs i.on{background:var(--accent)}
+.meter p{margin:9px 0 0;font-size:12.5px;color:var(--ink-2);line-height:1.4}
+.meter p b{color:var(--ink)}
+
+.why{list-style:none;margin:0 0 22px;padding:0;display:grid;gap:1px;border-top:1px solid var(--hair)}
+.why li{
+  display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:baseline;
+  padding:11px 0;border-bottom:1px solid var(--hair);font-size:13.5px;
+}
+.why li b{
+  font-size:11px;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums;direction:ltr;
+}
+.why li span{color:var(--ink-2)}
+.why li span strong{color:var(--ink);font-weight:600}
+
+.howto{margin-top:14px;border-top:1px solid var(--hair);padding-top:12px}
+.howto summary{
+  font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  cursor:pointer;color:var(--ink-2);min-height:28px;
+}
+body[dir="rtl"] .howto summary{letter-spacing:.02em}
+.howto summary:hover{color:var(--ink)}
+.howto ul{margin:10px 0 0;padding:0;list-style:none;display:grid;gap:7px;font-size:12.5px;color:var(--ink-3)}
+.howto li{display:grid;grid-template-columns:auto 1fr;gap:9px}
+.howto li b{color:var(--ink-2);font-weight:700;font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+
+/* ---------------------------------- actions ------------------------------- */
+.actions{
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  margin-top:30px;padding-top:18px;border-top:2px solid var(--ink);
+}
+.btn{
+  font:inherit;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;
+  background:var(--ink);color:var(--bg);border:1px solid var(--ink);
+  min-height:52px;padding:0 30px;display:inline-flex;align-items:center;gap:10px;
+  transition:background .12s linear,border-color .12s linear;
+}
+.btn:hover{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn.wide{width:100%;justify-content:center}
+.btn.quiet{background:none;color:var(--ink);border-color:var(--line)}
+.btn.quiet:hover{background:none;border-color:var(--ink);color:var(--ink)}
+.btn var{font-style:normal;font-variant-numeric:tabular-nums;direction:ltr}
+.back{
+  font:inherit;font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
+  background:none;border:0;color:var(--ink-3);cursor:pointer;
+  min-height:var(--tap);padding:0 2px;margin-inline-end:auto;
+}
+.back:hover{color:var(--accent)}
+body[dir="rtl"] .back{margin-inline-end:auto}
+@media (max-width:640px){
+  .actions{
+    position:sticky;bottom:0;z-index:5;background:var(--bg);
+    margin-inline:calc(clamp(16px,4vw,44px) * -1);padding:12px clamp(16px,4vw,44px);
+    border-top:2px solid var(--ink);
+  }
+  .btn{flex:1;justify-content:center;padding:0 16px}
+  .back{margin-inline-end:0}
+}
+
+/* --------------------------------- landing -------------------------------- */
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:22px}
+.tag{
+  font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ink-2);border:1px solid var(--line);padding:6px 10px;
+}
+body[dir="rtl"] .tag{letter-spacing:.02em}
+.priceline{
+  display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap;
+  margin-top:26px;padding-top:18px;border-top:2px solid var(--ink);
+}
+.priceline b{
+  font-size:clamp(44px,7vw,84px);font-weight:800;letter-spacing:-.05em;line-height:.82;
+  font-variant-numeric:tabular-nums;direction:ltr;
+}
+.priceline span{
+  font-size:11.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ink-3);padding-bottom:6px;max-width:16ch;
+}
+body[dir="rtl"] .priceline b{font-size:clamp(30px,4.6vw,52px);letter-spacing:0}
+body[dir="rtl"] .priceline span{letter-spacing:.02em}
+.steps{list-style:none;margin:24px 0 0;padding:0;display:grid;gap:0;border-top:1px solid var(--hair)}
+.steps li{
+  display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:baseline;
+  padding:14px 0;border-bottom:1px solid var(--hair);
+}
+.steps li b{font-size:12px;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums;direction:ltr}
+.steps li strong{font-weight:600;font-size:15px;display:block}
+.steps li em{font-style:normal;color:var(--ink-3);font-size:13px;display:block;margin-top:2px}
+
+/* --------------------------------- profile -------------------------------- */
+.rsw{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+.rsw i{display:block;height:64px;border:1px solid var(--hair)}
+.rsw span{
+  font-size:10.5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--ink-3);display:block;margin-top:6px;line-height:1.25;
+}
+body[dir="rtl"] .rsw span{letter-spacing:.02em}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.two>*+*{border-inline-start:1px solid var(--hair)}
+@media (max-width:620px){.two{grid-template-columns:1fr}.two>*+*{border-inline-start:0;border-top:1px solid var(--hair)}}
+.box{padding:0 16px 4px}
+.box:first-child{padding-inline-start:0}
+.box:last-child{padding-inline-end:0}
+.box h3{
+  font-size:11px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;margin:0 0 10px;
+  padding-bottom:8px;border-bottom:2px solid var(--ink);
+}
+body[dir="rtl"] .box h3{letter-spacing:.02em}
+.box.no h3{color:var(--accent);border-color:var(--accent)}
+.box ul{margin:0;padding:0;list-style:none;font-size:13.5px;display:grid;gap:8px}
+.box li{display:grid;grid-template-columns:auto 1fr;gap:9px;align-items:baseline}
+.box li::before{content:"+";color:var(--ink);font-weight:700;font-size:12px}
+.box.no li::before{content:"–";color:var(--accent)}
+.box li span::first-letter{text-transform:uppercase}
+.readout{display:grid;gap:0;border-top:1px solid var(--hair)}
+.readout div{
+  display:grid;grid-template-columns:minmax(96px,1fr) 3fr;gap:14px;
+  padding:11px 0;border-bottom:1px solid var(--hair);font-size:13.5px;
+}
+.readout dt{
+  color:var(--ink-3);font-size:10.5px;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;padding-top:3px;
+}
+body[dir="rtl"] .readout dt{letter-spacing:.02em}
+.readout dd{margin:0;font-weight:500}
+.readout dd b{font-weight:700}
+
+/* ---------------------------------- money --------------------------------- */
+.summary{border-top:2px solid var(--ink)}
+.row{
+  display:flex;justify-content:space-between;gap:14px;padding:12px 0;
+  border-bottom:1px solid var(--hair);font-size:14px;
+}
+.row span:last-child{font-variant-numeric:tabular-nums;font-weight:700;white-space:nowrap}
+.row em{font-style:normal;color:var(--ink-3);font-size:12px;display:block;font-weight:400;margin-top:2px}
+.row.total{
+  border-bottom:0;border-top:2px solid var(--ink);margin-top:-1px;
+  font-weight:800;font-size:17px;padding:14px 0 0;
+}
+.row.total em{color:var(--ink-3)}
+.paylist{display:grid;gap:6px}
+.paybtn{
+  font:inherit;font-size:14px;font-weight:600;text-align:start;cursor:pointer;color:var(--ink);
+  background:var(--bg);border:1px solid var(--line);padding:12px 13px;min-height:var(--tap);
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+}
+.paybtn:hover{border-color:var(--ink)}
+.paybtn[aria-checked="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 2px var(--ink)}
+.paybtn u{
+  text-decoration:none;font-size:10px;font-weight:800;letter-spacing:.1em;
+  border:1px solid var(--line);padding:5px 7px;color:var(--ink-2);direction:ltr;flex:none;
+}
+.paybtn[aria-checked="true"] u{border-color:var(--accent);color:var(--accent)}
+.paybtn em{
+  font-style:normal;font-weight:500;font-size:12.5px;color:var(--ink-3);
+  margin-inline-start:auto;text-align:end;
+}
+.terms{display:grid;gap:0;margin-top:20px;border-top:1px solid var(--hair)}
+.terms p{
+  margin:0;padding:11px 0;border-bottom:1px solid var(--hair);
+  font-size:13px;color:var(--ink-2);display:grid;grid-template-columns:minmax(96px,1fr) 3fr;gap:14px;
+}
+.terms p b{
+  color:var(--ink);font-weight:700;font-size:10.5px;letter-spacing:.1em;
+  text-transform:uppercase;padding-top:2px;
+}
+body[dir="rtl"] .terms p b{letter-spacing:.02em}
+
+/* ----------------------------------- done --------------------------------- */
+.stamp{
+  display:inline-flex;align-items:baseline;gap:10px;background:var(--ink);color:var(--bg);
+  font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;
+  padding:9px 14px;margin-bottom:20px;
+}
+body[dir="rtl"] .stamp{letter-spacing:.04em}
+.stamp i{font-style:normal;color:var(--accent);font-size:14px}
+
+/* ---------------------------------- footer -------------------------------- */
+.foot{
+  border-top:2px solid var(--ink);margin-top:20px;padding:16px 0 34px;
+  display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;
+  font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);
+}
+body[dir="rtl"] .foot{letter-spacing:.02em}
+</style>
+</head>
+<body>
+<a class="skip" href="#main" id="skip">Skip to content</a>
+
+<div class="shell">
+  <header class="mast">
+    <div class="brand">SIMPLY STYLED<i>.</i></div>
+    <div class="mast-tools">
+      <span class="acct" id="acct" hidden></span>
+      <button class="tool" id="theme" type="button" aria-live="off"></button>
+      <button class="tool" id="lang" type="button">العربية</button>
+    </div>
+  </header>
+
+  <div class="progress" id="progress"></div>
+  <main id="main" tabindex="-1" style="outline:none"></main>
+  <p class="sr" id="live" role="status" aria-live="polite"></p>
+
+  <footer class="foot">
+    <span id="footL"></span>
+    <span id="footR">KUWAIT</span>
+  </footer>
+</div>
+
+<script>
+"use strict";
+
+/* ==========================================================================
+   State. Everything the customer types survives a refresh — losing eight
+   screens of answers to an accidental reload was the worst thing about the
+   old build.
+   ========================================================================== */
+var STORE="simply-styled.v2";
+var lang="en";
+var theme=null;                 /* null = follow the system */
+var A={};                       /* answers */
+var U={name:"",email:""};       /* the signed-in customer */
+var view="login", qi=0, booted=false;
+var errs={};                    /* field key -> true, set only after a submit */
+
+var t=function(o){return (o&&o[lang])||"";};
+function el(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e;}
+function firstName(){return (U.name||"").trim().split(/\s+/)[0]||"";}
+function initials(){
+  var p=(U.name||"").trim().split(/\s+/).filter(Boolean);
+  return p.length?(p[0][0]+(p.length>1?p[p.length-1][0]:"")).toUpperCase():"?";
+}
+function validEmail(v){return /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test((v||"").trim());}
+function validName(v){return (v||"").trim().length>1;}
+function signedIn(){return validName(U.name)&&validEmail(U.email);}
+
+function save(){
+  try{
+    localStorage.setItem(STORE,JSON.stringify({
+      lang:lang,theme:theme,U:U,A:A,
+      view:view==="done"?"landing":view,qi:qi
+    }));
+  }catch(e){}
+}
+function load(){
+  try{
+    var raw=localStorage.getItem(STORE);
+    if(!raw) return;
+    var d=JSON.parse(raw)||{};
+    if(d.lang==="ar"||d.lang==="en") lang=d.lang;
+    if(d.theme==="dark"||d.theme==="light") theme=d.theme;
+    if(d.U&&typeof d.U==="object") U={name:d.U.name||"",email:d.U.email||""};
+    if(d.A&&typeof d.A==="object") A=d.A;
+    if(signedIn()&&(d.view==="landing"||d.view==="quiz"||d.view==="profile"||d.view==="pay")){
+      view=d.view;
+      qi=Math.max(0,Math.min(Q.length-1,parseInt(d.qi,10)||0));
+    }
+  }catch(e){}
+}
+function wipe(){
+  try{localStorage.removeItem(STORE);}catch(e){}
+  U={name:"",email:""};A={};qi=0;errs={};
+}
+
+/* ==========================================================================
+   Copy. Every string is bilingual; Arabic is the customer's language here
+   just as much as English.
+   ========================================================================== */
+var UI={
+  brand:{en:"SIMPLY STYLED",ar:"SIMPLY STYLED"},
+  skip:{en:"Skip to content",ar:"تجاوز إلى المحتوى"},
+  themeLight:{en:"Light",ar:"نهاري"},
+  themeDark:{en:"Dark",ar:"ليلي"},
+  /* front page */
+  fpTag:{en:"Personal styling · Kuwait",ar:"تنسيق شخصي · الكويت"},
+  fpH:{en:"Answer the questions. Get the outfit.",ar:"أجيبي على الأسئلة. تصلك الإطلالة."},
+  fpL:{en:"Eight short screens about your body, your measurements, your colours and the occasion. A stylist shops Kuwait for you and the look arrives at your door.",ar:"ثماني شاشات قصيرة عن جسمك ومقاساتك وألوانك والمناسبة. تشتري لك المنسّقة من الكويت وتصل الإطلالة إلى بابك."},
+  fName:{en:"Your name",ar:"الاسم"},
+  fNameP:{en:"First and last name",ar:"الاسم الأول والأخير"},
+  fNameBad:{en:"Please enter your name.",ar:"الرجاء إدخال الاسم."},
+  fEmail:{en:"Email",ar:"البريد الإلكتروني"},
+  fEmailP:{en:"you@example.com",ar:"you@example.com"},
+  fEmailBad:{en:"That email does not look right.",ar:"البريد الإلكتروني غير صحيح."},
+  fEmailH:{en:"Your style profile and order updates are sent here. No marketing unless you ask for it.",ar:"يُرسل ملفك وتحديثات طلبك إلى هنا. لا رسائل ترويجية إلا بطلبك."},
+  fGo:{en:"Start",ar:"ابدئي"},
+  fReturn:{en:"Been here before? The same email loads your saved measurements.",ar:"زبونة سابقة؟ البريد نفسه يستعيد مقاساتك المحفوظة."},
+  signout:{en:"Log out",ar:"خروج"},
+  resume:{en:"Picked up where you left off.",ar:"تابعنا من حيث توقفت."},
+  restart:{en:"Start over",ar:"من البداية"},
+  /* landing */
+  hi:{en:"Signed in",ar:"مسجّلة الدخول"},
+  h1:{en:"One look, put together for you.",ar:"إطلالة كاملة، منسّقة لك."},
+  fee:{en:"per look · styling fee",ar:"لكل إطلالة · أجر التنسيق"},
+  feeNote:{en:"The clothing budget is separate and you set it. Anything unspent is refunded.",ar:"ميزانية الملابس منفصلة وتحددينها أنت. يُعاد أي مبلغ غير مستخدم."},
+  start:{en:"Begin — about 3 minutes",ar:"ابدئي — حوالي ٣ دقائق"},
+  p1:{en:"Eight screens, mostly taps",ar:"ثماني شاشات، معظمها بلمسة"},
+  p1s:{en:"One screen is the measuring tape. It is the one that decides the fit.",ar:"شاشة واحدة لشريط القياس. وهي التي تحدد المقاس."},
+  p2:{en:"Your style profile, free",ar:"ملفك الشخصي، مجاناً"},
+  p2s:{en:"Your palette and your silhouette on screen before you pay anything.",ar:"لوحة ألوانك وقَصّتك على الشاشة قبل أي دفع."},
+  p3:{en:"Delivered in 3–5 days",ar:"التوصيل في ٣–٥ أيام"},
+  p3s:{en:"Try it at home. Keep the look or return it free within 3 days.",ar:"قيسيها في البيت. احتفظي بها أو أرجعيها مجاناً خلال ٣ أيام."},
+  tr:{en:["Kuwait only","KNET & Apple Pay","Free returns","Women & men"],ar:["الكويت فقط","كي نت وآبل باي","إرجاع مجاني","نساء ورجال"]},
+  next:{en:"Continue",ar:"متابعة"},
+  back:{en:"Back",ar:"رجوع"},
+  step:{en:"Step",ar:"خطوة"},
+  of:{en:"of",ar:"من"},
+  pick:{en:"Answer the fields marked * to continue.",ar:"أجيبي على الحقول المعلّمة بـ * للمتابعة."},
+  missing:{en:"This one is needed to style you.",ar:"هذا الحقل مطلوب للتنسيق."},
+  optional:{en:"optional",ar:"اختياري"},
+  /* measurements — its own screen now */
+  mTag:{en:"Measurements",ar:"المقاسات"},
+  mQ:{en:"Now the tape measure.",ar:"الآن شريط القياس."},
+  mSub:{en:"Sizes tell us what shop you fit in. Centimetres tell us what fits you. This screen is the difference between a look that nearly works and one that does.",ar:"المقاسات تخبرنا بأي مقاس تشترين. السنتيمترات تخبرنا بما يناسبك فعلاً. هذه الشاشة هي الفرق بين إطلالة تكاد تناسبك وإطلالة تناسبك."},
+  mWhy1:{en:"Two people in the same size return clothes for opposite reasons.",ar:"شخصان بالمقاس نفسه يرجعان الملابس لسببين متعاكسين."},
+  mWhy1b:{en:"Numbers end the guessing.",ar:"الأرقام تنهي التخمين."},
+  mWhy2:{en:"Full measurements mean we send one size instead of two.",ar:"المقاسات الكاملة تعني إرسال مقاس واحد بدل مقاسين."},
+  mWhy2b:{en:"Less to return, faster to wear.",ar:"إرجاع أقل، ولبس أسرع."},
+  mWhy3:{en:"They are saved to your file.",ar:"تُحفظ في ملفك."},
+  mWhy3b:{en:"You measure once, every future order uses it.",ar:"تقيسين مرة واحدة، وكل طلب قادم يستخدمها."},
+  mAcc:{en:"Fit accuracy",ar:"دقة المقاس"},
+  mAcc0:{en:"Estimated. We will size you from your answers and send two sizes of anything risky.",ar:"تقديري. سنحدد مقاسك من إجاباتك ونرسل مقاسين لأي قطعة غير مضمونة."},
+  mAcc1:{en:"Better. Each number you add takes one guess out of the stylist's hands.",ar:"أفضل. كل رقم تضيفينه يقلّل تخمين المنسّقة."},
+  mAcc2:{en:"Good. Most pieces can now be picked in a single size.",ar:"جيد. معظم القطع يمكن اختيارها بمقاس واحد الآن."},
+  mAcc3:{en:"Tailor-level. We shop your numbers, not a size chart — and alterations are ordered up front.",ar:"بمستوى الخياط. نشتري بأرقامك لا بجدول مقاسات — ويُطلب التعديل مسبقاً."},
+  mSkip:{en:"I have no tape measure right now",ar:"لا يوجد شريط قياس الآن"},
+  mSkipOn:{en:"Skipped — using estimates from your answers.",ar:"تم التجاوز — سنعتمد على التقديرات من إجاباتك."},
+  mSkipUndo:{en:"I found one — let me measure",ar:"وجدته — أريد القياس"},
+  mHow:{en:"How to measure in 60 seconds",ar:"كيف تقيسين في ٦٠ ثانية"},
+  mHowTape:{en:"Tape",ar:"الشريط"},
+  mHowTapeD:{en:"Snug, not tight. Keep it level all the way round.",ar:"ملتصق بلا شد. حافظي على استقامته حول الجسم."},
+  mHowWear:{en:"Wear",ar:"الملابس"},
+  mHowWearD:{en:"Thin clothes or none. Measure over the underwear you usually wear.",ar:"ملابس رقيقة أو بدونها. قيسي فوق الملابس الداخلية المعتادة."},
+  mHowStand:{en:"Stand",ar:"الوقوف"},
+  mHowStandD:{en:"Feet together, arms down, breathe normally. Do not pull the stomach in.",ar:"القدمان معاً، الذراعان للأسفل، تنفّسي بشكل طبيعي. لا تشدّي البطن."},
+  mHowHelp:{en:"Help",ar:"مساعدة"},
+  mHowHelpD:{en:"Shoulder and arm are easier with someone else holding the tape.",ar:"الكتف والذراع أسهل بمساعدة شخص آخر."},
+  mRange:{en:"Expected between",ar:"المتوقع بين"},
+  mOdd:{en:"Check that number — it is outside the usual range.",ar:"تحققي من الرقم — إنه خارج النطاق المعتاد."},
+  cm:{en:"cm",ar:"سم"},
+  mHeight:{en:"Height",ar:"الطول"},
+  mBust:{en:"Bust",ar:"محيط الصدر"},
+  mChest:{en:"Chest",ar:"محيط الصدر"},
+  mWaist:{en:"Waist",ar:"الوسط"},
+  mHip:{en:"Hips",ar:"الأرداف"},
+  mShoulder:{en:"Shoulder",ar:"الكتف"},
+  mArm:{en:"Arm length",ar:"طول الذراع"},
+  mInseam:{en:"Inseam",ar:"الطول الداخلي للساق"},
+  hHeight:{en:"Without shoes, back to a wall.",ar:"بدون حذاء، الظهر إلى الحائط."},
+  hBust:{en:"Fullest part, tape level under the arms.",ar:"أوسع نقطة، والشريط مستوٍ تحت الذراعين."},
+  hChest:{en:"Fullest part, tape level under the arms.",ar:"أوسع نقطة، والشريط مستوٍ تحت الذراعين."},
+  hWaist:{en:"The narrowest point, usually just above the navel.",ar:"أنحف نقطة، عادة فوق السرة قليلاً."},
+  hHip:{en:"Fullest part, about 20 cm below the waist.",ar:"أوسع نقطة، حوالي ٢٠ سم تحت الوسط."},
+  hShoulder:{en:"Across the back, seam to seam.",ar:"عبر الظهر، من خيط لخيط."},
+  hArm:{en:"Shoulder seam to wrist bone, arm relaxed.",ar:"من خياطة الكتف إلى عظم المعصم، والذراع مرتاحة."},
+  hInseam:{en:"Inside the leg, crotch to ankle.",ar:"داخل الساق، من الفخذ إلى الكاحل."},
+  /* profile */
+  prTag:{en:"Style profile",ar:"الملف الشخصي"},
+  prH:{en:"This is what we will shop for.",ar:"هذا ما سنشتريه لك."},
+  prSub:{en:"Built from your answers. Nothing has been charged yet — change anything you disagree with.",ar:"مبني على إجاباتك. لم يتم أي خصم — عدّلي أي شيء لا يعجبك."},
+  prData:{en:"Your measurements on file",ar:"مقاساتك المحفوظة"},
+  prPal:{en:"Palette",ar:"لوحة الألوان"},
+  prSil:{en:"Silhouette",ar:"القَصّة"},
+  prYes:{en:"Wear more of",ar:"أكثري من"},
+  prNo:{en:"We will skip",ar:"سنتجنّب"},
+  prGo:{en:"Continue to payment",ar:"إلى الدفع"},
+  prEdit:{en:"Edit answers",ar:"تعديل الإجابات"},
+  prAddM:{en:"Add measurements",ar:"إضافة المقاسات"},
+  dHeight:{en:"Height",ar:"الطول"},
+  dSize:{en:"Sizes",ar:"المقاسات"},
+  dFrame:{en:"Frame",ar:"البنية"},
+  dShape:{en:"Shape",ar:"الشكل"},
+  dExact:{en:"Measured",ar:"مقيس"},
+  dFits:{en:"Fits",ar:"يناسبها"},
+  /* payment */
+  payTag:{en:"Payment",ar:"الدفع"},
+  payH:{en:"Confirm your order",ar:"تأكيد طلبك"},
+  acct:{en:"Account",ar:"الحساب"},
+  rStyle:{en:"Styling",ar:"التنسيق"},
+  rBudget:{en:"Clothing budget held",ar:"ميزانية الملابس المحجوزة"},
+  rBudgetE:{en:"Unused amount refunded in 3 working days",ar:"يُعاد المبلغ غير المستخدم خلال ٣ أيام عمل"},
+  rShip:{en:"Delivery in Kuwait",ar:"التوصيل داخل الكويت"},
+  free:{en:"Free",ar:"مجاناً"},
+  rTotal:{en:"Total today",ar:"الإجمالي اليوم"},
+  payWith:{en:"Pay with",ar:"طريقة الدفع"},
+  payPick:{en:"Choose how to pay.",ar:"اختاري طريقة الدفع."},
+  knet:{en:"KNET debit card",ar:"بطاقة كي نت"},
+  knetE:{en:"Most used in Kuwait",ar:"الأكثر استخداماً في الكويت"},
+  apay:{en:"Apple Pay",ar:"آبل باي"},
+  card:{en:"Visa / Mastercard",ar:"فيزا / ماستركارد"},
+  tabby:{en:"Tabby — 4 payments",ar:"تابي — ٤ أقساط"},
+  phone:{en:"WhatsApp number",ar:"رقم الواتساب"},
+  phoneP:{en:"9XXX XXXX",ar:"9XXX XXXX"},
+  phoneH:{en:"Your stylist sends the look here for approval before it ships.",ar:"ترسل لك المنسّقة الإطلالة هنا للموافقة قبل الشحن."},
+  phoneBad:{en:"Eight digits, starting 5, 6 or 9.",ar:"ثماني خانات تبدأ بـ ٥ أو ٦ أو ٩."},
+  payBtn:{en:"Pay",ar:"ادفع"},
+  tShip:{en:"3–5 working days",ar:"٣–٥ أيام عمل"},
+  tShipD:{en:"Sourced from Kuwait boutiques after your approval.",ar:"يتم الشراء من بوتيكات الكويت بعد موافقتك."},
+  tSize:{en:"Sizing",ar:"المقاسات"},
+  tSizeTwo:{en:"Anything fit-risky comes in two sizes. Return the one that does not fit.",ar:"أي قطعة قد لا تناسب المقاس تُرسل بمقاسين. أرجعي غير المناسب."},
+  tSizeOne:{en:"Your measurements are on file, so each piece is picked in one size.",ar:"مقاساتك محفوظة، لذا تُختار كل قطعة بمقاس واحد."},
+  tRet:{en:"3-day returns",ar:"إرجاع خلال ٣ أيام"},
+  tRetD:{en:"Free pickup anywhere in Kuwait. Refund to your original card.",ar:"استلام مجاني من أي مكان في الكويت. يُعاد المبلغ لبطاقتك."},
+  demo:{en:"Prototype — no payment is taken.",ar:"نموذج تجريبي — لا يتم أي دفع فعلي."},
+  /* done */
+  doneStamp:{en:"Order received",ar:"تم استلام الطلب"},
+  doneTag:{en:"Confirmation",ar:"التأكيد"},
+  doneH:{en:"You are all set,",ar:"تم كل شيء،"},
+  doneL:{en:"You will get a WhatsApp with your look for approval within 24 hours. After you approve, delivery is 3–5 working days.",ar:"ستصلك رسالة واتساب بإطلالتك للموافقة خلال ٢٤ ساعة. بعد موافقتك، التوصيل ٣–٥ أيام عمل."},
+  doneMail:{en:"A copy of your order and your style profile is on its way to",ar:"نسخة من طلبك وملفك الشخصي في الطريق إلى"},
+  again:{en:"Run it again",ar:"تجربة مرة أخرى"},
+  footer:{en:"Prototype for testing",ar:"نموذج للتجربة"}
+};
+
+/* ==========================================================================
+   Palettes
+   ========================================================================== */
+var PAL={
+  warm:{name:{en:"Warm & golden",ar:"دافئة وذهبية"},cols:[
+    ["#6B6B3A",{en:"Olive",ar:"زيتوني"}],["#B98A5B",{en:"Camel",ar:"جملي"}],["#F0E6D2",{en:"Cream",ar:"كريمي"}],
+    ["#A8462A",{en:"Rust",ar:"صدئي"}],["#C9A227",{en:"Gold",ar:"ذهبي"}]]},
+  cool:{name:{en:"Cool & clear",ar:"باردة وصافية"},cols:[
+    ["#1F2A5A",{en:"Navy",ar:"كحلي"}],["#3E6E8E",{en:"Kohl blue",ar:"أزرق كحلي"}],["#E7EAEE",{en:"Ice",ar:"ثلجي"}],
+    ["#6B3A5B",{en:"Plum",ar:"برقوقي"}],["#9AA0A6",{en:"Silver",ar:"فضي"}]]},
+  neutral:{name:{en:"Soft & neutral",ar:"هادئة ومحايدة"},cols:[
+    ["#8B8377",{en:"Taupe",ar:"رمادي بني"}],["#F4F2EC",{en:"Soft white",ar:"أبيض ناعم"}],["#8A9A82",{en:"Sage",ar:"مريمي"}],
+    ["#BE9A98",{en:"Dusty rose",ar:"وردي باهت"}],["#3C3B40",{en:"Charcoal",ar:"فحمي"}]]}
+};
+
+/* ==========================================================================
+   Measurements. Every field carries its own plausible range and its own
+   one-line instruction, so nobody has to guess what "shoulder" means.
+   ========================================================================== */
+var EXACT=[
+  ["heightCm",UI.mHeight,null,130,215,UI.hHeight],
+  ["bust",UI.mBust,"women",60,160,UI.hBust],
+  ["chest",UI.mChest,"men",70,170,UI.hChest],
+  ["waist",UI.mWaist,null,50,165,UI.hWaist],
+  ["hip",UI.mHip,null,60,175,UI.hHip],
+  ["shoulderCm",UI.mShoulder,null,30,65,UI.hShoulder],
+  ["armCm",UI.mArm,null,45,85,UI.hArm],
+  ["inseam",UI.mInseam,null,55,115,UI.hInseam]
+];
+function exactFields(){
+  var w=who();
+  return EXACT.filter(function(m){return !m[2]||m[2]===w;});
+}
+function exactFilled(){
+  return exactFields().filter(function(m){return inRange(m,A[m[0]]);}).length;
+}
+function inRange(m,v){
+  var n=parseFloat(v);
+  return !isNaN(n)&&n>=m[3]&&n<=m[4];
+}
+function outOfRange(m,v){
+  if(!(v||"").length) return false;
+  return !inRange(m,v);
+}
+/* 0 estimated · 1 better · 2 good · 3 tailor-level */
+function accuracy(){
+  if(A.__noTape) return 0;
+  var n=exactFilled(),total=exactFields().length;
+  if(n===0) return 0;
+  if(n>=total) return 3;
+  if(n>=Math.ceil(total/2)) return 2;
+  return 1;
+}
+function accuracyCopy(){return [UI.mAcc0,UI.mAcc1,UI.mAcc2,UI.mAcc3][accuracy()];}
+
+/* ==========================================================================
+   The eight screens
+   ========================================================================== */
+var Q=[
+{id:"basics",tag:{en:"Basics",ar:"الأساسيات"},
+ q:{en:"Who are we styling, and what for?",ar:"لمن سنقوم بالتنسيق، ولماذا؟"},
+ sub:{en:"The occasion decides almost everything else.",ar:"المناسبة تحدد كل شيء تقريباً."},
+ note:{en:"Start here. You can change any answer before you pay.",ar:"ابدئي من هنا. يمكنك تعديل أي إجابة قبل الدفع."},
+ fields:[
+  {key:"who",type:"one",label:{en:"Styling for",ar:"التنسيق لـ"},opts:[
+    ["women",{en:"Women",ar:"نساء"}],["men",{en:"Men",ar:"رجال"}]]},
+  {key:"occasion",type:"one",grid:true,needs:"who",label:{en:"The occasion",ar:"المناسبة"},opts:[
+    ["wedding",{en:"Wedding or party",ar:"عرس أو حفلة"}],
+    ["eid",{en:"Eid or Ramadan",ar:"العيد أو رمضان"}],
+    ["grad",{en:"Graduation",ar:"تخرّج"}],
+    ["work",{en:"Work or a new job",ar:"العمل أو وظيفة جديدة"}],
+    ["travel",{en:"Travel",ar:"سفر"}],
+    ["everyday",{en:"Everyday reset",ar:"تجديد اليومي"}]]}]},
+
+{id:"sizes",tag:{en:"Sizes",ar:"المقاسات"},
+ q:{en:"The sizes you buy today.",ar:"المقاسات التي تشترينها اليوم."},
+ sub:{en:"What you actually wear beats any measurement we could guess.",ar:"ما تلبسينه فعلاً أهم من أي قياس نخمّنه."},
+ note:{en:"Shop sizes first, centimetres two screens from now.",ar:"مقاسات المتاجر أولاً، والسنتيمترات بعد شاشتين."},
+ fields:[
+  {key:"top",type:"one",bare:true,label:{en:"Top",ar:"الأعلى"},opts:[
+    ["XS","XS"],["S","S"],["M","M"],["L","L"],["XL","XL"],["2XL","2XL"],["3XL","3XL"]]},
+  {key:"bottomW",type:"one",bare:true,only:"women",label:{en:"Bottom (EU)",ar:"الأسفل (أوروبي)"},opts:[
+    ["34","34"],["36","36"],["38","38"],["40","40"],["42","42"],["44","44"],["46","46"],["48","48"]]},
+  {key:"bottomM",type:"one",bare:true,only:"men",label:{en:"Waist (inches)",ar:"الوسط (إنش)"},opts:[
+    ["28","28"],["30","30"],["32","32"],["34","34"],["36","36"],["38","38"],["40","40"],["42","42"]]},
+  {key:"bra",type:"one",bare:true,opt:true,only:"women",label:{en:"Bra size",ar:"مقاس حمالة الصدر"},opts:[
+    ["70","70"],["75","75"],["80","80"],["85","85"],["90","90"],["95","95"],["100","100"],
+    ["A","A"],["B","B"],["C","C"],["D","D"],["DD","DD"],["E","E"]]},
+  {key:"shoeW",type:"one",bare:true,only:"women",label:{en:"Shoe (EU)",ar:"الحذاء (أوروبي)"},opts:[
+    ["35","35"],["36","36"],["37","37"],["38","38"],["39","39"],["40","40"],["41","41"],["42","42"]]},
+  {key:"shoeM",type:"one",bare:true,only:"men",label:{en:"Shoe (EU)",ar:"الحذاء (أوروبي)"},opts:[
+    ["39","39"],["40","40"],["41","41"],["42","42"],["43","43"],["44","44"],["45","45"],["46","46"]]},
+  {key:"fitpref",type:"one",label:{en:"How you like clothes to sit",ar:"كيف تحبين أن تكون القصّة"},opts:[
+    ["fitted",{en:"Fitted",ar:"ضيّقة"}],["true",{en:"True to size",ar:"على المقاس"}],
+    ["relaxed",{en:"Relaxed",ar:"واسعة"}],["oversized",{en:"Oversized",ar:"فضفاضة"}]]},
+  {key:"brand",type:"text",label:{en:"A brand and size that fits you well",ar:"ماركة ومقاس يناسبك تماماً"},
+   ph:{en:"e.g. Zara M, Mango 38",ar:"مثال: زارا M، مانجو ٣٨"},
+   hint:{en:"This one line is the single most useful thing you can tell a stylist.",ar:"هذا السطر هو أهم ما يمكنك إخباره للمنسّقة."}}]},
+
+{id:"body",tag:{en:"Frame",ar:"البنية"},
+ q:{en:"Your frame.",ar:"بنية جسمك."},
+ sub:{en:"Two people wearing the same size need different cuts. This is where the fit is won.",ar:"شخصان بالمقاس نفسه يحتاجان قَصّتين مختلفتين. هنا يُحسم المقاس."},
+ note:{en:"Answer from how clothes behave on you, not from a chart.",ar:"أجيبي من سلوك الملابس عليك، لا من جدول."},
+ fields:[
+  {key:"heightW",type:"one",bare:true,only:"women",label:{en:"Height (cm)",ar:"الطول (سم)"},opts:[
+    ["<150","<150"],["150-155","150–155"],["156-160","156–160"],["161-165","161–165"],
+    ["166-170","166–170"],["171-175","171–175"],["176+","176+"]]},
+  {key:"heightM",type:"one",bare:true,only:"men",label:{en:"Height (cm)",ar:"الطول (سم)"},opts:[
+    ["<165","<165"],["165-170","165–170"],["171-175","171–175"],["176-180","176–180"],
+    ["181-185","181–185"],["186-190","186–190"],["191+","191+"]]},
+  {key:"shoulders",type:"one",grid:true,label:{en:"Shoulders",ar:"الكتفان"},opts:[
+    ["narrow",{en:"Narrow",ar:"ضيّقان"},{en:"Straps slip, seams hang past my shoulder",ar:"الحمالات تنزلق والخياطة تتجاوز كتفي"}],
+    ["average",{en:"Average",ar:"متوسطان"},{en:"Shoulder seams usually land right",ar:"خياطة الكتف تقع في مكانها عادة"}],
+    ["broad",{en:"Broad",ar:"عريضان"},{en:"Jackets and shirts pull across my back",ar:"الجاكيتات والقمصان تشد على ظهري"}]]},
+  {key:"arms",type:"one",grid:true,label:{en:"Arm length",ar:"طول الذراع"},opts:[
+    ["short",{en:"Shorter",ar:"أقصر"},{en:"Sleeves are always too long",ar:"الأكمام دائماً أطول من اللازم"}],
+    ["average",{en:"Average",ar:"متوسط"},{en:"Sleeves usually end at the wrist",ar:"الأكمام تنتهي عند المعصم عادة"}],
+    ["long",{en:"Longer",ar:"أطول"},{en:"Sleeves are always too short",ar:"الأكمام دائماً أقصر من اللازم"}]]},
+  {key:"torso",type:"one",grid:true,label:{en:"Torso and legs",ar:"الجذع والساقان"},opts:[
+    ["short",{en:"Short body, long legs",ar:"جذع قصير وساقان طويلتان"},{en:"High-waisted trousers suit me",ar:"البنطلونات عالية الوسط تناسبني"}],
+    ["average",{en:"Fairly even",ar:"متوازن"},{en:"Most waistlines sit where they should",ar:"معظم الخطوط تقع في مكانها"}],
+    ["long",{en:"Long body, shorter legs",ar:"جذع طويل وساقان أقصر"},{en:"Tops ride up, dresses sit low",ar:"البلوزات ترتفع والفساتين تنزل"}]]},
+  {key:"shapeW",type:"one",grid:true,only:"women",label:{en:"Where you carry your width",ar:"أين يتمركز عرض جسمك"},opts:[
+    ["hourglass",{en:"Waist is the narrowest",ar:"الوسط هو الأنحف"},{en:"Bust and hips fairly balanced",ar:"الصدر والأرداف متوازنان"}],
+    ["pear",{en:"Hips widest",ar:"الأرداف الأعرض"},{en:"Smaller on top than on the bottom",ar:"الأعلى أصغر من الأسفل"}],
+    ["rectangle",{en:"Straight up and down",ar:"مستقيم"},{en:"Shoulders, waist and hips similar",ar:"الكتفان والوسط والأرداف متشابهة"}],
+    ["apple",{en:"Middle widest",ar:"الوسط الأعرض"},{en:"Slimmer arms and legs",ar:"ذراعان وساقان أنحف"}],
+    ["inverted",{en:"Shoulders widest",ar:"الكتفان الأعرض"},{en:"Narrower through the hips",ar:"الأرداف أضيق"}],
+    ["unsure",{en:"Not sure",ar:"غير متأكدة"},{en:"Let the stylist decide from the rest",ar:"اتركي القرار للمنسّقة"}]]},
+  {key:"shapeM",type:"one",grid:true,only:"men",label:{en:"Your build",ar:"بنيتك"},opts:[
+    ["slim",{en:"Slim",ar:"نحيف"},{en:"Clothes hang loose on me",ar:"الملابس واسعة عليّ"}],
+    ["athletic",{en:"Athletic",ar:"رياضي"},{en:"Broad chest, narrower waist",ar:"صدر عريض ووسط أضيق"}],
+    ["average",{en:"Average",ar:"متوسط"},{en:"Standard cuts mostly work",ar:"القَصّات العادية تناسبني"}],
+    ["broad",{en:"Solid",ar:"ممتلئ"},{en:"Fuller through chest and middle",ar:"أعرض في الصدر والوسط"}],
+    ["unsure",{en:"Not sure",ar:"غير متأكد"},{en:"Let the stylist decide from the rest",ar:"اتركي القرار للمنسّق"}]]}]},
+
+/* The measuring screen. Not a collapsed panel at the bottom of another
+   question any more — it is one of the eight, with its own number. */
+{id:"measure",tag:UI.mTag,measure:true,
+ q:UI.mQ,sub:UI.mSub,
+ note:{en:"Every number here removes one guess. None of them is required.",ar:"كل رقم هنا يلغي تخميناً. ولا شيء منها إلزامي."},
+ fields:[]},
+
+{id:"cut",tag:{en:"Coverage",ar:"التغطية"},
+ q:{en:"What must the look respect?",ar:"ما القواعد التي يجب أن تحترمها الإطلالة؟"},
+ sub:{en:"Tell us your rules once and we never break them.",ar:"أخبرينا بقواعدك مرة واحدة ولن نخالفها."},
+ note:{en:"These are hard rules, not preferences.",ar:"هذه قواعد ثابتة لا تفضيلات."},
+ fields:[
+  {key:"sleeve",type:"one",label:{en:"Sleeves",ar:"الأكمام"},opts:[
+    ["long",{en:"Long only",ar:"طويلة فقط"}],["threequarter",{en:"Elbow or longer",ar:"إلى الكوع أو أطول"}],["any",{en:"Anything",ar:"أي نوع"}]]},
+  {key:"length",type:"one",only:"women",label:{en:"Length",ar:"الطول"},opts:[
+    ["maxi",{en:"Ankle length",ar:"إلى الكاحل"}],["midi",{en:"Midi or longer",ar:"ميدي أو أطول"}],["any",{en:"Anything",ar:"أي طول"}]]},
+  {key:"modest",type:"many",opt:true,only:"women",label:{en:"Also plan for",ar:"مع مراعاة"},opts:[
+    ["hijab",{en:"Hijab-friendly",ar:"مناسب للحجاب"}],["abaya",{en:"Layers under abaya",ar:"طبقات تحت العباية"}],
+    ["opaque",{en:"Nothing sheer",ar:"غير شفاف"}],["nolayer",{en:"None of these",ar:"لا شيء من هذه"}]]},
+  {key:"cover",type:"many",opt:true,label:{en:"I would rather not show",ar:"أفضّل عدم إبراز"},opts:[
+    ["arms",{en:"Arms",ar:"الذراعين"}],["waist",{en:"Waist",ar:"الوسط"}],["legs",{en:"Legs",ar:"الساقين"}],
+    ["shoulders",{en:"Shoulders",ar:"الكتفين"}],["chest",{en:"Chest",ar:"الصدر"}],
+    ["back",{en:"Back",ar:"الظهر"}],["nothing",{en:"Nothing — show it all",ar:"لا شيء — أبرزي الكل"}]]},
+  {key:"never",type:"many",opt:true,label:{en:"Never send me",ar:"لا ترسلي لي أبداً"},opts:[
+    ["tight",{en:"Anything tight",ar:"قطع ضيّقة"}],["prints",{en:"Loud prints",ar:"نقشات صارخة"}],
+    ["heels",{en:"High heels",ar:"كعب عالٍ"}],["neon",{en:"Neon colours",ar:"ألوان فاقعة"}],
+    ["crop",{en:"Crop tops",ar:"بلوزات قصيرة"}],["logos",{en:"Big logos",ar:"شعارات كبيرة"}]]}]},
+
+{id:"colour",tag:{en:"Colour",ar:"اللون"},
+ q:{en:"Which of these looks like your skin in daylight?",ar:"أيٌّ من هذه يشبه لون بشرتك في ضوء النهار؟"},
+ sub:{en:"You do not need to know your palette. We work it out from this.",ar:"لا حاجة لمعرفة لوحة ألوانك. سنستنتجها من هنا."},
+ note:{en:"Daylight, no filter, no make-up on the arm.",ar:"ضوء النهار، بلا فلتر، وبلا مكياج على الذراع."},
+ fields:[
+  {key:"tone",type:"tone",label:{en:"Skin undertone",ar:"درجة لون البشرة"},opts:[
+    ["warm",{en:"Golden or olive",ar:"ذهبية أو زيتونية"},{en:"Gold jewellery suits you. You tan easily.",ar:"الذهب يناسبك. تسمرّين بسهولة."},["#F0D9B5","#DEB887","#B98A5B","#8C6239"]],
+    ["cool",{en:"Pink or blue-ish",ar:"وردية أو مائلة للأزرق"},{en:"Silver suits you. You burn before you tan.",ar:"الفضة تناسبك. تحترق بشرتك قبل أن تسمرّ."},["#F6DDD8","#E0B7AE","#B98A8A","#7A5450"]],
+    ["neutral",{en:"Somewhere between",ar:"بين الاثنين"},{en:"Gold and silver both work on you.",ar:"الذهب والفضة يناسبانك معاً."},["#F2E3D0","#D9BFA6","#AD8E74","#6E5744"]]]},
+  {key:"lovecol",type:"many",opt:true,label:{en:"Colours you already reach for",ar:"ألوان تختارينها دائماً"},opts:[
+    ["black",{en:"Black & white",ar:"أسود وأبيض"}],["earth",{en:"Beige & brown",ar:"بيج وبني"}],
+    ["blue",{en:"Blues",ar:"أزرق"}],["green",{en:"Greens",ar:"أخضر"}],
+    ["jewel",{en:"Deep jewel tones",ar:"ألوان جوهرية غامقة"}],["pastel",{en:"Pastels",ar:"باستيل"}]]}]},
+
+{id:"life",tag:{en:"Life",ar:"نمط الحياة"},
+ q:{en:"Where will you actually wear this?",ar:"أين ستلبسين هذه الإطلالة فعلاً؟"},
+ sub:{en:"A look you never wear is a look we styled wrong.",ar:"الإطلالة التي لا تُلبس هي إطلالة أخطأنا فيها."},
+ note:{en:"Pick every one that is true in a normal week.",ar:"اختاري كل ما يصح في أسبوع عادي."},
+ fields:[
+  {key:"life",type:"many",label:{en:"Most of my week is",ar:"معظم أسبوعي"},opts:[
+    ["office",{en:"Office",ar:"المكتب"}],["uni",{en:"University",ar:"الجامعة"}],
+    ["home",{en:"At home",ar:"في البيت"}],["outings",{en:"Going out & family",ar:"خروج وعائلة"}],
+    ["travel",{en:"Travelling",ar:"سفر"}],["active",{en:"Active & moving",ar:"حركة ونشاط"}]]},
+  {key:"bold",type:"one",grid:true,label:{en:"How much attention should the look get?",ar:"كم من الانتباه تريدين للإطلالة؟"},opts:[
+    ["quiet",{en:"Quiet",ar:"هادئة"},{en:"Nobody comments, everybody notices",ar:"لا أحد يعلّق، والجميع يلاحظ"}],
+    ["polished",{en:"Polished",ar:"أنيقة"},{en:"Clearly put together",ar:"واضح أنها منسّقة"}],
+    ["statement",{en:"Statement",ar:"جذّابة"},{en:"I want to be asked about it",ar:"أريد أن يسألوني عنها"}]]}]},
+
+{id:"order",tag:{en:"Order",ar:"الطلب"},
+ q:{en:"How many looks, and what may we spend?",ar:"كم إطلالة، وما الميزانية؟"},
+ sub:{en:"Styling is 10.000 KD per look. The clothing budget is yours to set.",ar:"التنسيق ١٠٫٠٠٠ د.ك لكل إطلالة. ميزانية الملابس تحددينها أنت."},
+ note:{en:"Nothing is charged until the payment screen.",ar:"لا خصم قبل شاشة الدفع."},
+ fields:[
+  {key:"looks",type:"one",label:{en:"Number of looks",ar:"عدد الإطلالات"},opts:[
+    ["1",{en:"1 look",ar:"إطلالة واحدة"}],["2",{en:"2 looks",ar:"إطلالتان"}],["3",{en:"3 looks",ar:"٣ إطلالات"}]]},
+  {key:"budget",type:"one",grid:true,label:{en:"Clothing budget per look",ar:"ميزانية الملابس لكل إطلالة"},opts:[
+    ["40",{en:"Up to 40 KD",ar:"حتى ٤٠ د.ك"},{en:"High street, 3–4 pieces",ar:"ماركات اقتصادية، ٣–٤ قطع"}],
+    ["80",{en:"40 – 80 KD",ar:"٤٠ – ٨٠ د.ك"},{en:"Most popular",ar:"الأكثر طلباً"}],
+    ["150",{en:"80 – 150 KD",ar:"٨٠ – ١٥٠ د.ك"},{en:"Better fabrics, shoes included",ar:"أقمشة أفضل، مع الحذاء"}],
+    ["250",{en:"150 KD +",ar:"١٥٠ د.ك +"},{en:"Designer pieces",ar:"قطع مصمّمين"}]]}]}
+];
+
+/* ==========================================================================
+   Answer bookkeeping
+   ========================================================================== */
+function who(){return A.who||"women";}
+function activeFields(step){return step.fields.filter(function(f){return !f.only||f.only===who();});}
+function fieldReady(f){
+  if(f.type==="text"||f.opt) return true;
+  if(f.type==="many") return (A[f.key]||[]).length>0;
+  return !!A[f.key];
+}
+function visibleFields(step){
+  return activeFields(step).filter(function(f){return !f.needs||A[f.needs];});
+}
+function stepReady(step){
+  if(step.measure) return true;              /* measurements are never a gate */
+  return visibleFields(step).every(fieldReady);
+}
+function stepTouched(i){
+  var step=Q[i];
+  if(step.measure) return exactFilled()>0||!!A.__noTape;
+  return visibleFields(step).some(function(f){
+    return f.type==="many"?(A[f.key]||[]).length>0:!!A[f.key];
+  });
+}
+function firstIncomplete(step){
+  var out=null;
+  visibleFields(step).forEach(function(f){if(!out&&!fieldReady(f))out=f;});
+  return out;
+}
+function lastPickable(step){
+  var vis=visibleFields(step),f=vis[vis.length-1];
+  return (f&&f.type==="one"&&!f.bare)?f:null;
+}
+
+/* ==========================================================================
+   Navigation. Every screen is a history entry, so the browser and the phone
+   back gesture do what people expect instead of leaving the site.
+   ========================================================================== */
+function routeOf(){
+  if(view==="quiz") return "#/step/"+(qi+1);
+  return "#/"+view;
+}
+function goto(v,i,replace){
+  view=v;
+  if(i!=null) qi=Math.max(0,Math.min(Q.length-1,i));
+  errs={};
+  save();
+  try{
+    var st={view:view,qi:qi};
+    if(replace) history.replaceState(st,"",routeOf());
+    else history.pushState(st,"",routeOf());
+  }catch(e){}
+  render(true);
+}
+window.onpopstate=function(e){
+  var st=e.state;
+  if(st&&st.view){
+    view=st.view;qi=st.qi||0;
+    if(view!=="login"&&!signedIn()) view="login";
+    errs={};save();render(true);
+  }
+};
+
+/* Arrows follow the reading direction, so "forward" points forward in both. */
+function fwdArrow(){return lang==="ar"?"←":"→";}
+function backArrow(){return lang==="ar"?"→":"←";}
+
+function announce(msg){
+  var l=document.getElementById("live");
+  if(l) l.textContent=msg||"";
+}
+
+/* Arrow keys move through a set of options the way a radio group should. */
+function arrowNav(group){
+  group.onkeydown=function(e){
+    var keys=["ArrowRight","ArrowLeft","ArrowDown","ArrowUp"];
+    if(keys.indexOf(e.key)<0) return;
+    var items=[].slice.call(group.querySelectorAll('[role="radio"],[role="checkbox"]'));
+    var at=items.indexOf(document.activeElement);
+    if(at<0) return;
+    e.preventDefault();
+    var fwd=(e.key==="ArrowDown")||(e.key===(document.body.dir==="rtl"?"ArrowLeft":"ArrowRight"));
+    var next=items[(at+(fwd?1:-1)+items.length)%items.length];
+    next.focus();
+  };
+}
+
+/* ==========================================================================
+   Chrome
+   ========================================================================== */
+function effectiveDark(){
+  if(theme) return theme==="dark";
+  return !!(window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches);
+}
+function paintChrome(){
+  document.body.setAttribute("dir",lang==="ar"?"rtl":"ltr");
+  document.body.lang=lang;
+  document.documentElement.lang=lang;
+  if(theme) document.documentElement.setAttribute("data-theme",theme);
+  else document.documentElement.removeAttribute("data-theme");
+
+  document.getElementById("skip").textContent=t(UI.skip);
+  document.getElementById("lang").textContent=lang==="ar"?"English":"العربية";
+  var th=document.getElementById("theme");
+  th.textContent=effectiveDark()?t(UI.themeLight):t(UI.themeDark);
+  th.setAttribute("aria-label",effectiveDark()?t(UI.themeLight):t(UI.themeDark));
+  document.getElementById("footL").textContent=t(UI.footer);
+  document.getElementById("footR").textContent=lang==="ar"?"الكويت":"KUWAIT";
+
+  var acct=document.getElementById("acct");
+  acct.innerHTML="";
+  var show=(view!=="login")&&signedIn();
+  acct.hidden=!show;
+  if(show){
+    acct.appendChild(el("i",null,initials()));
+    acct.appendChild(el("em",null,firstName()));
+    var so=el("button",null,t(UI.signout));so.type="button";
+    so.onclick=function(){wipe();goto("login",0);};
+    acct.appendChild(so);
+  }
+
+  var pr=document.getElementById("progress");
+  pr.innerHTML="";
+  pr.className=(view==="quiz")?"progress on":"progress";
+  if(view==="quiz"){
+    var bar=el("div","pbar");
+    Q.forEach(function(s,i){
+      var seg=el("span",i<qi?"done":(i===qi?"at":""));
+      bar.appendChild(seg);
+    });
+    pr.appendChild(bar);
+    var meta=el("div","pmeta");
+    var left=el("span");
+    left.appendChild(el("b",null,(qi+1)+" / "+Q.length));
+    left.appendChild(document.createTextNode(" · "+t(Q[qi].tag)));
+    meta.appendChild(left);
+    meta.appendChild(el("span",null,t(UI.step)+" "+(qi+1)+" "+t(UI.of)+" "+Q.length));
+    pr.appendChild(meta);
+  }
+}
+
+/* A sheet is the two-column grid: number and label on the rail, content on
+   the right. It is the only layout in the product. */
+function sheet(num,tag,note,withJump){
+  var root=el("div","sheet");
+  var rail=el("div","rail");
+  var no=el("div",num?"stepno":"stepno mark");
+  if(num) no.appendChild(document.createTextNode(num));
+  rail.appendChild(no);
+  rail.appendChild(el("div","railtag",tag||""));
+  if(note) rail.appendChild(el("p","railnote",note));
+  if(withJump){
+    var ul=el("ul","jump");
+    Q.forEach(function(s,i){
+      var li=el("li",i===qi?"now":null);
+      var b=el("button");b.type="button";
+      b.appendChild(el("var",null,(i+1<10?"0":"")+(i+1)));
+      b.appendChild(document.createTextNode(t(s.tag)));
+      var reachable=(i<=qi)||stepTouched(i);
+      if(!reachable) b.disabled=true;
+      else b.onclick=function(){goto("quiz",i);};
+      li.appendChild(b);ul.appendChild(li);
+    });
+    rail.appendChild(ul);
+  }
+  var body=el("div","body");
+  root.appendChild(rail);root.appendChild(body);
+  root.body=body;
+  return root;
+}
+
+function render(moved){
+  paintChrome();
+  var main=document.getElementById("main");
+  main.innerHTML="";
+  var v = view==="login"?login():
+          view==="landing"?landing():
+          view==="quiz"?(Q[qi].measure?measure():quiz()):
+          view==="profile"?profile():
+          view==="pay"?pay():done();
+  main.appendChild(v);
+  if(moved){
+    window.scrollTo(0,0);
+    /* Move focus to the new screen — but not on the first paint, where it
+       would step over the skip link. */
+    if(booted) main.focus({preventScroll:true});
+    booted=true;
+    if(view==="quiz") announce(t(UI.step)+" "+(qi+1)+" "+t(UI.of)+" "+Q.length+" — "+t(Q[qi].q));
+  }
+}
+
+/* ==========================================================================
+   Front page
+   ========================================================================== */
+function login(){
+  var s=sheet(null,t(UI.fpTag),null),p=s.body;
+  p.appendChild(el("h1","display",t(UI.fpH)));
+  p.appendChild(el("p","lede",t(UI.fpL)));
+
+  var nameInput,mailInput;
+  function go(){
+    var okName=validName(U.name),okMail=validEmail(U.email);
+    errs={name:!okName,email:!okMail};
+    if(okName&&okMail){goto("landing",0);return;}
+    render();
+    var bad=document.querySelector('[aria-invalid="true"]');
+    if(bad) bad.focus();
+    announce(!okName?t(UI.fNameBad):t(UI.fEmailBad));
+  }
+
+  var f1=el("div","block first");
+  var l1=el("span","lab");l1.id="lab-name";
+  l1.appendChild(document.createTextNode(t(UI.fName)));
+  l1.appendChild(el("u",null,"*"));
+  f1.appendChild(l1);
+  nameInput=document.createElement("input");
+  nameInput.type="text";nameInput.placeholder=t(UI.fNameP);nameInput.value=U.name;
+  nameInput.autocomplete="name";nameInput.setAttribute("aria-labelledby","lab-name");
+  if(errs.name) nameInput.setAttribute("aria-invalid","true");
+  nameInput.oninput=function(){U.name=nameInput.value;if(errs.name&&validName(U.name)){errs.name=false;render();}save();};
+  nameInput.onkeydown=function(e){if(e.key==="Enter")go();};
+  f1.appendChild(nameInput);
+  if(errs.name) f1.appendChild(el("p","err",t(UI.fNameBad)));
+  p.appendChild(f1);
+
+  var f2=el("div","block");
+  var l2=el("span","lab");l2.id="lab-mail";
+  l2.appendChild(document.createTextNode(t(UI.fEmail)));
+  l2.appendChild(el("u",null,"*"));
+  f2.appendChild(l2);
+  mailInput=document.createElement("input");
+  mailInput.type="email";mailInput.placeholder=t(UI.fEmailP);mailInput.value=U.email;
+  mailInput.autocomplete="email";mailInput.dir="ltr";
+  mailInput.setAttribute("inputmode","email");mailInput.setAttribute("aria-labelledby","lab-mail");
+  if(errs.email) mailInput.setAttribute("aria-invalid","true");
+  mailInput.oninput=function(){U.email=mailInput.value;if(errs.email&&validEmail(U.email)){errs.email=false;render();}save();};
+  mailInput.onblur=function(){if(U.email&&!validEmail(U.email)){errs.email=true;render();}};
+  mailInput.onkeydown=function(e){if(e.key==="Enter")go();};
+  f2.appendChild(mailInput);
+  if(errs.email) f2.appendChild(el("p","err",t(UI.fEmailBad)));
+  f2.appendChild(el("p","hint",t(UI.fEmailH)));
+  p.appendChild(f2);
+
+  var tags=el("div","tags");
+  t(UI.tr).forEach(function(x){tags.appendChild(el("span","tag",x));});
+  p.appendChild(tags);
+
+  var nav=el("div","actions");
+  var b=el("button","btn wide",t(UI.fGo));b.type="button";b.onclick=go;
+  nav.appendChild(b);p.appendChild(nav);
+  p.appendChild(el("p","hint",t(UI.fReturn)));
+  return s;
+}
+
+/* ==========================================================================
+   Landing
+   ========================================================================== */
+function landing(){
+  var s=sheet(null,t(UI.fpTag),null),p=s.body;
+  p.appendChild(el("h1","display",t(UI.h1)));
+  p.appendChild(el("p","lede",t(UI.fpL)));
+
+  var pl=el("div","priceline");
+  pl.appendChild(el("b",null,lang==="ar"?"١٠٫٠٠٠ د.ك":"10.000 KD"));
+  pl.appendChild(el("span",null,t(UI.fee)));
+  p.appendChild(pl);
+  p.appendChild(el("p","note",t(UI.feeNote)));
+
+  var ul=el("ul","steps");
+  [[UI.p1,UI.p1s],[UI.p2,UI.p2s],[UI.p3,UI.p3s]].forEach(function(x,i){
+    var li=el("li");
+    li.appendChild(el("b",null,"0"+(i+1)));
+    var d=el("div");
+    d.appendChild(el("strong",null,t(x[0])));
+    d.appendChild(el("em",null,t(x[1])));
+    li.appendChild(d);ul.appendChild(li);
+  });
+  p.appendChild(ul);
+
+  var resumed=Q.some(function(st,i){return stepTouched(i);});
+  var nav=el("div","actions");
+  var go=el("button","btn wide",resumed?t(UI.next):t(UI.start));go.type="button";
+  go.onclick=function(){
+    var at=0;
+    if(resumed){ for(var i=0;i<Q.length;i++){ if(!stepReady(Q[i])){at=i;break;} at=i; } }
+    goto("quiz",at);
+  };
+  nav.appendChild(go);p.appendChild(nav);
+  if(resumed){
+    var note=el("p","note");
+    note.appendChild(el("b",null,t(UI.resume)+" "));
+    var rs=el("button","back",t(UI.restart));rs.type="button";
+    rs.style.margin="0";
+    rs.onclick=function(){A={};errs={};save();goto("quiz",0);};
+    note.appendChild(rs);
+    p.appendChild(note);
+  }
+  return s;
+}
+
+/* ==========================================================================
+   Question screens
+   ========================================================================== */
+function optionGroup(f,idBase){
+  var many=f.type==="many";
+  var group=el("div","opts"+(f.grid?" grid":"")+(f.bare?" tight":""));
+  group.setAttribute("role",many?"group":"radiogroup");
+  group.setAttribute("aria-labelledby",idBase);
+  f.opts.forEach(function(o){
+    var on=many?(A[f.key]||[]).indexOf(o[0])>-1:A[f.key]===o[0];
+    var b=el("button","opt"+(f.bare?" tiny":""));
+    b.type="button";
+    b.setAttribute("role",many?"checkbox":"radio");
+    b.setAttribute("aria-checked",on?"true":"false");
+    if(!many) b.tabIndex=(on||(!A[f.key]&&o===f.opts[0]))?0:-1;
+    if(!f.bare) b.appendChild(el("var",null,many?(on?"[×]":"[ ]"):(on?"(●)":"( )")));
+    var wrap=el("div");
+    wrap.appendChild(el("span",null,typeof o[1]==="string"?o[1]:t(o[1])));
+    if(o[2]) wrap.appendChild(el("small",null,t(o[2])));
+    b.appendChild(wrap);
+    b.onclick=function(){
+      errs[f.key]=false;
+      if(many){
+        var arr=(A[f.key]||[]).slice(),ix=arr.indexOf(o[0]);
+        var solo=(o[0]==="nolayer"||o[0]==="nothing");
+        if(solo){ arr=ix>-1?[]:[o[0]]; }
+        else{
+          if(ix>-1) arr.splice(ix,1); else arr.push(o[0]);
+          arr=arr.filter(function(v){return v!=="nolayer"&&v!=="nothing";});
+        }
+        A[f.key]=arr;save();render();
+      }else{
+        A[f.key]=o[0];save();
+        var step=Q[qi];
+        /* Answering the last open question of a screen moves on by itself —
+           one tap saved per screen, and never a surprise, because the screen
+           is finished. */
+        if(f===lastPickable(step)&&qi<Q.length-1&&stepReady(step)){
+          announce(t(UI.next));
+          goto("quiz",qi+1);
+        }else{
+          render();
+        }
+      }
+    };
+    group.appendChild(b);
+  });
+  if(!many) arrowNav(group);
+  return group;
+}
+
+function toneGroup(f,idBase){
+  var group=el("div","tones");
+  group.setAttribute("role","radiogroup");
+  group.setAttribute("aria-labelledby",idBase);
+  f.opts.forEach(function(o){
+    var on=A[f.key]===o[0];
+    var b=el("button","tone");b.type="button";
+    b.setAttribute("role","radio");
+    b.setAttribute("aria-checked",on?"true":"false");
+    b.tabIndex=(on||(!A[f.key]&&o===f.opts[0]))?0:-1;
+    var sw=el("div","sw");
+    o[3].forEach(function(hex){var i=el("i");i.style.background=hex;sw.appendChild(i);});
+    b.appendChild(sw);
+    var bb=el("b");
+    bb.appendChild(el("var",null,on?"(●)":"( )"));
+    bb.appendChild(document.createTextNode(t(o[1])));
+    b.appendChild(bb);
+    b.appendChild(el("em",null,t(o[2])));
+    b.onclick=function(){errs[f.key]=false;A[f.key]=o[0];save();render();};
+    group.appendChild(b);
+  });
+  arrowNav(group);
+  return group;
+}
+
+function quiz(){
+  var step=Q[qi];
+  var s=sheet((qi+1<10?"0":"")+(qi+1),t(step.tag),t(step.note),true),p=s.body;
+  var first=true;
+
+  p.appendChild(el("h2","qh",t(step.q)));
+  p.appendChild(el("p","lede",t(step.sub)));
+
+  visibleFields(step).forEach(function(f){
+    var wrap=el("div","block"+(first?" first":""));first=false;
+    if(errs[f.key]) wrap.setAttribute("data-missing","1");
+    var idBase="lab-"+step.id+"-"+f.key;
+
+    var lab=el("span","lab");lab.id=idBase;
+    lab.appendChild(document.createTextNode(t(f.label)));
+    if(f.opt||f.type==="text") lab.appendChild(el("i",null,t(UI.optional)));
+    else lab.appendChild(el("u",null,"*"));
+    wrap.appendChild(lab);
+
+    if(f.type==="text"){
+      var inp=document.createElement("input");inp.type="text";
+      inp.placeholder=t(f.ph);inp.value=A[f.key]||"";
+      inp.setAttribute("aria-labelledby",idBase);
+      inp.oninput=function(){A[f.key]=inp.value;save();};
+      wrap.appendChild(inp);
+      if(f.hint) wrap.appendChild(el("p","hint",t(f.hint)));
+    }else if(f.type==="tone"){
+      wrap.appendChild(toneGroup(f,idBase));
+    }else{
+      wrap.appendChild(optionGroup(f,idBase));
+    }
+    if(errs[f.key]) wrap.appendChild(el("p","err",t(UI.missing)));
+    p.appendChild(wrap);
+  });
+
+  if(qi===Q.length-1){
+    var mb=el("div","block");
+    mb.appendChild(orderSummary(false));
+    p.appendChild(mb);
+  }
+
+  var nav=el("div","actions");
+  var back=el("button","back",backArrow()+" "+t(UI.back));back.type="button";
+  back.onclick=function(){ if(qi===0) goto("landing",0); else goto("quiz",qi-1); };
+  nav.appendChild(back);
+
+  var last=(qi===Q.length-1);
+  var nx=el("button","btn",(last?t(UI.prGo):t(UI.next))+" "+fwdArrow());nx.type="button";
+  nx.onclick=function(){
+    if(!stepReady(step)){
+      /* Never a dead disabled button: say what is missing and go there. */
+      visibleFields(step).forEach(function(f){ if(!fieldReady(f)) errs[f.key]=true; });
+      var target=firstIncomplete(step);
+      render();
+      var node=document.querySelector('[data-missing="1"]');
+      if(node){
+        var focusable=node.querySelector('input,[role="radio"],[role="checkbox"]');
+        (focusable||node).scrollIntoView({block:"center",behavior:"smooth"});
+        if(focusable) focusable.focus({preventScroll:true});
+      }
+      announce(t(UI.pick)+(target?" "+t(target.label):""));
+      return;
+    }
+    if(last) goto("profile",qi); else goto("quiz",qi+1);
+  };
+  nav.appendChild(nx);
+  p.appendChild(nav);
+  return s;
+}
+
+/* ==========================================================================
+   Measurements — a screen of its own, and the one that decides the fit
+   ========================================================================== */
+function measure(){
+  var step=Q[qi];
+  var s=sheet((qi+1<10?"0":"")+(qi+1),t(step.tag),t(step.note),true),p=s.body;
+  var fields=exactFields(),filled=exactFilled(),acc=accuracy();
+
+  p.appendChild(el("h2","qh",t(step.q)));
+  p.appendChild(el("p","lede",t(step.sub)));
+
+  /* Why it matters, before the fields rather than as a footnote after them. */
+  var why=el("ul","why");why.style.marginTop="26px";
+  [[UI.mWhy1,UI.mWhy1b],[UI.mWhy2,UI.mWhy2b],[UI.mWhy3,UI.mWhy3b]].forEach(function(x,i){
+    var li=el("li");
+    li.appendChild(el("b",null,"0"+(i+1)));
+    var sp=el("span");
+    sp.appendChild(el("strong",null,t(x[0])+" "));
+    sp.appendChild(document.createTextNode(t(x[1])));
+    li.appendChild(sp);why.appendChild(li);
+  });
+  p.appendChild(why);
+
+  /* The meter is the point of the screen: progress you can see. */
+  var mt=el("div","meter");
+  var top=el("div","top");
+  top.appendChild(el("b",null,t(UI.mAcc)));
+  top.appendChild(el("span",null,A.__noTape?"0 / "+fields.length:filled+" / "+fields.length));
+  mt.appendChild(top);
+  var segs=el("div","segs");
+  fields.forEach(function(m,i){segs.appendChild(el("i",(!A.__noTape&&i<filled)?"on":null));});
+  mt.appendChild(segs);
+  var mp=el("p");
+  mp.appendChild(el("b",null,[t(UI.mAcc0),t(UI.mAcc1),t(UI.mAcc2),t(UI.mAcc3)][acc].split(".")[0]+". "));
+  mp.appendChild(document.createTextNode(t(accuracyCopy()).split(". ").slice(1).join(". ")));
+  mt.appendChild(mp);
+  p.appendChild(mt);
+
+  if(A.__noTape){
+    p.appendChild(el("p","note",t(UI.mSkipOn)));
+    var undo=el("button","btn quiet",t(UI.mSkipUndo));undo.type="button";
+    undo.style.marginTop="14px";
+    undo.onclick=function(){A.__noTape=false;save();render();announce(t(UI.mAcc));};
+    p.appendChild(undo);
+  }else{
+    var grid=el("div","mgrid");
+    fields.forEach(function(m){
+      var key=m[0],val=A[key]||"",bad=outOfRange(m,val);
+      var row=el("div","mrow");
+      if(inRange(m,val)) row.setAttribute("data-filled","1");
+      var id="m-"+key;
+      var lb=document.createElement("label");lb.htmlFor=id;lb.textContent=t(m[1]);
+      var inp=document.createElement("input");
+      inp.type="text";inp.id=id;inp.value=val;inp.dir="ltr";
+      inp.placeholder="—";
+      inp.setAttribute("inputmode","decimal");
+      inp.setAttribute("autocomplete","off");
+      if(bad) inp.setAttribute("aria-invalid","true");
+      inp.oninput=function(){
+        A[key]=inp.value.replace(/[^\d.]/g,"").slice(0,6);
+        if(inp.value!==A[key]) inp.value=A[key];
+        save();
+        /* Repaint only the meter and this row, so the caret never moves. */
+        paintMeter(mt,fields);
+        row.setAttribute("data-filled",inRange(m,A[key])?"1":"0");
+        var msg=row.querySelector("small");
+        var isBad=outOfRange(m,A[key]);
+        if(msg){
+          msg.className=isBad?"bad":"";
+          msg.textContent=isBad?t(UI.mOdd):t(m[5]);
+        }
+        if(isBad) inp.setAttribute("aria-invalid","true"); else inp.removeAttribute("aria-invalid");
+      };
+      var field=el("span","mfield");
+      field.appendChild(inp);
+      field.appendChild(el("em",null,t(UI.cm)));
+      row.appendChild(lb);row.appendChild(field);
+      row.appendChild(el("small",bad?"bad":null,bad?t(UI.mOdd):t(m[5])));
+      grid.appendChild(row);
+    });
+    p.appendChild(grid);
+
+    var how=document.createElement("details");how.className="howto";
+    var sum=document.createElement("summary");sum.textContent=t(UI.mHow);
+    how.appendChild(sum);
+    var hl=el("ul");
+    [[UI.mHowTape,UI.mHowTapeD],[UI.mHowWear,UI.mHowWearD],
+     [UI.mHowStand,UI.mHowStandD],[UI.mHowHelp,UI.mHowHelpD]].forEach(function(x){
+      var li=el("li");
+      li.appendChild(el("b",null,t(x[0])));
+      li.appendChild(el("span",null,t(x[1])));
+      hl.appendChild(li);
+    });
+    how.appendChild(hl);
+    p.appendChild(how);
+
+    var skip=el("button","btn quiet",t(UI.mSkip));skip.type="button";
+    skip.style.marginTop="16px";
+    skip.onclick=function(){
+      A.__noTape=true;
+      fields.forEach(function(m){delete A[m[0]];});
+      save();render();announce(t(UI.mSkipOn));
+    };
+    p.appendChild(skip);
+  }
+
+  var nav=el("div","actions");
+  var back=el("button","back",backArrow()+" "+t(UI.back));back.type="button";
+  back.onclick=function(){goto("quiz",qi-1);};
+  nav.appendChild(back);
+  var nx=el("button","btn",t(UI.next)+" "+fwdArrow());nx.type="button";
+  nx.onclick=function(){goto("quiz",qi+1);};
+  nav.appendChild(nx);
+  p.appendChild(nav);
+  return s;
+}
+function paintMeter(mt,fields){
+  var filled=exactFilled(),acc=accuracy();
+  mt.querySelector(".top span").textContent=filled+" / "+fields.length;
+  [].slice.call(mt.querySelectorAll(".segs i")).forEach(function(seg,i){
+    seg.className=i<filled?"on":"";
+  });
+  var mp=mt.querySelector("p");
+  mp.innerHTML="";
+  var full=t(accuracyCopy());
+  mp.appendChild(el("b",null,full.split(".")[0]+". "));
+  mp.appendChild(document.createTextNode(full.split(". ").slice(1).join(". ")));
+}
+
+/* ==========================================================================
+   Money
+   ========================================================================== */
+function kd(n){return n.toFixed(3);}
+function cur(n){return kd(n)+(lang==="ar"?" د.ك":" KD");}
+function money(){
+  var looks=parseInt(A.looks||"1",10),hold=parseInt(A.budget||"80",10);
+  var styling=looks*10,clothes=looks*hold,ship=(styling+clothes)>=100?0:2;
+  return {looks:looks,styling:styling,clothes:clothes,ship:ship,total:styling+clothes+ship};
+}
+function row(a,b,sub){
+  var r=el("div","row"),L=el("span");
+  L.appendChild(document.createTextNode(a));
+  if(sub) L.appendChild(el("em",null,sub));
+  r.appendChild(L);r.appendChild(el("span",null,b));
+  return r;
+}
+function orderSummary(withShip){
+  var m=money(),s=el("div","summary");
+  s.appendChild(row(t(UI.rStyle)+" × "+m.looks,cur(m.styling)));
+  s.appendChild(row(t(UI.rBudget)+" × "+m.looks,cur(m.clothes),t(UI.rBudgetE)));
+  if(withShip) s.appendChild(row(t(UI.rShip),m.ship?cur(m.ship):t(UI.free),t(UI.tShip)));
+  var tt=row(t(UI.rTotal),cur(withShip?m.total:m.styling+m.clothes));
+  tt.className="row total";
+  s.appendChild(tt);
+  return s;
+}
+
+/* ==========================================================================
+   Style profile
+   ========================================================================== */
+function profile(){
+  var s=sheet(null,t(UI.prTag),null),p=s.body;
+  p.appendChild(el("h2","qh",t(UI.prH)));
+  p.appendChild(el("p","lede",t(UI.prSub)));
+
+  var f0=el("div","block first");
+  var lab=el("span","lab");
+  lab.appendChild(document.createTextNode(t(UI.prData)));
+  lab.appendChild(el("i",null,t(UI.mAcc)+": "+exactFilled()+"/"+exactFields().length));
+  f0.appendChild(lab);
+  var rd=el("div","readout");
+  readoutRows().forEach(function(r2){
+    var d=el("div");
+    d.appendChild(el("dt",null,r2[0]));
+    d.appendChild(el("dd",null,r2[1]));
+    rd.appendChild(d);
+  });
+  f0.appendChild(rd);
+  f0.appendChild(el("p","hint",t(accuracyCopy())));
+  if(accuracy()<3){
+    var add=el("button","btn quiet",t(UI.prAddM));add.type="button";
+    add.style.marginTop="14px";
+    add.onclick=function(){
+      var at=0;Q.forEach(function(st,i){if(st.measure)at=i;});
+      A.__noTape=false;goto("quiz",at);
+    };
+    f0.appendChild(add);
+  }
+  p.appendChild(f0);
+
+  var pal=PAL[A.tone||"neutral"];
+  var f1=el("div","block");
+  var l1=el("span","lab");
+  l1.appendChild(document.createTextNode(t(UI.prPal)));
+  l1.appendChild(el("i",null,t(pal.name)));
+  f1.appendChild(l1);
+  var sw=el("div","rsw");
+  pal.cols.forEach(function(cl){
+    var d=el("div"),i=el("i");i.style.background=cl[0];
+    d.appendChild(i);d.appendChild(el("span",null,t(cl[1])));
+    sw.appendChild(d);
+  });
+  f1.appendChild(sw);p.appendChild(f1);
+
+  var f2=el("div","block");
+  f2.appendChild(el("span","lab",t(UI.prSil)));
+  f2.appendChild(el("p","lede",silhouette()));
+  p.appendChild(f2);
+
+  var f3=el("div","block");
+  var two=el("div","two");
+  var yes=el("div","box");
+  yes.appendChild(el("h3",null,t(UI.prYes)));
+  var uy=el("ul");
+  rulesYes().forEach(function(x){var li=el("li");li.appendChild(el("span",null,x));uy.appendChild(li);});
+  yes.appendChild(uy);
+  var no=el("div","box no");
+  no.appendChild(el("h3",null,t(UI.prNo)));
+  var un=el("ul");
+  rulesNo().forEach(function(x){var li=el("li");li.appendChild(el("span",null,x));un.appendChild(li);});
+  no.appendChild(un);
+  two.appendChild(yes);two.appendChild(no);
+  f3.appendChild(two);p.appendChild(f3);
+
+  var f4=el("div","block");
+  f4.appendChild(orderSummary(false));
+  p.appendChild(f4);
+
+  var nav=el("div","actions");
+  var back=el("button","back",backArrow()+" "+t(UI.prEdit));back.type="button";
+  back.onclick=function(){goto("quiz",Q.length-1);};
+  nav.appendChild(back);
+  var go=el("button","btn",t(UI.prGo)+" "+fwdArrow());go.type="button";
+  go.onclick=function(){goto("pay",qi);};
+  nav.appendChild(go);
+  p.appendChild(nav);
+  return s;
+}
+
+function readoutRows(){
+  var out=[],w=who();
+  var band=w==="women"?A.heightW:A.heightM;
+  var cm=lang==="ar"?"سم":"cm";
+  if(A.heightCm) out.push([t(UI.dHeight),A.heightCm+" "+cm]);
+  else if(band) out.push([t(UI.dHeight),band+" "+cm]);
+
+  var sizes=[];
+  if(A.top) sizes.push(A.top);
+  var bot=w==="women"?A.bottomW:A.bottomM;
+  if(bot) sizes.push((w==="women"?"EU ":"W")+bot);
+  var sh=w==="women"?A.shoeW:A.shoeM;
+  if(sh) sizes.push((lang==="ar"?"حذاء ":"shoe ")+sh);
+  if(A.bra) sizes.push((lang==="ar"?"صدر ":"bra ")+A.bra);
+  if(sizes.length) out.push([t(UI.dSize),sizes.join(" · ")]);
+
+  var FR={narrow:{en:"narrow shoulders",ar:"كتفان ضيّقان"},average:{en:"average shoulders",ar:"كتفان متوسطان"},broad:{en:"broad shoulders",ar:"كتفان عريضان"}};
+  var AR2={short:{en:"shorter arms",ar:"ذراعان أقصر"},average:{en:"average arms",ar:"ذراعان متوسطتان"},long:{en:"longer arms",ar:"ذراعان أطول"}};
+  var TO={short:{en:"short body, long legs",ar:"جذع قصير وساقان طويلتان"},average:{en:"even proportions",ar:"تناسب متوازن"},long:{en:"long body, shorter legs",ar:"جذع طويل وساقان أقصر"}};
+  var fr=[];
+  if(A.shoulders) fr.push(t(FR[A.shoulders]));
+  if(A.arms) fr.push(t(AR2[A.arms]));
+  if(A.torso) fr.push(t(TO[A.torso]));
+  if(fr.length) out.push([t(UI.dFrame),fr.join(" · ")]);
+
+  var SW={hourglass:{en:"Waist narrowest",ar:"الوسط الأنحف"},pear:{en:"Hips widest",ar:"الأرداف الأعرض"},
+          rectangle:{en:"Straight",ar:"مستقيم"},apple:{en:"Middle widest",ar:"الوسط الأعرض"},
+          inverted:{en:"Shoulders widest",ar:"الكتفان الأعرض"},unsure:{en:"Stylist to judge",ar:"تقرر المنسّقة"}};
+  var SM={slim:{en:"Slim",ar:"نحيف"},athletic:{en:"Athletic",ar:"رياضي"},average:{en:"Average",ar:"متوسط"},
+          broad:{en:"Solid",ar:"ممتلئ"},unsure:{en:"Stylist to judge",ar:"يقرر المنسّق"}};
+  var shp=w==="women"?(A.shapeW&&t(SW[A.shapeW])):(A.shapeM&&t(SM[A.shapeM]));
+  if(shp) out.push([t(UI.dShape),shp]);
+
+  var ex=[];
+  exactFields().forEach(function(m){
+    if(m[0]==="heightCm") return;               /* already its own row */
+    if(A[m[0]]) ex.push(t(m[1])+" "+A[m[0]]);
+  });
+  if(ex.length) out.push([t(UI.dExact),ex.join(" · ")+" "+cm]);
+  if(A.brand) out.push([t(UI.dFits),A.brand]);
+  return out;
+}
+
+function silhouette(){
+  var parts=[];
+  var SH={narrow:{en:"soft shoulder seams and no padding, so nothing hangs past your frame",ar:"خياطة كتف ناعمة بلا حشوة، حتى لا يتجاوز شيء بنيتك"},
+          average:{en:"standard shoulder seams, which land where they should on you",ar:"خياطة كتف عادية تقع في مكانها الصحيح عليك"},
+          broad:{en:"raglan and dropped shoulders instead of set-in seams, so nothing pulls across the back",ar:"أكمام راجلان ومسدلة بدل المبطنة، حتى لا يشد شيء على الظهر"}};
+  var AM={short:{en:"sleeves ordered short or turned up at the cuff",ar:"أكمام قصيرة أو مثنية عند الأسوار"},
+          average:{en:"standard sleeve lengths",ar:"أطوال أكمام عادية"},
+          long:{en:"long-sleeve cuts and shirts with real cuff length",ar:"قَصّات طويلة الأكمام مع طول أسوار حقيقي"}};
+  var TO={short:{en:"high-waisted bottoms to use the leg line you have",ar:"بنطلونات عالية الوسط لاستثمار خط ساقك"},
+          average:{en:"waistlines where the garment intends them",ar:"خطوط وسط في موضعها الطبيعي"},
+          long:{en:"lower waistlines and tops long enough to stay put",ar:"خطوط وسط أخفض وبلوزات أطول تبقى في مكانها"}};
+  var SP={hourglass:{en:"Cuts that follow the waist rather than hide it",ar:"قَصّات تتبع الوسط بدل إخفائه"},
+          pear:{en:"Structure and interest on top, clean lines below",ar:"بنية وتفاصيل في الأعلى وخطوط نظيفة في الأسفل"},
+          rectangle:{en:"Belts, wrap fronts and seams that create a waist",ar:"أحزمة وقَصّات ملفوفة وخياطة تصنع وسطاً"},
+          apple:{en:"Vertical lines and pieces that skim rather than cling",ar:"خطوط عمودية وقطع تنسدل بلا التصاق"},
+          inverted:{en:"Volume moved to the lower half to balance the shoulder",ar:"نقل الحجم للنصف الأسفل لموازنة الكتف"},
+          unsure:{en:"A first look that plays safe, then we learn from your feedback",ar:"إطلالة أولى آمنة، ثم نتعلم من ملاحظاتك"}};
+  var SM={slim:{en:"Layers and structure to add weight to the frame",ar:"طبقات وبنية لإضافة حجم للبنية"},
+          athletic:{en:"Tapered cuts that follow the shoulder-to-waist line",ar:"قَصّات مضيّقة تتبع خط الكتف للوسط"},
+          average:{en:"Standard cuts, tailored at the waist",ar:"قَصّات عادية معدّلة عند الوسط"},
+          broad:{en:"Straight cuts in fabric with body, nothing clingy",ar:"قَصّات مستقيمة بقماش له قوام، بلا التصاق"},
+          unsure:{en:"A first look that plays safe, then we learn from your feedback",ar:"إطلالة أولى آمنة، ثم نتعلم من ملاحظاتك"}};
+
+  var head = who()==="women" ? (A.shapeW&&t(SP[A.shapeW])) : (A.shapeM&&t(SM[A.shapeM]));
+  if(head) parts.push(head);
+  var det=[];
+  if(A.shoulders) det.push(t(SH[A.shoulders]));
+  if(A.arms) det.push(t(AM[A.arms]));
+  if(A.torso) det.push(t(TO[A.torso]));
+  var FP={fitted:{en:"a close cut",ar:"قَصّة ضيّقة"},
+          true:{en:"a true-to-size cut",ar:"قَصّة على المقاس"},
+          relaxed:{en:"an easy cut with structure at the shoulder",ar:"قَصّة مريحة مع بنية عند الكتف"},
+          oversized:{en:"volume on top and narrow below",ar:"حجم في الأعلى وضيق في الأسفل"}};
+  if(A.fitpref) det.unshift(t(FP[A.fitpref]));
+  var CV={arms:{en:"covered arms",ar:"ذراعان مغطاتان"},waist:{en:"a skimming waist",ar:"وسط منسدل"},
+          legs:{en:"longer lengths",ar:"أطوال أطول"},shoulders:{en:"soft shoulders",ar:"أكتاف ناعمة"},
+          chest:{en:"higher necklines",ar:"فتحات رقبة مرتفعة"},back:{en:"a closed back",ar:"ظهر مغلق"}};
+  (A.cover||[]).forEach(function(k){if(CV[k])det.push(t(CV[k]));});
+  det=det.slice(0,3);
+  var s=(parts.length?parts[0]+". ":"");
+  if(det.length){
+    var joined = det.length>1
+      ? det.slice(0,-1).join(lang==="ar"?"، ":", ")+(lang==="ar"?" و":" and ")+det[det.length-1]
+      : det[0];
+    s+=(lang==="ar"?"مع ":"With ")+joined+". ";
+  }
+  /* Measured numbers change what we can promise, so they get said out loud. */
+  if(accuracy()===3) s+=(lang==="ar"
+    ?"ومقاساتك الكاملة محفوظة، لذا تُشترى كل قطعة على أرقامك. "
+    :"Your full measurements are on file, so every piece is bought to your numbers. ");
+  var B={quiet:{en:"The loudest thing on you will be the fit.",ar:"أبرز شيء فيك سيكون دقة المقاس."},
+         polished:{en:"One considered detail carries the look — a shoe, a belt, a sleeve.",ar:"تفصيلة واحدة مدروسة تحمل الإطلالة — حذاء، حزام، أو كم."},
+         statement:{en:"One piece does the talking; everything around it stays quiet.",ar:"قطعة واحدة تتحدث، وكل ما حولها هادئ."}};
+  if(A.bold) s+=t(B[A.bold]);
+  return s;
+}
+
+function rulesYes(){
+  var out=[],occ=A.occasion,life=A.life||[],love=A.lovecol||[],pal=PAL[A.tone||"neutral"],w=who();
+  var O={wedding:{en:"Floor-length with a structured shoulder",ar:"طول إلى الأرض مع كتف مبني"},
+         eid:{en:"Something new in a soft, formal fabric",ar:"قطعة جديدة بقماش ناعم رسمي"},
+         grad:{en:"A clean silhouette that photographs well",ar:"قَصّة نظيفة تظهر جيداً في الصور"},
+         work:{en:"Three pieces that mix into six outfits",ar:"ثلاث قطع تتحول إلى ست إطلالات"},
+         travel:{en:"Fabrics that survive a suitcase",ar:"أقمشة لا تتجعّد في الحقيبة"},
+         everyday:{en:"Pieces you can wear twice a week without thinking",ar:"قطع تلبسينها مرتين أسبوعياً بلا تفكير"}};
+  if(occ) out.push(t(O[occ]));
+  out.push((lang==="ar"?"ألوان لوحتك: ":"Your palette: ")+pal.cols.slice(0,3).map(function(c){return t(c[1]);}).join(lang==="ar"?"، ":", "));
+  if(accuracy()===3) out.push(lang==="ar"?"تعديلات مطلوبة مسبقاً على أرقامك":"alterations ordered up front against your numbers");
+  var H=w==="women"?A.heightW:A.heightM;
+  if(H&&/^<1|^150|^156|^165/.test(H)) out.push(lang==="ar"?"خطوط عمودية غير مقطوعة لإطالة القامة":"unbroken vertical lines to lengthen the line");
+  if(H&&/176\+|186|191\+/.test(H)) out.push(lang==="ar"?"أطوال مطوّلة ومقاسات طويلة عند توفرها":"extra-long lengths and tall sizing where it exists");
+  if(life.indexOf("office")>-1) out.push(lang==="ar"?"قطعة خارجية تجعل أي إطلالة رسمية":"one outer layer that makes any outfit office-ready");
+  if(life.indexOf("uni")>-1) out.push(lang==="ar"?"حذاء مريح للمشي طول اليوم":"a shoe you can walk in all day");
+  if(life.indexOf("active")>-1||life.indexOf("travel")>-1) out.push(lang==="ar"?"أقمشة تتمدد وتتنفس":"fabrics that stretch and breathe");
+  if(love.indexOf("black")>-1) out.push(lang==="ar"?"الأسود والأبيض كأساس واللون في قطعة واحدة":"black and white as the base, colour in one piece");
+  if(A.modest&&A.modest.indexOf("hijab")>-1) out.push(lang==="ar"?"فتحات رقبة وأطوال مناسبة للحجاب":"necklines and lengths that work with hijab");
+  if(A.modest&&A.modest.indexOf("abaya")>-1) out.push(lang==="ar"?"طبقات خفيفة تُلبس تحت العباية":"light layers that sit under an abaya");
+  return out.slice(0,5);
+}
+function rulesNo(){
+  var out=[],nv=A.never||[];
+  var M={tight:{en:"anything tight",ar:"القطع الضيّقة"},prints:{en:"loud prints",ar:"النقشات الصارخة"},
+         heels:{en:"high heels",ar:"الكعب العالي"},neon:{en:"neon",ar:"الألوان الفاقعة"},
+         crop:{en:"crop tops",ar:"البلوزات القصيرة"},logos:{en:"big logos",ar:"الشعارات الكبيرة"}};
+  nv.forEach(function(k){if(M[k])out.push(t(M[k]));});
+  if(A.sleeve==="long") out.push(lang==="ar"?"أي كم أقصر من الطويل":"any sleeve shorter than full length");
+  if(A.sleeve==="threequarter") out.push(lang==="ar"?"الأكمام القصيرة وبلا أكمام":"short sleeves and sleeveless");
+  if(A.length==="maxi") out.push(lang==="ar"?"أي طول أعلى من الكاحل":"anything above the ankle");
+  if(A.length==="midi") out.push(lang==="ar"?"أي طول أعلى من الركبة":"anything above the knee");
+  if(A.shoulders==="broad") out.push(lang==="ar"?"الأكتاف المبطنة والأكمام المنتفخة":"shoulder pads and puff sleeves");
+  if(A.torso==="long") out.push(lang==="ar"?"البلوزات القصيرة التي ترتفع":"short tops that ride up");
+  if(A.modest&&A.modest.indexOf("opaque")>-1) out.push(lang==="ar"?"الأقمشة الشفافة":"sheer fabrics");
+  if(!out.length) out.push(lang==="ar"?"لا قيود — للمنسّقة حرية كاملة":"no restrictions — the stylist has a free hand");
+  return out.slice(0,5);
+}
+
+/* ==========================================================================
+   Payment
+   ========================================================================== */
+function phoneDigits(){return (A.phone||"").replace(/\D/g,"").slice(0,8);}
+function phoneOk(){var d=phoneDigits();return d.length===8&&/^[569]/.test(d);}
+function phonePretty(d){return d.length>4?d.slice(0,4)+" "+d.slice(4):d;}
+
+function pay(){
+  var m=money();
+  var s=sheet(null,t(UI.payTag),null),p=s.body;
+  p.appendChild(el("h2","qh",t(UI.payH)));
+  p.appendChild(el("p","lede",t(UI.demo)));
+
+  var f0=el("div","block first");
+  var sum=el("div","summary");
+  sum.appendChild(row(t(UI.acct),firstName(),U.email));
+  sum.appendChild(row(t(UI.rStyle)+" × "+m.looks,cur(m.styling)));
+  sum.appendChild(row(t(UI.rBudget)+" × "+m.looks,cur(m.clothes),t(UI.rBudgetE)));
+  sum.appendChild(row(t(UI.rShip),m.ship?cur(m.ship):t(UI.free),t(UI.tShip)));
+  var tt=row(t(UI.rTotal),cur(m.total));tt.className="row total";
+  sum.appendChild(tt);
+  f0.appendChild(sum);p.appendChild(f0);
+
+  /* phone */
+  var pf=el("div","block");
+  if(errs.phone) pf.setAttribute("data-missing","1");
+  var pl=el("span","lab");pl.id="lab-phone";
+  pl.appendChild(document.createTextNode(t(UI.phone)));
+  pl.appendChild(el("u",null,"*"));
+  pf.appendChild(pl);
+  var tel=el("div","tel");
+  tel.appendChild(el("span",null,"+965"));
+  var inp=document.createElement("input");
+  inp.type="tel";inp.placeholder=t(UI.phoneP);inp.value=phonePretty(phoneDigits());
+  inp.dir="ltr";inp.setAttribute("inputmode","tel");inp.autocomplete="tel-national";
+  inp.setAttribute("aria-labelledby","lab-phone");
+  if(errs.phone) inp.setAttribute("aria-invalid","true");
+  inp.oninput=function(){
+    var d=inp.value.replace(/\D/g,"").slice(0,8);
+    A.phone=d;save();
+    inp.value=phonePretty(d);
+    if(errs.phone&&phoneOk()){errs.phone=false;inp.removeAttribute("aria-invalid");
+      var e2=pf.querySelector(".err");if(e2)e2.remove();pf.removeAttribute("data-missing");}
+  };
+  tel.appendChild(inp);
+  pf.appendChild(tel);
+  if(errs.phone) pf.appendChild(el("p","err",t(UI.phoneBad)));
+  pf.appendChild(el("p","hint",t(UI.phoneH)));
+  p.appendChild(pf);
+
+  /* method */
+  var mf=el("div","block");
+  if(errs.method) mf.setAttribute("data-missing","1");
+  var ml=el("span","lab");ml.id="lab-method";
+  ml.appendChild(document.createTextNode(t(UI.payWith)));
+  ml.appendChild(el("u",null,"*"));
+  mf.appendChild(ml);
+  var box=el("div","paylist");
+  box.setAttribute("role","radiogroup");
+  box.setAttribute("aria-labelledby","lab-method");
+  [["knet",UI.knet,"KNET",UI.knetE],
+   ["apple",UI.apay,"PAY",null],
+   ["card",UI.card,"VISA",null],
+   ["tabby",UI.tabby,"TABBY",{en:kd(m.total/4)+" KD × 4",ar:"٤ × "+kd(m.total/4)+" د.ك"}]].forEach(function(mm){
+    var on=A.method===mm[0];
+    var b=el("button","paybtn");b.type="button";
+    b.setAttribute("role","radio");
+    b.setAttribute("aria-checked",on?"true":"false");
+    b.tabIndex=(on||(!A.method&&mm[0]==="knet"))?0:-1;
+    b.appendChild(el("u",null,mm[2]));
+    b.appendChild(el("span",null,t(mm[1])));
+    if(mm[3]) b.appendChild(el("em",null,t(mm[3])));
+    b.onclick=function(){errs.method=false;A.method=mm[0];save();render();};
+    box.appendChild(b);
+  });
+  arrowNav(box);
+  mf.appendChild(box);
+  if(errs.method) mf.appendChild(el("p","err",t(UI.payPick)));
+  p.appendChild(mf);
+
+  /* terms — the sizing line depends on whether we have the measurements */
+  var terms=el("div","terms");
+  [[UI.tShip,UI.tShipD],
+   [UI.tSize,accuracy()===3?UI.tSizeOne:UI.tSizeTwo],
+   [UI.tRet,UI.tRetD]].forEach(function(x){
+    var r2=el("p");
+    r2.appendChild(el("b",null,t(x[0])));
+    r2.appendChild(el("span",null,t(x[1])));
+    terms.appendChild(r2);
+  });
+  p.appendChild(terms);
+
+  var nav=el("div","actions");
+  var back=el("button","back",backArrow()+" "+t(UI.back));back.type="button";
+  back.onclick=function(){goto("profile",qi);};
+  nav.appendChild(back);
+  var go=el("button","btn");go.type="button";
+  go.appendChild(document.createTextNode(t(UI.payBtn)+" "));
+  go.appendChild(el("var",null,cur(m.total)));
+  go.onclick=function(){
+    if(!A.method||!phoneOk()){
+      errs.method=!A.method;errs.phone=!phoneOk();
+      render();
+      var node=document.querySelector('[data-missing="1"]');
+      if(node){
+        var f=node.querySelector('input,[role="radio"]');
+        (f||node).scrollIntoView({block:"center",behavior:"smooth"});
+        if(f) f.focus({preventScroll:true});
+      }
+      announce(errs.phone?t(UI.phoneBad):t(UI.payPick));
+      return;
+    }
+    goto("done",qi);
+  };
+  nav.appendChild(go);
+  p.appendChild(nav);
+  return s;
+}
+
+/* ==========================================================================
+   Confirmation
+   ========================================================================== */
+function done(){
+  var s=sheet(null,t(UI.doneTag),null),p=s.body;
+  var st=el("div","stamp");
+  st.appendChild(el("i",null,"✓"));
+  st.appendChild(document.createTextNode(t(UI.doneStamp)));
+  p.appendChild(st);
+  p.appendChild(el("h2","qh",t(UI.doneH)+" "+firstName()+"."));
+  p.appendChild(el("p","lede",t(UI.doneL)));
+  var mail=el("p","note");
+  mail.appendChild(document.createTextNode(t(UI.doneMail)+" "));
+  mail.appendChild(el("b",null,U.email));
+  p.appendChild(mail);
+  var f=el("div","block first");
+  f.appendChild(orderSummary(true));
+  p.appendChild(f);
+  var nav=el("div","actions");
+  var again=el("button","btn wide",t(UI.again));again.type="button";
+  again.onclick=function(){A={};errs={};save();goto("landing",0);};
+  nav.appendChild(again);
+  p.appendChild(nav);
+  return s;
+}
+
+/* ==========================================================================
+   Boot
+   ========================================================================== */
+document.getElementById("lang").onclick=function(){
+  lang=lang==="ar"?"en":"ar";save();render();
+};
+document.getElementById("theme").onclick=function(){
+  theme=effectiveDark()?"light":"dark";save();render();
+};
+if(window.matchMedia){
+  var mq=window.matchMedia("(prefers-color-scheme:dark)");
+  if(mq.addEventListener) mq.addEventListener("change",function(){if(!theme)render();});
+}
+
+load();
+if(!signedIn()) view="login";
+goto(view,qi,true);
+</script>
+
+</body>
+</html>

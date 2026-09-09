@@ -6,12 +6,24 @@ Status: **awaiting approval.** Nothing has been built yet.
 
 ## 0. The prototype is in the repo
 
-`public/whatcaniwear.html` is the working single-file prototype, committed
-verbatim apart from its `<head>` (the `<title>` and the font `<link>`s were in
-`<body>`; they were moved up, and a description and favicon link added). It is
-the **source of truth for exact wording, option lists, helper text and the
-already-written Arabic**, and it is what `/` serves in production — so the site
-is live and usable while the port under `/en` and `/ar` is built out against it.
+`public/simply-styled.html` is the working single-file app and the **source of
+truth for exact wording, option lists, helper text and the already-written
+Arabic**. It is what `/` serves in production, so the site is live and usable
+while the port under `/en` and `/ar` is built out against it.
+
+It has since been reworked in three ways, and the port should follow it:
+
+- **International Typographic Style.** One neutral grotesque (Inter, with IBM
+  Plex Sans Arabic for Arabic), a 2-column asymmetric grid with the screen
+  number and index on the rail, hairline rules instead of boxes, and a single
+  accent red that only ever marks something — required fields, progress,
+  errors, the fit meter. No shadows, no rounded corners, no ornament. Both
+  themes, both directions.
+- **Measurements are their own screen.** Screen 04 of 8, open by default, with
+  a fit-accuracy meter, a plausible range per field, one instruction per
+  field, and a visible consequence: full measurements mean one size per piece
+  instead of two, and that promise is what the payment screen prints.
+- **Eight screens, not seven**, because of the above.
 
 Nothing else here is blocked.
 

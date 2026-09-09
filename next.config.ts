@@ -6,7 +6,11 @@ const config: NextConfig = {
   // `/` serves the prototype in public/ — the working single-file app, which is
   // also the source of truth for the port under /en and /ar.
   async rewrites() {
-    return [{ source: "/", destination: "/whatcaniwear.html" }];
+    return [{ source: "/", destination: "/simply-styled.html" }];
+  },
+  // The prototype was called whatcaniwear.html before the product was named.
+  async redirects() {
+    return [{ source: "/whatcaniwear.html", destination: "/", permanent: true }];
   },
   async headers() {
     return [
