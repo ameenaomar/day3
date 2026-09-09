@@ -81,6 +81,7 @@ Probed against a local production build:
 | `/` | 200, the prototype (`public/simply-styled.html`), byte-identical |
 | `/whatcaniwear.html` | 308 to `/` — the page's name before the product had one |
 | `/en`, `/ar` | 200, correct `lang`/`dir`, canonical + hreflang |
+| `/en/signup`, `/ar/signup` | 200, both directions, canonical + hreflang |
 | `/en/design`, `/ar/design` | 200, `noindex` |
 | `/icon.svg` | 200 |
 | `/robots.txt`, `/sitemap.xml` | 200, absolute URLs from `APP_URL` or Vercel's |
@@ -89,12 +90,20 @@ Probed against a local production build:
 
 ## Environment variables
 
-None are required — nothing deployed touches the database yet, and
-`siteUrl()` falls back to the URL Vercel injects, so the sitemap and canonical
-links are correct without configuration.
+The prototype at `/` needs none. **The sign-up page does**, and until it has
+them it renders its own error rather than a broken page:
 
-Set `APP_URL` once there is a custom domain, so those URLs point at it rather
-than at the `.vercel.app` host.
+| Variable | Needed for |
+| --- | --- |
+| `DATABASE_URL` | Supabase transaction pooler, port 6543 — the customer write |
+| `DIRECT_DATABASE_URL` | Supabase direct connection, port 5432 — migrations |
+| `RESEND_API_KEY`, `EMAIL_FROM` | Sending the sign-in link. Without them the page saves the customer and says so, and outside production it prints the link instead of mailing it. |
+| `APP_URL` | Where the link points. Set it once there is a custom domain. |
+
+Copy the two database strings from the Supabase dashboard (Connect); they
+carry the password, so they are not in the repo. `siteUrl()` falls back to the
+URL Vercel injects, so the sitemap and canonical links are correct without
+`APP_URL`.
 
 ## Import the repo instead — the better setup
 
@@ -125,6 +134,9 @@ Alternatively, create a Vercel team and I can do all of the above from here.
   both languages, both themes, Swiss typographic system. This is the site.
 - `/en`, `/ar` — scaffold front page of the port, which is being built against
   the prototype's wording rather than presenting final copy yet.
+- `/en/signup`, `/ar/signup` — the real sign-up: creates the `Customer` row in
+  Supabase, records marketing consent, and issues a single-use sign-in link.
+  Swiss-styled, so it is also the first page of the port.
 - `/en/design`, `/ar/design` — every UI primitive on one screen, for checking
   both themes, RTL and 375px on a real phone. `noindex`.
 

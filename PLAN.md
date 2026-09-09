@@ -51,8 +51,16 @@ anon and authenticated API keys outright — the app reaches Postgres as the own
 through Prisma and bypasses RLS. Measurements and phone numbers are never one
 leaked publishable key away from being public.
 
+Sign-up writes to it: `/en/signup` and `/ar/signup` create the `Customer` row,
+record the marketing consent and issue a hashed single-use magic link, with a
+three-links-per-ten-minutes throttle and the same answer whether or not the
+email was already on file. It is Swiss-styled in `signup.css`, scoped so the
+old scaffold pages are untouched — the first page of the port.
+
 Still to wire up: `lib/db.ts` uses the Neon serverless adapter and needs the
-Postgres one, and nothing writes to these tables yet.
+Postgres one, `/[locale]/signin/[token]` does not exist yet, so the links have
+nowhere to land, and the prototype at `/` still keeps its own name and email in
+the browser instead of posting to sign-up.
 
 ---
 
