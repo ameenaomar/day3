@@ -4,16 +4,22 @@
 
 Latest production deployment:
 
-- **https://simply-styled-2mla7vpfe-t054175-1826.vercel.app**
+- **https://simply-styled-55nk6fabv-t054175-1826.vercel.app**
 - aliases: `simply-styled-t054175-1826.vercel.app` and the project's
   production domain, `simply-styled.vercel.app` — both follow the newest
   successful production deployment
-- inspector: <https://vercel.com/t054175-1826/simply-styled/9EpEvAgerTbTttQUzypXWy1vTpEC>
+- inspector: <https://vercel.com/t054175-1826/simply-styled/Bt5x98wWCa7E8dAWBGf2EaryDVCi>
 
-It builds `c3feee7`, the head of `claude/html-update-vercel-deploy-xn441e` —
-the Swiss typographic redesign, the measurements screen and the SIMPLY STYLED
-name. That branch is three commits ahead of `claude/simply-styled-plan-8fumfc`,
+It builds `3933808`, the head of `claude/html-update-vercel-deploy-xn441e` —
+the Swiss redesign, the measurements screen, the SIMPLY STYLED name, the
+Supabase schema, and sign-up, sign-in and the account doors on the front
+screen. That branch is eight commits ahead of `claude/simply-styled-plan-8fumfc`,
 the default branch, so merge it before any git-linked deploy replaces this one.
+
+**The account pages need environment variables this deployment does not have**
+(see below). Until they are set, `/` works as it always has — the guest path
+is untouched — and sign-up and sign-in show their own error rather than a
+broken page.
 
 Node is pinned to 22 via `engines.node` and `.nvmrc`, so the build machine uses
 the version everything here was verified on.
