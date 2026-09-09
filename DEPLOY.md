@@ -4,16 +4,16 @@
 
 Latest production deployment:
 
-- **https://simply-styled-bekzwubwi-t054175-1826.vercel.app**
+- **https://simply-styled-2mla7vpfe-t054175-1826.vercel.app**
 - aliases: `simply-styled-t054175-1826.vercel.app` and the project's
   production domain, `simply-styled.vercel.app` — both follow the newest
   successful production deployment
-- inspector: <https://vercel.com/t054175-1826/simply-styled/7v8MNc933E64t9T9SYUBZkrPrnzX>
+- inspector: <https://vercel.com/t054175-1826/simply-styled/9EpEvAgerTbTttQUzypXWy1vTpEC>
 
-It builds `f547db0` on `claude/html-update-vercel-deploy-xn441e` — the Swiss
-typographic redesign, the measurements screen and the SIMPLY STYLED name. That
-commit is not on the default branch yet, so merge it before the next
-git-linked deploy replaces this one.
+It builds `c3feee7`, the head of `claude/html-update-vercel-deploy-xn441e` —
+the Swiss typographic redesign, the measurements screen and the SIMPLY STYLED
+name. That branch is three commits ahead of `claude/simply-styled-plan-8fumfc`,
+the default branch, so merge it before any git-linked deploy replaces this one.
 
 Node is pinned to 22 via `engines.node` and `.nvmrc`, so the build machine uses
 the version everything here was verified on.
