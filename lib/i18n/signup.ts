@@ -77,6 +77,48 @@ export const SIGNUP = {
   },
 } satisfies Record<string, Copy>;
 
+export const SIGNIN = {
+  tag: { en: "Sign in", ar: "الدخول" },
+  title: { en: "Welcome back.", ar: "أهلاً بعودتك." },
+  lede: {
+    en: "Your email is the key. We send a link that signs you in — your sizes, your measurements and your past orders come back with it.",
+    ar: "بريدك هو المفتاح. نرسل رابطاً يسجّل دخولك — وتعود معه مقاساتك وقياساتك وطلباتك السابقة.",
+  },
+  railNote: {
+    en: "No password to forget. Links last 30 minutes and work once.",
+    ar: "لا كلمة مرور تُنسى. الرابط صالح ٣٠ دقيقة ويعمل مرة واحدة.",
+  },
+  email: { en: "Email", ar: "البريد الإلكتروني" },
+  emailHint: {
+    en: "The address you signed up with.",
+    ar: "البريد الذي سجّلت به.",
+  },
+  submit: { en: "Email me a link", ar: "أرسلوا لي رابطاً" },
+  submitting: { en: "One moment…", ar: "لحظة…" },
+  noAccount: { en: "No file yet? Create one", ar: "لا يوجد ملف؟ أنشئي واحداً" },
+  backToFlow: { en: "Or answer the questions first", ar: "أو أجيبي على الأسئلة أولاً" },
+  /* what went wrong with a link, by ?e= */
+  eInvalid: {
+    en: "That link is not one of ours, or it has been changed. Ask for a new one.",
+    ar: "هذا الرابط ليس منا أو تم تعديله. اطلبي رابطاً جديداً.",
+  },
+  eExpired: {
+    en: "That link has expired — they last 30 minutes. Here is where to get another.",
+    ar: "انتهت صلاحية الرابط — مدته ٣٠ دقيقة. اطلبي رابطاً جديداً من هنا.",
+  },
+  eUsed: {
+    en: "That link has already been used. Each one signs you in once, so ask for a fresh one.",
+    ar: "تم استخدام هذا الرابط. كل رابط يعمل مرة واحدة، فاطلبي رابطاً جديداً.",
+  },
+  eError: {
+    en: "We could not check that link just now. Try again in a moment.",
+    ar: "لم نتمكن من التحقق من الرابط الآن. أعيدي المحاولة بعد قليل.",
+  },
+  eSignedOut: { en: "You are signed out.", ar: "تم تسجيل خروجك." },
+  signedInAs: { en: "Signed in as", ar: "مسجّلة الدخول باسم" },
+  signOut: { en: "Log out", ar: "خروج" },
+} satisfies Record<string, Copy>;
+
 export const SIGNUP_ERRORS: Record<SignUpErrorCode, Copy> = {
   name_required: { en: "Please enter your name.", ar: "الرجاء إدخال الاسم." },
   name_short: { en: "That looks too short to be a name.", ar: "الاسم أقصر من المتوقع." },

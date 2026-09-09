@@ -57,10 +57,15 @@ three-links-per-ten-minutes throttle and the same answer whether or not the
 email was already on file. It is Swiss-styled in `signup.css`, scoped so the
 old scaffold pages are untouched — the first page of the port.
 
+Sign-in is built too: `/[locale]/signin` asks for a link and explains a dead
+one, and `/[locale]/signin/[token]` spends it — a conditional `usedAt` update,
+so a mail client's prefetch and the customer's own tap cannot both open a
+session — then starts a 60-day session whose token is stored only as a hash,
+in an httpOnly cookie.
+
 Still to wire up: `lib/db.ts` uses the Neon serverless adapter and needs the
-Postgres one, `/[locale]/signin/[token]` does not exist yet, so the links have
-nowhere to land, and the prototype at `/` still keeps its own name and email in
-the browser instead of posting to sign-up.
+Postgres one, and the prototype at `/` still keeps its own name and email in
+the browser instead of posting to sign-up, so there are two front doors.
 
 ---
 

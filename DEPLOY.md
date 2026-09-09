@@ -82,6 +82,8 @@ Probed against a local production build:
 | `/whatcaniwear.html` | 308 to `/` — the page's name before the product had one |
 | `/en`, `/ar` | 200, correct `lang`/`dir`, canonical + hreflang |
 | `/en/signup`, `/ar/signup` | 200, both directions, canonical + hreflang |
+| `/en/signin`, `/ar/signin` | 200; `?e=expired\|used\|invalid\|error\|signedout` each explains itself |
+| `/en/signin/<token>` | 307 — to the saved path with a session cookie, or back to `/signin?e=…` |
 | `/en/design`, `/ar/design` | 200, `noindex` |
 | `/icon.svg` | 200 |
 | `/robots.txt`, `/sitemap.xml` | 200, absolute URLs from `APP_URL` or Vercel's |
@@ -137,6 +139,10 @@ Alternatively, create a Vercel team and I can do all of the above from here.
 - `/en/signup`, `/ar/signup` — the real sign-up: creates the `Customer` row in
   Supabase, records marketing consent, and issues a single-use sign-in link.
   Swiss-styled, so it is also the first page of the port.
+- `/en/signin`, `/ar/signin` — asks for a link, or explains what happened to
+  the last one. Shows who is signed in, with a log out.
+- `/en/signin/<token>` — spends the link: opens a 60-day session, sets an
+  httpOnly cookie, and lands the customer where the link said.
 - `/en/design`, `/ar/design` — every UI primitive on one screen, for checking
   both themes, RTL and 375px on a real phone. `noindex`.
 
