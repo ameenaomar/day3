@@ -88,7 +88,9 @@ Probed against a local production build:
 | `/icon.svg` | 200 |
 | `/robots.txt`, `/sitemap.xml` | 200, absolute URLs from `APP_URL` or Vercel's |
 | anything else under a locale | 404, styled, correct language and direction |
-| `/admin`, `/api/*` | 404 (not built yet; excluded from the locale proxy) |
+| `/api/me` | 200 `{"signedIn":false}` with no session; `no-store, private` |
+| `/api/signout` | 204 on POST, 405 on GET |
+| `/admin` | 404 (not built yet; excluded from the locale proxy) |
 
 ## Environment variables
 
@@ -133,7 +135,9 @@ Alternatively, create a Vercel team and I can do all of the above from here.
 ## What is actually on it right now
 
 - `/` → the working prototype, `public/simply-styled.html`: the whole flow,
-  both languages, both themes, Swiss typographic system. This is the site.
+  both languages, both themes, Swiss typographic system. This is the site. Its
+  first screen leads with the real account doors and asks `/api/me` who is
+  signed in.
 - `/en`, `/ar` — scaffold front page of the port, which is being built against
   the prototype's wording rather than presenting final copy yet.
 - `/en/signup`, `/ar/signup` — the real sign-up: creates the `Customer` row in

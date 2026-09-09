@@ -334,10 +334,14 @@ body[dir="rtl"] .howto summary{letter-spacing:.02em}
   font:inherit;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;
   background:var(--ink);color:var(--bg);border:1px solid var(--ink);
   min-height:52px;padding:0 30px;display:inline-flex;align-items:center;gap:10px;
+  text-decoration:none;
   transition:background .12s linear,border-color .12s linear;
 }
 .btn:hover{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
 .btn.wide{width:100%;justify-content:center}
+.doors{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.doors .btn{justify-content:center;text-align:center;padding:0 18px}
+@media (max-width:560px){.doors{grid-template-columns:1fr}}
 .btn.quiet{background:none;color:var(--ink);border-color:var(--line)}
 .btn.quiet:hover{background:none;border-color:var(--ink);color:var(--ink)}
 .btn var{font-style:normal;font-variant-numeric:tabular-nums;direction:ltr}
@@ -522,6 +526,8 @@ var theme=null;                 /* null = follow the system */
 var A={};                       /* answers */
 var U={name:"",email:""};       /* the signed-in customer */
 var view="login", qi=0, booted=false;
+/** True once /api/me confirms a real signed-in session, not a local one. */
+var serverSession=false;
 var errs={};                    /* field key -> true, set only after a submit */
 
 var t=function(o){return (o&&o[lang])||"";};
@@ -583,10 +589,15 @@ var UI={
   fEmailP:{en:"you@example.com",ar:"you@example.com"},
   fEmailBad:{en:"That email does not look right.",ar:"البريد الإلكتروني غير صحيح."},
   fEmailH:{en:"Your style profile and order updates are sent here. No marketing unless you ask for it.",ar:"يُرسل ملفك وتحديثات طلبك إلى هنا. لا رسائل ترويجية إلا بطلبك."},
-  fGo:{en:"Start",ar:"ابدئي"},
-  fReturn:{en:"Been here before? The same email loads your saved measurements.",ar:"زبونة سابقة؟ البريد نفسه يستعيد مقاساتك المحفوظة."},
+  fGo:{en:"Continue without an account",ar:"متابعة بدون حساب"},
+  fCreate:{en:"Create my file",ar:"أنشئي ملفي"},
+  fSignIn:{en:"I already have a file",ar:"لدي ملف بالفعل"},
+  fAccountWhy:{en:"An account saves your measurements, so every order after the first takes a minute. Sign in and your file comes back with you.",ar:"الحساب يحفظ مقاساتك، فيأخذ كل طلب بعد الأول دقيقة واحدة. سجّلي الدخول ويعود ملفك معك."},
+  fGuest:{en:"Just looking",ar:"تجربة سريعة"},
+  fGuestWhy:{en:"Answer the eight screens without an account. Everything stays in this browser and nothing is saved to your file.",ar:"أجيبي على الشاشات الثماني بدون حساب. يبقى كل شيء في هذا المتصفح ولا يُحفظ في ملفك."},
   signout:{en:"Log out",ar:"خروج"},
   resume:{en:"Picked up where you left off.",ar:"تابعنا من حيث توقفت."},
+  hiBack:{en:"Signed in — your file is open.",ar:"تم تسجيل الدخول — ملفك مفتوح."},
   restart:{en:"Start over",ar:"من البداية"},
   /* landing */
   hi:{en:"Signed in",ar:"مسجّلة الدخول"},
@@ -1035,7 +1046,19 @@ function paintChrome(){
     acct.appendChild(el("i",null,initials()));
     acct.appendChild(el("em",null,firstName()));
     var so=el("button",null,t(UI.signout));so.type="button";
-    so.onclick=function(){wipe();goto("login",0);};
+    so.onclick=function(){
+      if(serverSession){
+        /* End the session on the server too, or the next visit signs
+           straight back in and "log out" was a lie. */
+        try{
+          fetch("/api/signout",{method:"POST",credentials:"same-origin"})
+            .catch(function(){})
+            .then(function(){serverSession=false;wipe();goto("login",0);});
+          return;
+        }catch(e){}
+      }
+      wipe();goto("login",0);
+    };
     acct.appendChild(so);
   }
 
@@ -1117,6 +1140,22 @@ function login(){
   p.appendChild(el("h1","display",t(UI.fpH)));
   p.appendChild(el("p","lede",t(UI.fpL)));
 
+  /* The account is the real front door: it is what makes measurements worth
+     giving, because they come back next time. The guest path below stays,
+     clearly labelled as staying in this browser. */
+  var acc=el("div","block first");
+  acc.appendChild(el("span","lab",t(UI.acct)));
+  var accNav=el("div","doors");
+  var create=el("a","btn",t(UI.fCreate));
+  create.href="/"+lang+"/signup";
+  accNav.appendChild(create);
+  var signin=el("a","btn quiet",t(UI.fSignIn));
+  signin.href="/"+lang+"/signin";
+  accNav.appendChild(signin);
+  acc.appendChild(accNav);
+  acc.appendChild(el("p","hint",t(UI.fAccountWhy)));
+  p.appendChild(acc);
+
   var nameInput,mailInput;
   function go(){
     var okName=validName(U.name),okMail=validEmail(U.email);
@@ -1128,7 +1167,12 @@ function login(){
     announce(!okName?t(UI.fNameBad):t(UI.fEmailBad));
   }
 
-  var f1=el("div","block first");
+  var guest=el("div","block");
+  guest.appendChild(el("span","lab",t(UI.fGuest)));
+  guest.appendChild(el("p","hint",t(UI.fGuestWhy)));
+  p.appendChild(guest);
+
+  var f1=el("div","block");
   var l1=el("span","lab");l1.id="lab-name";
   l1.appendChild(document.createTextNode(t(UI.fName)));
   l1.appendChild(el("u",null,"*"));
@@ -1168,7 +1212,6 @@ function login(){
   var nav=el("div","actions");
   var b=el("button","btn wide",t(UI.fGo));b.type="button";b.onclick=go;
   nav.appendChild(b);p.appendChild(nav);
-  p.appendChild(el("p","hint",t(UI.fReturn)));
   return s;
 }
 
@@ -1901,9 +1944,31 @@ if(window.matchMedia){
   if(mq.addEventListener) mq.addEventListener("change",function(){if(!theme)render();});
 }
 
+/**
+ * The page is static HTML, so it cannot read the session cookie — it asks.
+ * A signed-in customer skips the front screen and gets their name back; a
+ * failure here is silent, because the guest path must keep working whether
+ * or not there is a database behind the site.
+ */
+function checkSession(){
+  if(!window.fetch) return;
+  fetch("/api/me",{credentials:"same-origin",headers:{accept:"application/json"}})
+    .then(function(r){return r.ok?r.json():null;})
+    .then(function(d){
+      if(!d||!d.signedIn||!d.email) return;
+      serverSession=true;
+      U={name:d.name||U.name,email:d.email};
+      save();
+      if(view==="login"){goto("landing",0,true);announce(t(UI.hiBack));}
+      else render();
+    })
+    .catch(function(){});
+}
+
 load();
 if(!signedIn()) view="login";
 goto(view,qi,true);
+checkSession();
 </script>
 
 </body>

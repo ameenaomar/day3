@@ -63,9 +63,20 @@ so a mail client's prefetch and the customer's own tap cannot both open a
 session — then starts a 60-day session whose token is stored only as a hash,
 in an httpOnly cookie.
 
+The prototype knows about accounts now, so there is one front door with two
+handles rather than two doors: its first screen leads with **Create my file**
+and **I already have a file**, pointing at `/{locale}/signup` and
+`/{locale}/signin`, and keeps the guest path underneath, labelled as staying
+in this browser. Being static HTML it cannot read an httpOnly cookie, so it
+asks `/api/me`, and a signed-in customer skips the front screen and gets their
+name back in the chrome. Logging out there POSTs `/api/signout`, so it ends
+the session on the server rather than only locally. If that endpoint is
+unreachable — no database, no network — the guest path carries on as though
+accounts did not exist.
+
 Still to wire up: `lib/db.ts` uses the Neon serverless adapter and needs the
-Postgres one, and the prototype at `/` still keeps its own name and email in
-the browser instead of posting to sign-up, so there are two front doors.
+Postgres one, and a signed-in customer's answers still are not saved to their
+file at the end of the flow.
 
 ---
 
