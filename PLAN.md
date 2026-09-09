@@ -25,7 +25,34 @@ It has since been reworked in three ways, and the port should follow it:
   instead of two, and that promise is what the payment screen prints.
 - **Eight screens, not seven**, because of the above.
 
-Nothing else here is blocked.
+## 0.1 The database exists
+
+Supabase project **`simply-styled`** (`djkpilwfcokgjjtbwker`, eu-central-1) holds
+all fifteen tables, applied from `prisma/migrations`. Decision 2 below is
+therefore settled: **Supabase, not Neon.**
+
+What changed in the model when the measuring screen did:
+
+- **`Measurement`** is its own versioned table, in integer millimetres, with
+  `noTape`, `filledCount` and an `accuracy` enum (`estimated` / `better` /
+  `good` / `tailor`). The tier is stored rather than recomputed, because
+  `tailor` is what the payment screen promises the customer: one size per
+  piece instead of two. `StyleProfile` points at the set it was built from.
+- **`Address`** exists, shaped the way Kuwait writes addresses — governorate,
+  area, block, street, building. `Order` keeps its own snapshot of it, so
+  editing an address never rewrites where a past order went. **The flow still
+  has no screen that asks for it**; that is the next gap to close.
+- **`Customer.marketingOptIn`** backs the front page's "no marketing unless you
+  ask for it".
+- `answersSchemaVersion` defaults to **2**: the eight-screen shape.
+
+Row-level security is on for every table with **no policies**, which denies the
+anon and authenticated API keys outright — the app reaches Postgres as the owner
+through Prisma and bypasses RLS. Measurements and phone numbers are never one
+leaked publishable key away from being public.
+
+Still to wire up: `lib/db.ts` uses the Neon serverless adapter and needs the
+Postgres one, and nothing writes to these tables yet.
 
 ---
 
