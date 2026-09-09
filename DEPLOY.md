@@ -4,17 +4,17 @@
 
 Latest production deployment:
 
-- **https://simply-styled-55nk6fabv-t054175-1826.vercel.app**
+- **https://simply-styled-2hb3dvb7h-t054175-1826.vercel.app**
 - aliases: `simply-styled-t054175-1826.vercel.app` and the project's
   production domain, `simply-styled.vercel.app` — both follow the newest
   successful production deployment
-- inspector: <https://vercel.com/t054175-1826/simply-styled/Bt5x98wWCa7E8dAWBGf2EaryDVCi>
+- inspector: <https://vercel.com/t054175-1826/simply-styled/31Wp7FcSUvA1ZEnGbz2MeAYyfD36>
 
-It builds `3933808`, the head of `claude/html-update-vercel-deploy-xn441e` —
+It builds `72c82db`, the head of `claude/html-update-vercel-deploy-xn441e` —
 the Swiss redesign, the measurements screen, the SIMPLY STYLED name, the
 Supabase schema, and sign-up, sign-in and the account doors on the front
-screen. That branch is eight commits ahead of `claude/simply-styled-plan-8fumfc`,
-the default branch, so merge it before any git-linked deploy replaces this one.
+screen. That branch is nine commits ahead of `claude/simply-styled-plan-8fumfc`, the
+default branch, so merge it before any git-linked deploy replaces this one.
 
 **The account pages need environment variables this deployment does not have**
 (see below). Until they are set, `/` works as it always has — the guest path
