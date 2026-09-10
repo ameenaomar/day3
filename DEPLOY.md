@@ -4,16 +4,16 @@
 
 Latest production deployment:
 
-- **https://simply-styled-2hb3dvb7h-t054175-1826.vercel.app**
+- **https://simply-styled-ej1vv2yqd-t054175-1826.vercel.app**
 - aliases: `simply-styled-t054175-1826.vercel.app` and the project's
   production domain, `simply-styled.vercel.app` — both follow the newest
   successful production deployment
-- inspector: <https://vercel.com/t054175-1826/simply-styled/31Wp7FcSUvA1ZEnGbz2MeAYyfD36>
+- inspector: <https://vercel.com/t054175-1826/simply-styled/CaycR8nFxBgqvk1PP4GJGfNrujbK>
 
-It builds `72c82db`, the head of `claude/html-update-vercel-deploy-xn441e` —
+It builds `0b9eab7`, the head of `claude/html-update-vercel-deploy-xn441e` —
 the Swiss redesign, the measurements screen, the SIMPLY STYLED name, the
 Supabase schema, and sign-up, sign-in and the account doors on the front
-screen. That branch is nine commits ahead of `claude/simply-styled-plan-8fumfc`, the
+screen. That branch is eleven commits ahead of `claude/simply-styled-plan-8fumfc`, the
 default branch, so merge it before any git-linked deploy replaces this one.
 
 **The account pages need environment variables this deployment does not have**
