@@ -11,18 +11,19 @@
 // directory directly, every push deploys itself, and this folder can go.
 //
 // To redeploy a newer commit: update COMMIT and both hashes
-//   git rev-parse HEAD && sha256sum index.html places.js
+//   git rev-parse HEAD && sha256sum index.html places.js login.html
 
 import { mkdir, writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 
-const COMMIT = "cda26169384265382c7cc68b81422008d18e7370";
+const COMMIT = "250e99f1fc869b1392e2387bc02a8f472cda1bd9";
 const BASE =
   `https://raw.githubusercontent.com/ameenaomar/day3/${COMMIT}/kuwait-places/`;
 
 const EXPECTED = {
-  "index.html": "a5363c2c6ad01493baf9df75567adebc8d626f679216422340c6255cbe53c6e7",
+  "index.html": "f3e89e75508f33f8b4844b26364cfb26b2cffee989b45ffc734adae0650a568f",
   "places.js": "70f4d0190e866b75fbafeb3e717fedbd12033168b4c83fd0f352d5768a906bee",
+  "login.html": "c769e052b410136363caf01ad98555722265fd60ab723efdad47207e4fc37157",
 };
 
 await mkdir("dist", { recursive: true });

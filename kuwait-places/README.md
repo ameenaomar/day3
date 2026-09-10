@@ -177,14 +177,15 @@ protected when nothing is checking it.
 ## Deployment notes
 
 A Vercel project `kuwait-places` exists and a production deployment was
-created from commit `cda2616`:
+created from commit `250e99f`:
 
 - https://kuwait-places-t054175-1826.vercel.app
-- inspector: <https://vercel.com/t054175-1826/kuwait-places/2QhKz3s6T6a7LK89dQ5VUuygKhpA>
+- /login.html — the sign-in page
+- inspector: <https://vercel.com/t054175-1826/kuwait-places/FcVY7xbSEySKCkacNWBVv7DBPf1t>
 
-It was deployed through `vercel-bridge/`, which fetches `index.html` and
-`places.js` from a pinned commit at build time and verifies both sha256 hashes
-before writing them. See the comment at the top of `vercel-bridge/build.mjs`
+It was deployed through `vercel-bridge/`, which fetches `index.html`,
+`places.js` and `login.html` from a pinned commit at build time and verifies
+all three sha256 hashes before writing them. See the comment at the top of `vercel-bridge/build.mjs`
 for why, and for how to point it at a newer commit.
 
 **Unverified from the session that deployed it.** The deployment was accepted,
