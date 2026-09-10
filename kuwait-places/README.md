@@ -24,6 +24,11 @@ else narrows from there.
   *Spin the wheel* button appears and one spin settles it. Past 14 spots the
   wheel switches to numbers with a legend underneath, so it stays readable
   however long the list gets.
+- **Picky eater banner** — pick Coffee or Eat and the site asks before it
+  shows anything: vegetarian options, no seafood, familiar food only, or a
+  full meal rather than just coffee. One tap on *No restrictions* clears it.
+  The other two plans skip the question, and choosing a new plan asks again,
+  since the answer belongs to the plan.
 - **Our list / Been there** — save spots and tick off the ones you've done.
   Stored in the browser, no account, no server.
 - **English and Arabic**, with proper RTL. Every place name, note and tip is
@@ -74,12 +79,20 @@ Everything lives in `places.js`. Copy an existing entry and edit it:
 | `outdoor` | Real outdoor seating, or the place is outdoors. |
 | `group` | A big group fits without a fight over tables. |
 | `late` | Usually still going past midnight. |
+| `picky` | Feeds the picky-eater banner. Required for `eat` and `coffee`, `null` otherwise: `veg` (a real vegetarian main), `seafood` (seafood is central, so "no seafood" rules it out), `familiar` (a menu a fussy eater recognises), `meal` (a full meal, not just coffee). |
 | `coords` | `[lat, lng]`, approximate — used **only** to order the list for "Near me". Use `null` for anything with several branches or no single point; those sort last. |
 | `note` | One line on what the place is. |
 | `tip` | What to order, or what to actually do there. |
 
 Both languages are required — a missing `ar` falls back to English and looks
 broken next to everything else.
+
+### What `picky` is not
+
+These are judgements from each menu's style, not dietary guarantees, and the
+banner says so on its face. **Don't add allergy fields here** — an unverified
+"gluten-free" flag can put someone in hospital, and no amount of small print
+fixes that. Allergies belong in a phone call to the venue.
 
 ### A note on `coords`
 
@@ -91,7 +104,7 @@ nothing else changes.
 
 ## About the data
 
-The 57 entries here are **seed data**. Hours, prices and whether a place is even
+The 62 entries here are **seed data**. Hours, prices and whether a place is even
 still open change fast in Kuwait, and none of it is verified against the venues
 themselves. Check an entry before you trust it, and correct it here when it's
 wrong — that's the whole maintenance model.

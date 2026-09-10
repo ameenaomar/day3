@@ -23,6 +23,9 @@
     --seg-b: #14867a;
     --seg-c: #a8762a;
     --seg-text: #ffffff;
+    --notice-bg: #fdf4e6;
+    --notice-line: #e6d3ac;
+    --notice-text: #6b4d16;
     --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     --font-ar: "Segoe UI", Tahoma, "Geeza Pro", "Noto Naskh Arabic", system-ui, sans-serif;
   }
@@ -42,6 +45,9 @@
     --seg-b: #0e5f56;
     --seg-c: #8a5f1e;
     --seg-text: #ffffff;
+    --notice-bg: #2a2116;
+    --notice-line: #4a3a22;
+    --notice-text: #e2c288;
   }
 
   * { box-sizing: border-box; }
@@ -129,6 +135,46 @@
   .tabs { display: flex; gap: 4px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; padding: 3px; }
   .tab { background: none; border: none; border-radius: 8px; padding: 6px 12px; cursor: pointer; font-size: .87rem; white-space: nowrap; }
   .tab[aria-selected="true"] { background: var(--surface); font-weight: 600; box-shadow: var(--shadow); }
+
+  /* ------------------------------------------------------ picky eater */
+  .picky {
+    background: var(--notice-bg); border: 1px solid var(--notice-line);
+    border-radius: 14px; padding: 16px; margin-top: 16px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .picky[hidden], .picky-bar[hidden] { display: none !important; }
+  .picky h2 { margin: 0; font-size: 1rem; color: var(--notice-text); }
+  .picky p { margin: 2px 0 0; font-size: .86rem; color: var(--notice-text); opacity: .85; }
+  .picky .chip { background: var(--surface); }
+  .picky .chip[aria-pressed="true"] {
+    background: var(--notice-text); border-color: var(--notice-text);
+    color: var(--notice-bg); font-weight: 600;
+  }
+  .picky-foot { display: flex; flex-wrap: wrap; gap: 8px; }
+  .picky-foot .surprise { flex: 1 1 150px; }
+  .picky-foot .icon-btn { flex: 1 1 130px; background: var(--surface); }
+  /* Side by side, the primary button wraps onto two lines on a phone. */
+  @media (max-width: 460px) {
+    .picky-foot { flex-direction: column; }
+    .picky-foot .surprise, .picky-foot .icon-btn { flex: 1 1 auto; }
+  }
+  .picky-warn {
+    margin: 0; font-size: .78rem; color: var(--notice-text);
+    opacity: .8; border-top: 1px solid var(--notice-line); padding-top: 10px;
+  }
+  .picky-bar {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    background: var(--notice-bg); border: 1px solid var(--notice-line);
+    border-radius: 10px; padding: 8px 12px; margin-top: 14px;
+    font-size: .85rem; color: var(--notice-text);
+  }
+  .picky-bar button {
+    background: none; border: none; padding: 0; cursor: pointer;
+    color: var(--notice-text); font-weight: 600; text-decoration: underline;
+    margin-inline-start: auto; font-size: .85rem;
+  }
+  .gate { text-align: center; color: var(--muted); padding: 32px 16px; }
+  .gate[hidden] { display: none !important; }
 
   .meta-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding-block: 14px 2px; color: var(--muted); font-size: .85rem; }
   .clear { background: none; border: none; color: var(--accent-text); cursor: pointer; text-decoration: underline; padding: 0; font-size: .85rem; }
@@ -252,6 +298,24 @@
     </div>
   </div>
 
+  <section class="picky" id="picky" hidden aria-labelledby="picky-title">
+    <div>
+      <h2 id="picky-title" data-i18n="pickyTitle">Picky eater in the group?</h2>
+      <p data-i18n="pickySub">Tell us what they need. We'll only show places that fit.</p>
+    </div>
+    <div class="chips" id="picky-opts" role="group" data-i18n-label="pickyTitle"></div>
+    <div class="picky-foot">
+      <button class="surprise" id="picky-go" type="button" data-i18n="pickyGo">Show the spots</button>
+      <button class="icon-btn" id="picky-none" type="button" data-i18n="pickyNone">No restrictions</button>
+    </div>
+    <p class="picky-warn" data-i18n="pickyWarn">A guide from each menu's style, not a promise from the kitchen. For a real allergy, phone the place first.</p>
+  </section>
+
+  <div class="picky-bar" id="picky-bar" hidden>
+    <span id="picky-bar-text"></span>
+    <button id="picky-edit" type="button" data-i18n="pickyEdit">Change</button>
+  </div>
+
   <div class="meta-row">
     <span id="count" aria-live="polite"></span>
     <button class="clear" id="clear" type="button" hidden data-i18n="clear">Clear filters</button>
@@ -259,6 +323,7 @@
 
   <div class="grid" id="grid"></div>
   <div class="empty" id="empty" hidden></div>
+  <div class="gate" id="gate" hidden></div>
 </main>
 
 <div class="modal" id="wheel-modal" hidden role="dialog" aria-modal="true" aria-labelledby="wheel-title">
@@ -307,6 +372,21 @@
       late: "Open late", outdoor: "Outdoor seating", group: "Big group",
       near: "Near me",
       directions: "Directions",
+      pickyTitle: "Picky eater in the group?",
+      pickySub: "Tell us what they need. We'll only show places that fit.",
+      pickyGo: "Show the spots",
+      pickyNone: "No restrictions",
+      pickyEdit: "Change",
+      pickyWarn: "A guide from each menu's style, not a promise from the kitchen. For a real allergy, phone the place first.",
+      pickyGate: "Answer above and the list appears.",
+      pickyNoneSet: "No restrictions.",
+      pickySet: function (list) { return "Showing places with: " + list.join(", ") + "."; },
+      pickyOpts: {
+        veg: "Vegetarian options",
+        seafood: "No seafood",
+        familiar: "Familiar food only",
+        meal: "A full meal, not just coffee"
+      },
       km: function (d) { return d < 1 ? Math.round(d * 1000) + " m" : d.toFixed(1) + " km"; },
       sortedByDistance: "Sorted by distance from you.",
       geoDenied: "Location permission denied, so the list is in its normal order.",
@@ -354,6 +434,21 @@
       late: "يفتح متأخر", outdoor: "جلسة خارجية", group: "جمعة كبيرة",
       near: "قريب مني",
       directions: "الاتجاهات",
+      pickyTitle: "في أحد صعب في الأكل؟",
+      pickySub: "قل لنا شنو يحتاج، وما نعرض إلا الأماكن اللي تناسبه.",
+      pickyGo: "اعرض الأماكن",
+      pickyNone: "ما في شروط",
+      pickyEdit: "تغيير",
+      pickyWarn: "استنتاج من نوع المنيو، وليس وعداً من المطبخ. إذا في حساسية حقيقية، اتصل بالمكان أول.",
+      pickyGate: "جاوب فوق وتظهر القائمة.",
+      pickyNoneSet: "بدون شروط.",
+      pickySet: function (list) { return "نعرض أماكن فيها: " + list.join("، ") + "."; },
+      pickyOpts: {
+        veg: "خيارات نباتية",
+        seafood: "بدون بحريات",
+        familiar: "أكل معروف بس",
+        meal: "أكل كامل، لا قهوة بس"
+      },
       km: function (d) { return d < 1 ? Math.round(d * 1000) + " م" : d.toFixed(1) + " كم"; },
       sortedByDistance: "مرتّبة حسب المسافة منك.",
       geoDenied: "ما سمحت بالموقع، فالترتيب رجع طبيعي.",
@@ -388,6 +483,9 @@
   var VIBE_ORDER = ["coffee", "eat", "chill", "different"];
   var PRICE_TIERS = [0, 1, 2, 3];
   var FLAGS = ["late", "outdoor", "group"];
+  var PICKY_OPTS = ["veg", "seafood", "familiar", "meal"];
+  // The banner only makes sense where there is a menu involved.
+  var PICKY_VIBES = ["eat", "coffee"];
 
   /* --------------------------------------------------------------- storage */
   // localStorage throws outright in some privacy modes, so every access is
@@ -419,7 +517,11 @@
     picked: null,
     here: null,        // [lat, lng] once the user shares their location
     geoMsg: "",
-    spun: null         // id the wheel landed on
+    spun: null,        // id the wheel landed on
+    // null until the group answers the picky-eater banner. Deliberately not
+    // stored, so each visit is asked once rather than inheriting old answers.
+    picky: null,
+    pickyDraft: { veg: false, seafood: false, familiar: false, meal: false }
   };
 
   var places = (window.PLACES || []).slice();
@@ -468,6 +570,12 @@
       if (state.view === "saved" && !isSaved(p.id)) return false;
       if (state.view === "tried" && !isTried(p.id)) return false;
       if (state.vibe && p.vibe !== state.vibe) return false;
+      if (pickyApplies() && state.picky && p.picky) {
+        if (state.picky.veg && !p.picky.veg) return false;
+        if (state.picky.seafood && p.picky.seafood) return false;
+        if (state.picky.familiar && !p.picky.familiar) return false;
+        if (state.picky.meal && !p.picky.meal) return false;
+      }
       if (state.prices.length && state.prices.indexOf(p.price) === -1) return false;
       if (state.area && L(p.area) !== state.area) return false;
       for (var i = 0; i < state.flags.length; i++) {
@@ -479,6 +587,14 @@
       }
       return true;
     });
+  }
+
+  // Eat and coffee go through the banner first; the other plans skip it.
+  function pickyApplies() { return PICKY_VIBES.indexOf(state.vibe) !== -1; }
+  function pickyPending() { return pickyApplies() && state.picky === null; }
+
+  function pickyList(answers) {
+    return PICKY_OPTS.filter(function (k) { return answers[k]; });
   }
 
   function filtersActive() {
@@ -533,6 +649,8 @@
         // single big toggle to behave.
         state.vibe = state.vibe === vibe ? "" : vibe;
         state.picked = null;
+        // A new plan means a fresh question — the answer is per plan.
+        state.picky = null;
         renderVibes(); renderList();
       });
       box.appendChild(b);
@@ -572,6 +690,28 @@
     b.setAttribute("aria-pressed", pressed);
     b.addEventListener("click", onClick);
     return b;
+  }
+
+  function renderPicky() {
+    var box = $("#picky-opts");
+    box.textContent = "";
+    PICKY_OPTS.forEach(function (key) {
+      box.appendChild(chip(t().pickyOpts[key], state.pickyDraft[key], function () {
+        state.pickyDraft[key] = !state.pickyDraft[key];
+        renderPicky();
+      }));
+    });
+
+    $("#picky").hidden = !pickyPending();
+
+    var bar = $("#picky-bar");
+    bar.hidden = !(pickyApplies() && state.picky);
+    if (!bar.hidden) {
+      var chosen = pickyList(state.picky);
+      $("#picky-bar-text").textContent = chosen.length
+        ? t().pickySet(chosen.map(function (k) { return t().pickyOpts[k]; }))
+        : t().pickyNoneSet;
+    }
   }
 
   function renderAreas() {
@@ -699,6 +839,22 @@
   }
 
   function renderList() {
+    renderPicky();
+
+    // Nothing to show until the group answers the banner.
+    if (pickyPending()) {
+      $("#grid").textContent = "";
+      $("#empty").hidden = true;
+      $("#gate").hidden = false;
+      $("#gate").textContent = t().pickyGate;
+      $("#count").textContent = "";
+      $("#clear").hidden = !filtersActive();
+      renderSpinButton();
+      $("#geo-msg").textContent = state.geoMsg;
+      return;
+    }
+    $("#gate").hidden = true;
+
     var list = visible();
 
     // Nearest first when the user has shared their location. Places with no
@@ -931,6 +1087,7 @@
   function renderAll() {
     renderStaticText();
     renderVibes();
+    renderPicky();
     renderPrices();
     renderFlags();
     renderAreas();
@@ -1035,6 +1192,28 @@
     );
   });
 
+  $("#picky-go").addEventListener("click", function () {
+    state.picky = {
+      veg: state.pickyDraft.veg, seafood: state.pickyDraft.seafood,
+      familiar: state.pickyDraft.familiar, meal: state.pickyDraft.meal
+    };
+    state.picked = null;
+    renderList();
+  });
+
+  $("#picky-none").addEventListener("click", function () {
+    state.pickyDraft = { veg: false, seafood: false, familiar: false, meal: false };
+    state.picky = { veg: false, seafood: false, familiar: false, meal: false };
+    state.picked = null;
+    renderList();
+  });
+
+  $("#picky-edit").addEventListener("click", function () {
+    state.picky = null;
+    renderList();
+    $("#picky-opts").querySelector(".chip").focus();
+  });
+
   $("#spin").addEventListener("click", openWheel);
   $("#wheel-go").addEventListener("click", spin);
   $("#wheel-close").addEventListener("click", closeWheel);
@@ -1048,6 +1227,8 @@
   $("#clear").addEventListener("click", function () {
     state.vibe = ""; state.prices = []; state.flags = [];
     state.area = ""; state.q = ""; state.picked = null;
+    state.picky = null;
+    state.pickyDraft = { veg: false, seafood: false, familiar: false, meal: false };
     $("#search").value = "";
     $("#area").value = "";
     renderVibes(); renderPrices(); renderFlags(); renderList();
