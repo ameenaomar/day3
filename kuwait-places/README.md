@@ -31,6 +31,14 @@ else narrows from there.
   full meal rather than just coffee. One tap on *No restrictions* clears it.
   The other two plans skip the question, and choosing a new plan asks again,
   since the answer belongs to the plan.
+- **A sign-in page** (`login.html`) — name, email, password and confirmation,
+  with real validation: inline messages, an error summary that links to each
+  bad field, `aria-invalid`, focus moved to the first problem, a strength
+  meter and a show/hide toggle. **It authenticates nothing.** This is a static
+  site with no server, so the page says so on its face, keeps only the name
+  and email in the browser, and never stores or transmits the password. The
+  main page greets you by name and offers a sign out; it does not gate
+  anything, because a lock with no server behind it is theatre.
 - **Our list / Been there** — save spots and tick off the ones you've done.
   Stored in the browser, no account, no server.
 - **English and Arabic**, with proper RTL. Every place name, note and tip is
@@ -152,6 +160,19 @@ with the notes and tips written for this site. Where a place came recommended
 but its area couldn't be pinned down, it was left out rather than guessed at. Nothing on this list is sponsored or paid for.
 
 ---
+
+## If you want real accounts
+
+Everything above is front-end only. Real sign-in needs a server to hold the
+accounts and issue sessions, and the password must never reach your own code
+in a form you could store. The short path from here is a hosted auth provider
+(Supabase Auth, Auth0, Clerk, Firebase): the provider handles hashing,
+sessions, email verification and password reset, and this page becomes a thin
+form in front of its SDK.
+
+Two rules survive that change, and they are the reason this page is built the
+way it is: never store a password yourself, and never imply an account is
+protected when nothing is checking it.
 
 ## Deployment notes
 

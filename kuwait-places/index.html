@@ -99,6 +99,12 @@
   }
   @media (max-width: 700px) { .brand small { display: none; } }
   @media (max-width: 420px) { .brand h1 { font-size: 1.25rem; } }
+  .who {
+    color: var(--cream); font-size: .72rem; white-space: nowrap;
+    text-transform: uppercase; letter-spacing: .09em;
+  }
+  .who[hidden], #signout[hidden], #signin[hidden] { display: none !important; }
+  @media (max-width: 560px) { .who { display: none; } }
 
   .icon-btn {
     background: transparent; border: 1px solid rgba(251,246,239,.45);
@@ -355,6 +361,9 @@
       <h1 data-i18n="title">Yalla, where to?</h1>
       <small data-i18n="tagline">Hang out in Kuwait — decided in five seconds</small>
     </div>
+    <span class="who" id="who" hidden></span>
+    <a class="icon-btn" id="signin" href="login.html" data-i18n="signIn">Sign in</a>
+    <button class="icon-btn" id="signout" type="button" hidden data-i18n="signOut">Sign out</button>
     <button class="icon-btn" id="lang" type="button">عربي</button>
     <button class="icon-btn" id="theme" type="button" data-i18n-label="themeLabel">☾</button>
   </div>
@@ -464,6 +473,9 @@
       tried: "Been there", didTry: "Been there",
       late: "Open late", outdoor: "Outdoor seating", group: "Big group",
       near: "Near me",
+      signIn: "Sign in",
+      signOut: "Sign out",
+      greet: function (name) { return "Hi, " + name; },
       catsLabel: "Type of place",
       quiet: "Quiet enough to talk",
       kids: "Good with kids",
@@ -532,6 +544,9 @@
       tried: "رحنا له", didTry: "رحنا له",
       late: "يفتح متأخر", outdoor: "جلسة خارجية", group: "جمعة كبيرة",
       near: "قريب مني",
+      signIn: "تسجيل الدخول",
+      signOut: "خروج",
+      greet: function (name) { return "هلا، " + name; },
       catsLabel: "نوع المكان",
       quiet: "هادي للسولافة",
       kids: "مناسب للأطفال",
@@ -646,6 +661,10 @@
     pickyDraft: { veg: false, seafood: false, familiar: false, meal: false }
   };
 
+  // Written by login.html. A name to greet, not a credential — the site is
+  // static, so this gates nothing and is not pretending to.
+  var user = readStore("kw.user", null);
+
   var places = (window.PLACES || []).slice();
 
   var $ = function (sel) { return document.querySelector(sel); };
@@ -741,6 +760,17 @@
     each(document.querySelectorAll("[data-i18n-label]"), function (el) {
       el.setAttribute("aria-label", t()[el.getAttribute("data-i18n-label")]);
     });
+
+    // The single-page artifact build has no login page to link to, so it
+    // strips the sign-in link — hence the null checks.
+    var signedIn = !!(user && user.name);
+    var who = $("#who"), out = $("#signout"), inLink = $("#signin");
+    if (who) {
+      who.hidden = !signedIn;
+      if (signedIn) who.textContent = t().greet(user.name);
+    }
+    if (out) out.hidden = !signedIn;
+    if (inLink) inLink.hidden = signedIn;
 
     $("#lang").textContent = t().langBtn;
     $("#theme").textContent = state.theme === "dark" ? "☼" : "☾";
@@ -1367,6 +1397,12 @@
     state.picky = null;
     renderList();
     $("#picky-opts").querySelector(".chip").focus();
+  });
+
+  if ($("#signout")) $("#signout").addEventListener("click", function () {
+    user = null;
+    try { localStorage.removeItem("kw.user"); } catch (e) { /* no-op */ }
+    renderStaticText();
   });
 
   $("#spin").addEventListener("click", openWheel);
