@@ -56,10 +56,31 @@ python3 -m http.server 8000
 
 ## Deploying
 
-Any static host works. For **GitHub Pages**: push to `main`, then
-Settings → Pages → Source: *Deploy from a branch* → `main` / `/ (root)`.
+Two files, no build step, no dependencies — any static host serves it as-is.
 
-The site is two files and no build, so a Pages deploy takes about a minute.
+### Vercel
+
+This site lives in a subdirectory of a repo whose root is a different
+(Next.js) project, so the **Root Directory** setting is the one thing that
+matters:
+
+1. Vercel → **Add New → Project** → import this repository.
+2. Set **Root Directory** to `kuwait-places`.
+3. **Framework Preset: Other.** Leave the build and output commands empty —
+   there is nothing to build.
+4. Deploy.
+
+Every push to the branch then redeploys on its own. If a `kuwait-places`
+project already exists, connect it instead under its
+**Settings → Git → Connect Git Repository**, and set the same root directory —
+that keeps the project's existing URL.
+
+### GitHub Pages
+
+Push to `main`, then Settings → Pages → Source: *Deploy from a branch* →
+`main` / `/ (root)`. Pages serves from the repository root, so this only
+works if `index.html` is at the top level — move the files up, or use a
+`kuwait-places` repo of its own.
 
 ## Adding or fixing a place
 
