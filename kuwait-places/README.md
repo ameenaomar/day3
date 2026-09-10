@@ -156,10 +156,10 @@ but its area couldn't be pinned down, it was left out rather than guessed at. No
 ## Deployment notes
 
 A Vercel project `kuwait-places` exists and a production deployment was
-created from commit `250e99f`:
+created from commit `afb0e26`:
 
 - https://kuwait-places-t054175-1826.vercel.app
-- inspector: <https://vercel.com/t054175-1826/kuwait-places/FcVY7xbSEySKCkacNWBVv7DBPf1t>
+- inspector: <https://vercel.com/t054175-1826/kuwait-places/3uYRFWSAHHbpMZpgmB3xyESiniKm>
 
 It was deployed through `vercel-bridge/`, which fetches `index.html` and
 `places.js` from a pinned commit at build time and verifies both sha256

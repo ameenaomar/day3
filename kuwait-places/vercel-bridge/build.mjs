@@ -16,12 +16,12 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 
-const COMMIT = "250e99f1fc869b1392e2387bc02a8f472cda1bd9";
+const COMMIT = "afb0e26a8df52467e9fadcd558d0c9ace59cd1a1";
 const BASE =
   `https://raw.githubusercontent.com/ameenaomar/day3/${COMMIT}/kuwait-places/`;
 
 const EXPECTED = {
-  "index.html": "f3e89e75508f33f8b4844b26364cfb26b2cffee989b45ffc734adae0650a568f",
+  "index.html": "a5363c2c6ad01493baf9df75567adebc8d626f679216422340c6255cbe53c6e7",
   "places.js": "70f4d0190e866b75fbafeb3e717fedbd12033168b4c83fd0f352d5768a906bee",
 };
 
