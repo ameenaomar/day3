@@ -17,8 +17,21 @@ Earlier attempts, same project:
 Node is pinned to 22 via `engines.node`, so the build machine uses the version
 everything here was verified on.
 
-**Unverified from this session.** The deployment is accepted, but nothing here
-can confirm it built:
+**The Vercel connection is no longer authorised for this scope.** As of
+2026-09-10 every Vercel call — reads *and* `create_git_project` — returns:
+
+```
+403 forbidden: Not authorized: Trying to access resource under scope
+"t054175-1826". You must re-authenticate to this scope or use a token with
+access to this scope.
+```
+
+So a deployment cannot be made from a Claude session until that connection is
+re-authorised. Deploy from GitHub instead — see "Import the repo" below, which
+is the better setup anyway. Notes from the earlier upload follow.
+
+**Unverified from that session.** The deployment was accepted, but nothing there
+could confirm it built:
 
 - `vercel.app` is blocked by this environment's egress policy, for both `curl`
   and the web-fetch tool.
@@ -93,8 +106,11 @@ scope here is `t054175-1826`.
 3. Framework preset: **Next.js** (auto-detected). Root directory: `./`.
    Build command, install command and output directory all stay on their
    defaults — `prisma generate` runs from the `postinstall` script.
-4. Set the production branch to `claude/simply-styled-plan-8fumfc`
-   (Settings → Git → Production Branch) until this work merges.
+4. Set the production branch (Settings → Git → Production Branch) to whichever
+   branch should be live. `claude/simply-styled-plan-8fumfc` is the repository
+   default; the accounts work is on `claude/signup-signin-supabase-puw7iq` and
+   has to be merged there, or named as the production branch itself, before it
+   reaches the production URL.
 5. Deploy.
 
 **Set the two `NEXT_PUBLIC_SUPABASE_*` variables** (see "Accounts" below) for
