@@ -31,6 +31,9 @@ else narrows from there.
   full meal rather than just coffee. One tap on *No restrictions* clears it.
   The other two plans skip the question, and choosing a new plan asks again,
   since the answer belongs to the plan.
+- **Accounts, for real** (`login.html`) — sign up with a name, email and
+  password, or sign in. Backed by Supabase Auth, so the password is verified
+  server-side and a wrong one is actually rejected. See *Accounts* below.
 - **Our list / Been there** — save spots and tick off the ones you've done.
   Stored in the browser, no account, no server.
 - **English and Arabic**, with proper RTL. Every place name, note and tip is
@@ -152,6 +155,40 @@ with the notes and tips written for this site. Where a place came recommended
 but its area couldn't be pinned down, it was left out rather than guessed at. Nothing on this list is sponsored or paid for.
 
 ---
+
+## Accounts
+
+Sign-up and sign-in run through **Supabase Auth**. The schema is in
+`supabase/migrations/`.
+
+**Where things live.** Email and password live in `auth.users`, managed by
+Supabase and hashed with bcrypt — this app never sees the password and has no
+column for it. `public.profiles` holds the display name and nothing else,
+created inside the signup transaction by an `on_auth_user_created` trigger
+reading the name out of the signup metadata, so a client that dies halfway
+can't leave a nameless user.
+
+**Row-level security** is on, with every policy scoped to
+`(select auth.uid()) = id`. That matters because the publishable key in
+`supabase-config.js` is public by design — it identifies the project and
+grants only what the policies allow. The key that must never appear in
+client code is `service_role`, which bypasses RLS entirely.
+
+**Two things worth knowing if you extend this:**
+
+- Postgres grants `EXECUTE` on new functions to `PUBLIC`, so a
+  `SECURITY DEFINER` trigger function is reachable over the REST API as
+  `/rest/v1/rpc/<name>` until you revoke it. Revoking from `anon` and
+  `authenticated` does *not* help — they inherit the `PUBLIC` grant. Migration
+  `0002` revokes the right one.
+- If the project requires email confirmation, `signUp` returns a user with no
+  session. The page treats that as "check your inbox" rather than pretending
+  the person is signed in.
+
+`index.html` deliberately has no Supabase client. It greets by name from a
+cached display name and sends "Sign out" to `login.html?signout=1`, where the
+real `signOut()` happens — so the main page carries no auth dependency and no
+network call of its own.
 
 ## Deployment notes
 

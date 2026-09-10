@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Sign in — Yalla, where to?</title>
-<meta name="description" content="Set a name and passcode for Yalla, where to? — kept in this browser only.">
+<meta name="description" content="Sign up or sign in to Yalla, where to?">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☕</text></svg>">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,500;6..96,600&family=Archivo:wght@400;500;600;700&display=swap">
@@ -177,9 +177,14 @@
     <h1 id="title"></h1>
     <p class="lede" id="lede"></p>
 
+    <p class="note" id="offline" hidden>
+      <b data-i18n="offlineLabel">Can't reach the server</b>
+      <span data-i18n="offlineBody">The Supabase client didn't load, so signing in isn't possible right now. Check your connection and reload.</span>
+    </p>
+
     <p class="note">
-      <b data-i18n="noteLabel">This browser only</b>
-      <span data-i18n="noteBody">There is no server here. Your passcode is salted and hashed before it is stored, and only the hash is kept — but it lives in this browser, so it keeps nobody out except you. Don't reuse a password that matters.</span>
+      <b data-i18n="noteLabel">Real accounts</b>
+      <span data-i18n="noteBody">Your account is stored in Supabase. The password is handled by Supabase Auth and hashed there — this page never keeps it, and the database has no column for it.</span>
     </p>
 
     <div class="modes" role="tablist" aria-label="Sign in or sign up">
@@ -195,6 +200,13 @@
         <input id="name" name="name" type="text" autocomplete="username" required
                aria-describedby="e-name" spellcheck="false">
         <p class="err" id="e-name"></p>
+      </div>
+
+      <div class="field" id="f-email">
+        <label for="email"><span data-i18n="lEmail">Email</span> <span class="req" aria-hidden="true">*</span></label>
+        <input id="email" name="email" type="email" autocomplete="email" required
+               inputmode="email" aria-describedby="e-email" spellcheck="false">
+        <p class="err" id="e-email"></p>
       </div>
 
       <div class="field">
@@ -219,10 +231,15 @@
       <button class="submit" id="submit" type="submit"></button>
     </form>
 
-    <p class="reset" id="reset" hidden>
-      <span data-i18n="resetLead">Forgotten it? Nothing here can email you a link.</span>
-      <button id="reset-btn" type="button" data-i18n="resetBtn">Clear this browser's account and start again</button>
+    <p class="reset" id="reset">
+      <span data-i18n="resetLead">Forgotten your password?</span>
+      <button id="reset-btn" type="button" data-i18n="resetBtn">Email me a reset link</button>
     </p>
+  </div>
+
+  <div class="done" id="confirm-mail" hidden>
+    <h2 id="mail-title"></h2>
+    <p id="mail-body"></p>
   </div>
 
   <div class="done" id="done" hidden>
@@ -232,8 +249,10 @@
   </div>
 </main>
 
-<footer><p data-i18n="footer">A device passcode, not an account. Real sign-in needs a server.</p></footer>
+<footer><p data-i18n="footer">Accounts and passwords are handled by Supabase Auth. This page only talks to it.</p></footer>
 
+<script src="supabase-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js"></script>
 <script>
 (function () {
   "use strict";
@@ -241,70 +260,92 @@
   var STR = {
     en: {
       brand: "Yalla, where to?",
-      signupTitle: "Pick a name and passcode",
-      signupLede: "So the list can greet you, and your saved spots stay yours on this device.",
+      signupTitle: "Create your account",
+      signupLede: "Your name and email are stored in Supabase. The password is handled by Supabase Auth.",
       signinTitle: "Welcome back",
-      signinLede: "Your passcode is checked against the one saved on this device.",
-      noteLabel: "This browser only",
-      noteBody: "There is no server here. Your passcode is salted and hashed before it is stored, and only the hash is kept — but it lives in this browser, so it keeps nobody out except you. Don't reuse a password that matters.",
+      signinLede: "Signed in against your Supabase account.",
+      noteLabel: "Real accounts",
+      noteBody: "Your account is stored in Supabase. The password is handled by Supabase Auth and hashed there — this page never keeps it, and the database has no column for it.",
+      offlineLabel: "Can't reach the server",
+      offlineBody: "The Supabase client didn't load, so signing in isn't possible right now. Check your connection and reload.",
       modeSignup: "Sign up", modeSignin: "Sign in",
-      lName: "Name", lPassword: "Password", lConfirm: "Confirm password",
+      lName: "Name", lEmail: "Email", lPassword: "Password", lConfirm: "Confirm password",
       pwHint: "At least 8 characters, with a letter and a number.",
       show: "Show", hide: "Hide",
-      submitSignup: "Sign up", submitSignin: "Sign in", working: "Checking…",
+      submitSignup: "Sign up", submitSignin: "Sign in",
+      workingSignup: "Creating…", workingSignin: "Signing in…",
       goToSite: "Find somewhere to go",
-      footer: "A device passcode, not an account. Real sign-in needs a server.",
-      resetLead: "Forgotten it? Nothing here can email you a link.",
-      resetBtn: "Clear this browser's account and start again",
+      footer: "Accounts and passwords are handled by Supabase Auth. This page only talks to it.",
+      resetLead: "Forgotten your password?",
+      resetBtn: "Email me a reset link",
+      resetSent: "Reset link sent, if that email has an account.",
+      resetNeedEmail: "Type your email first, then ask for the link.",
       summaryLead: "Fix these and try again:",
-      eNameEmpty: "Enter a name.",
+      eNameEmpty: "Enter your name.",
       eNameShort: "That looks too short — use at least two characters.",
-      ePwEmpty: "Choose a passcode.",
+      eEmailEmpty: "Enter your email.",
+      eEmailBad: "That doesn't look like an email address.",
+      ePwEmpty: "Enter your password.",
       ePwShort: "Use at least 8 characters.",
       ePwWeak: "Add a letter and a number.",
-      eConfirmEmpty: "Type the passcode again.",
-      eConfirmMismatch: "The two don't match.",
-      eNoAccount: "No account saved in this browser yet — sign up instead.",
-      eWrongName: "No account under that name on this device.",
-      eWrongPw: "That passcode doesn't match the one saved here.",
-      eNoCrypto: "This browser can't hash the passcode on an insecure page. Open the site over https or localhost.",
-      doneSignup: function (n) { return "You're set, " + n + "."; },
+      eConfirmEmpty: "Type the password again.",
+      eConfirmMismatch: "The two passwords don't match.",
+      eBadLogin: "That email and password don't match an account.",
+      eTaken: "There's already an account with that email — sign in instead.",
+      eUnconfirmed: "Confirm your email first — check your inbox for the link.",
+      eWeakServer: "Supabase rejected that password as too weak.",
+      eRate: "Too many attempts. Wait a minute and try again.",
+      eNetwork: "Couldn't reach Supabase. Check your connection and try again.",
+      mailTitle: "Check your inbox",
+      mailBody: function (e) { return "We sent a confirmation link to " + e + ". Open it, then come back and sign in."; },
+      doneSignup: function (n) { return "You're in, " + n + "."; },
       doneSignin: function (n) { return "Welcome back, " + n + "."; },
-      doneBody: "Saved in this browser. Nothing was sent anywhere.",
+      doneBody: "Your account lives in Supabase. Signing out here ends the session.",
       langBtn: "عربي"
     },
     ar: {
       brand: "يلّا، وين؟",
-      signupTitle: "اختر اسم ورمز",
-      signupLede: "عشان القائمة تناديك، وأماكنك المحفوظة تبقى لك على هذا الجهاز.",
+      signupTitle: "سوِّ حسابك",
+      signupLede: "اسمك وإيميلك يُحفظان في Supabase، وكلمة السر يتولاها Supabase Auth.",
       signinTitle: "هلا فيك مرة ثانية",
-      signinLede: "يتم التحقق من رمزك مقابل المحفوظ على هذا الجهاز.",
-      noteLabel: "هذا المتصفح فقط",
-      noteBody: "ما في سيرفر هنا. رمزك يُملّح ويُشفّر قبل الحفظ، ويُحفظ التشفير فقط — لكنه في هذا المتصفح، فهو ما يمنع أحد غيرك. لا تستخدم كلمة سر مهمة.",
+      signinLede: "الدخول يتم مقابل حسابك في Supabase.",
+      noteLabel: "حسابات حقيقية",
+      noteBody: "حسابك محفوظ في Supabase. كلمة السر يتولاها Supabase Auth وتُشفّر هناك — هذي الصفحة ما تحفظها، وقاعدة البيانات ما فيها عمود لها.",
+      offlineLabel: "ما نقدر نوصل للسيرفر",
+      offlineBody: "مكتبة Supabase ما تحمّلت، فتسجيل الدخول غير ممكن حالياً. تأكد من الاتصال وأعد التحميل.",
       modeSignup: "حساب جديد", modeSignin: "تسجيل الدخول",
-      lName: "الاسم", lPassword: "كلمة السر", lConfirm: "تأكيد كلمة السر",
+      lName: "الاسم", lEmail: "الإيميل", lPassword: "كلمة السر", lConfirm: "تأكيد كلمة السر",
       pwHint: "٨ أحرف على الأقل، وفيها حرف ورقم.",
       show: "إظهار", hide: "إخفاء",
-      submitSignup: "سجّل", submitSignin: "دخول", working: "جاري التحقق…",
+      submitSignup: "سجّل", submitSignin: "دخول",
+      workingSignup: "جاري الإنشاء…", workingSignin: "جاري الدخول…",
       goToSite: "دوّر على مكان",
-      footer: "رمز على الجهاز، وليس حساباً. تسجيل الدخول الحقيقي يحتاج سيرفر.",
-      resetLead: "نسيته؟ ما في شي هنا يرسل لك رابط.",
-      resetBtn: "امسح حساب هذا المتصفح وابدأ من جديد",
+      footer: "الحسابات وكلمات السر يتولاها Supabase Auth. هذي الصفحة تتكلم معه فقط.",
+      resetLead: "ناسي كلمة السر؟",
+      resetBtn: "أرسل لي رابط إعادة تعيين",
+      resetSent: "أُرسل الرابط، إذا كان لهذا الإيميل حساب.",
+      resetNeedEmail: "اكتب إيميلك أول، وبعدها اطلب الرابط.",
       summaryLead: "صلّح هذي وجرّب مرة ثانية:",
-      eNameEmpty: "اكتب اسم.",
+      eNameEmpty: "اكتب اسمك.",
       eNameShort: "قصير زيادة — استخدم حرفين على الأقل.",
-      ePwEmpty: "اختر رمز.",
+      eEmailEmpty: "اكتب إيميلك.",
+      eEmailBad: "هذا ما يشبه عنوان إيميل.",
+      ePwEmpty: "اكتب كلمة السر.",
       ePwShort: "استخدم ٨ أحرف على الأقل.",
       ePwWeak: "أضف حرف ورقم.",
-      eConfirmEmpty: "اكتب الرمز مرة ثانية.",
-      eConfirmMismatch: "الاثنان ما يتطابقان.",
-      eNoAccount: "ما في حساب محفوظ في هذا المتصفح — سجّل حساب جديد.",
-      eWrongName: "ما في حساب بهذا الاسم على هذا الجهاز.",
-      eWrongPw: "الرمز ما يطابق المحفوظ هنا.",
-      eNoCrypto: "هذا المتصفح ما يقدر يشفّر الرمز في صفحة غير آمنة. افتح الموقع عبر https أو localhost.",
+      eConfirmEmpty: "اكتب كلمة السر مرة ثانية.",
+      eConfirmMismatch: "كلمتا السر ما تتطابقان.",
+      eBadLogin: "الإيميل وكلمة السر ما يطابقان أي حساب.",
+      eTaken: "في حساب بهذا الإيميل — سجّل دخول بدلاً من ذلك.",
+      eUnconfirmed: "أكّد إيميلك أول — شوف الرابط في بريدك.",
+      eWeakServer: "Supabase رفض كلمة السر لأنها ضعيفة.",
+      eRate: "محاولات كثيرة. انتظر دقيقة وجرّب.",
+      eNetwork: "ما قدرنا نوصل Supabase. تأكد من الاتصال وجرّب.",
+      mailTitle: "شوف بريدك",
+      mailBody: function (e) { return "أرسلنا رابط تأكيد إلى " + e + ". افتحه، وبعدها ارجع وسجّل دخول."; },
       doneSignup: function (n) { return "تم، يا " + n + "."; },
       doneSignin: function (n) { return "هلا فيك، " + n + "."; },
-      doneBody: "محفوظ في هذا المتصفح. ما انرسل شي لأي مكان.",
+      doneBody: "حسابك في Supabase. الخروج من هنا ينهي الجلسة.",
       langBtn: "EN"
     }
   };
@@ -313,6 +354,7 @@
   var lang = "en";
   var mode = "signup";
   var submitted = false;
+  var client = null;
 
   function readStore(k, f) {
     try { var v = localStorage.getItem(k); return v === null ? f : JSON.parse(v); }
@@ -329,50 +371,13 @@
     ((navigator.language || "en").slice(0, 2) === "ar" ? "ar" : "en");
   function t() { return STR[lang]; }
 
-  // An account already on this device means signing in is the likely intent.
-  var account = readStore("kw.auth", null);
-  if (account && account.name) mode = "signin";
-
-  /* ------------------------------------------------------------- hashing */
-  // PBKDF2 rather than a bare digest: the stored value should be expensive to
-  // work backwards from even though this only ever guards a browser profile.
-  var ITERATIONS = 120000;
-
-  function hasCrypto() {
-    return !!(window.crypto && window.crypto.subtle && window.crypto.getRandomValues);
-  }
-
-  function toB64(bytes) {
-    var s = "";
-    for (var i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]);
-    return btoa(s);
-  }
-  function fromB64(str) {
-    var raw = atob(str);
-    var out = new Uint8Array(raw.length);
-    for (var i = 0; i < raw.length; i++) out[i] = raw.charCodeAt(i);
-    return out;
-  }
-
-  function derive(password, salt, iterations) {
-    var enc = new TextEncoder();
-    return crypto.subtle
-      .importKey("raw", enc.encode(password), "PBKDF2", false, ["deriveBits"])
-      .then(function (key) {
-        return crypto.subtle.deriveBits(
-          { name: "PBKDF2", salt: salt, iterations: iterations, hash: "SHA-256" },
-          key, 256);
-      })
-      .then(function (bits) { return toB64(new Uint8Array(bits)); });
-  }
-
-  // Length-independent compare, so a wrong passcode never leaks how much of
-  // it was right through timing. Cheap habit worth keeping.
-  function sameHash(a, b) {
-    if (a.length !== b.length) return false;
-    var diff = 0;
-    for (var i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
-    return diff === 0;
+  /* --------------------------------------------------------------- client */
+  function boot() {
+    var cfg = window.SUPABASE_CONFIG;
+    if (!window.supabase || !window.supabase.createClient || !cfg) return null;
+    return window.supabase.createClient(cfg.url, cfg.publishableKey, {
+      auth: { persistSession: true, autoRefreshToken: true }
+    });
   }
 
   /* ------------------------------------------------------------ rendering */
@@ -388,25 +393,26 @@
     $("#lede").textContent = mode === "signup" ? t().signupLede : t().signinLede;
     $("#submit").textContent = mode === "signup" ? t().submitSignup : t().submitSignin;
     $("#reveal").textContent = $("#password").type === "password" ? t().show : t().hide;
+    // Signing in needs neither a display name nor a confirmation.
+    $("#name").parentNode.hidden = mode !== "signup";
     $("#f-confirm").hidden = mode !== "signup";
     $("#pw-hint").hidden = mode !== "signup";
+    $("#meter").hidden = mode !== "signup";
+    $("#reset").hidden = mode !== "signin";
     $("#password").setAttribute("autocomplete",
       mode === "signup" ? "new-password" : "current-password");
-    $("#meter").hidden = mode !== "signup";
-    // Only offer to wipe an account that exists.
-    $("#reset").hidden = !(account && account.name);
     Array.prototype.forEach.call(document.querySelectorAll(".modes button"), function (b) {
       b.setAttribute("aria-selected", b.getAttribute("data-mode") === mode);
     });
   }
 
   function strength(pw) {
-    var score = 0;
-    if (pw.length >= 8) score++;
-    if (pw.length >= 12) score++;
-    if (/[a-z]/i.test(pw) && /\d/.test(pw)) score++;
-    if (/[^\w\s]/.test(pw)) score++;
-    return score;
+    var s = 0;
+    if (pw.length >= 8) s++;
+    if (pw.length >= 12) s++;
+    if (/[a-z]/i.test(pw) && /\d/.test(pw)) s++;
+    if (/[^\w\s]/.test(pw)) s++;
+    return s;
   }
   function paintMeter() {
     var score = strength($("#password").value);
@@ -416,16 +422,14 @@
   }
 
   function fieldOf(id) { return $("#" + (id === "pw" ? "password" : id)); }
-
   function setError(id, msg) {
     $("#e-" + id).textContent = msg || "";
     var input = fieldOf(id);
     if (msg) input.setAttribute("aria-invalid", "true");
     else input.removeAttribute("aria-invalid");
   }
-
   function clearErrors() {
-    ["name", "pw", "confirm"].forEach(function (id) { setError(id, ""); });
+    ["name", "email", "pw", "confirm"].forEach(function (id) { setError(id, ""); });
   }
 
   function showSummary(problems) {
@@ -450,17 +454,24 @@
     box.focus();
   }
 
-  // Shape-only checks. Whether the passcode is *correct* is a separate step,
-  // because it needs to await the hash.
   function validate() {
     var problems = [];
     var name = $("#name").value.trim();
+    var email = $("#email").value.trim();
     var pw = $("#password").value;
     var confirm = $("#confirm").value;
     clearErrors();
 
-    if (!name) problems.push({ id: "name", msg: t().eNameEmpty });
-    else if (name.length < 2) problems.push({ id: "name", msg: t().eNameShort });
+    if (mode === "signup") {
+      if (!name) problems.push({ id: "name", msg: t().eNameEmpty });
+      else if (name.length < 2) problems.push({ id: "name", msg: t().eNameShort });
+    }
+
+    if (!email) problems.push({ id: "email", msg: t().eEmailEmpty });
+    // Loose on purpose — anything stricter rejects valid addresses.
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+      problems.push({ id: "email", msg: t().eEmailBad });
+    }
 
     if (!pw) problems.push({ id: "pw", msg: t().ePwEmpty });
     else if (mode === "signup" && pw.length < 8) problems.push({ id: "pw", msg: t().ePwShort });
@@ -477,12 +488,39 @@
     return problems;
   }
 
-  function succeed(name) {
-    // The passcode itself is never written anywhere, and is wiped from the
-    // form as soon as it has been hashed.
+  // Supabase speaks English error strings; turn the ones users actually hit
+  // into something readable, and fall back to its own wording otherwise.
+  function explain(error) {
+    var msg = String((error && error.message) || "");
+    var low = msg.toLowerCase();
+    if (/invalid login credentials/.test(low)) return { id: "pw", msg: t().eBadLogin };
+    if (/already registered|already exists|user_already_exists/.test(low)) return { id: "email", msg: t().eTaken };
+    if (/email not confirmed|not confirmed/.test(low)) return { id: "email", msg: t().eUnconfirmed };
+    if (/password/.test(low) && /weak|short|least/.test(low)) return { id: "pw", msg: t().eWeakServer };
+    if (/rate limit|too many/.test(low)) return { id: "email", msg: t().eRate };
+    if (/fetch|network|failed to reach/.test(low)) return { id: "email", msg: t().eNetwork };
+    return { id: "email", msg: msg || t().eNetwork };
+  }
+
+  function busy(on) {
+    var b = $("#submit");
+    b.disabled = on;
+    b.textContent = on
+      ? (mode === "signup" ? t().workingSignup : t().workingSignin)
+      : (mode === "signup" ? t().submitSignup : t().submitSignin);
+  }
+
+  function wipePasswords() {
     $("#password").value = "";
     $("#confirm").value = "";
-    writeStore("kw.session", true);
+    paintMeter();
+  }
+
+  function succeed(name) {
+    wipePasswords();
+    // Cached for the main page's greeting only. The session itself is held by
+    // supabase-js; this is a display name, not a credential.
+    writeStore("kw.user", { name: name, email: $("#email").value.trim() });
     $("#done-title").textContent = mode === "signup"
       ? t().doneSignup(name) : t().doneSignin(name);
     $("#done-body").textContent = t().doneBody;
@@ -490,13 +528,36 @@
     $("#done").hidden = false;
   }
 
-  function busy(on) {
-    var b = $("#submit");
-    b.disabled = on;
-    b.textContent = on ? t().working
-      : (mode === "signup" ? t().submitSignup : t().submitSignin);
+  function needConfirmation(email) {
+    wipePasswords();
+    $("#mail-title").textContent = t().mailTitle;
+    $("#mail-body").textContent = t().mailBody(email);
+    $("#form-side").hidden = true;
+    $("#confirm-mail").hidden = false;
   }
 
+  function failWith(problem) {
+    setError(problem.id, problem.msg);
+    showSummary([problem]);
+    fieldOf(problem.id).focus();
+  }
+
+  // The display name comes from the profiles row the signup trigger wrote.
+  function displayName(user) {
+    return client
+      .from("profiles").select("name").eq("id", user.id).maybeSingle()
+      .then(function (res) {
+        if (res && res.data && res.data.name) return res.data.name;
+        var meta = user.user_metadata || {};
+        return meta.name || (user.email || "").split("@")[0] || "friend";
+      })
+      .catch(function () {
+        var meta = user.user_metadata || {};
+        return meta.name || (user.email || "").split("@")[0] || "friend";
+      });
+  }
+
+  /* --------------------------------------------------------------- submit */
   $("#form").addEventListener("submit", function (e) {
     e.preventDefault();
     submitted = true;
@@ -504,62 +565,37 @@
     var problems = validate();
     showSummary(problems);
     if (problems.length) { fieldOf(problems[0].id).focus(); return; }
-
-    if (!hasCrypto()) {
-      setError("pw", t().eNoCrypto);
-      showSummary([{ id: "pw", msg: t().eNoCrypto }]);
-      return;
-    }
+    if (!client) { $("#offline").hidden = false; return; }
 
     var name = $("#name").value.trim();
+    var email = $("#email").value.trim();
     var pw = $("#password").value;
     busy(true);
 
     if (mode === "signup") {
-      var salt = crypto.getRandomValues(new Uint8Array(16));
-      derive(pw, salt, ITERATIONS).then(function (hash) {
-        account = {
-          name: name, salt: toB64(salt), hash: hash,
-          iterations: ITERATIONS, algo: "PBKDF2-SHA256"
-        };
-        writeStore("kw.auth", account);
+      client.auth.signUp({
+        email: email, password: pw,
+        // Read by the on_auth_user_created trigger to fill public.profiles.
+        options: { data: { name: name } }
+      }).then(function (res) {
         busy(false);
+        if (res.error) return failWith(explain(res.error));
+        // No session means the project requires email confirmation.
+        if (!res.data || !res.data.session) return needConfirmation(email);
         succeed(name);
-      }).catch(function () {
-        busy(false);
-        setError("pw", t().eNoCrypto);
-      });
+      }).catch(function (err) { busy(false); failWith(explain(err)); });
       return;
     }
 
-    // Sign in: really compare, rather than wave everyone through.
-    if (!account || !account.name) {
-      busy(false);
-      setError("name", t().eNoAccount);
-      showSummary([{ id: "name", msg: t().eNoAccount }]);
-      return;
-    }
-    if (account.name.toLowerCase() !== name.toLowerCase()) {
-      busy(false);
-      setError("name", t().eWrongName);
-      showSummary([{ id: "name", msg: t().eWrongName }]);
-      return;
-    }
-    derive(pw, fromB64(account.salt), account.iterations || ITERATIONS)
-      .then(function (hash) {
-        busy(false);
-        if (!sameHash(hash, account.hash)) {
-          setError("pw", t().eWrongPw);
-          showSummary([{ id: "pw", msg: t().eWrongPw }]);
-          $("#password").select();
-          return;
-        }
-        succeed(account.name);
+    client.auth.signInWithPassword({ email: email, password: pw })
+      .then(function (res) {
+        if (res.error) { busy(false); return failWith(explain(res.error)); }
+        return displayName(res.data.user).then(function (name) {
+          busy(false);
+          succeed(name);
+        });
       })
-      .catch(function () {
-        busy(false);
-        setError("pw", t().eNoCrypto);
-      });
+      .catch(function (err) { busy(false); failWith(explain(err)); });
   });
 
   $("#password").addEventListener("input", paintMeter);
@@ -583,33 +619,68 @@
   });
 
   $("#reset-btn").addEventListener("click", function () {
-    dropStore("kw.auth");
-    dropStore("kw.session");
-    account = null;
-    mode = "signup";
-    submitted = false;
-    $("#name").value = "";
-    $("#password").value = "";
-    $("#confirm").value = "";
-    showSummary([]);
-    clearErrors();
-    paint();
-    paintMeter();
-    $("#name").focus();
+    var email = $("#email").value.trim();
+    if (!email) { failWith({ id: "email", msg: t().resetNeedEmail }); return; }
+    if (!client) { $("#offline").hidden = false; return; }
+    var btn = this;
+    btn.disabled = true;
+    client.auth.resetPasswordForEmail(email, {
+      redirectTo: location.href.split("?")[0]
+    }).then(function () {
+      // Deliberately the same message either way — whether an address has an
+      // account is not ours to disclose.
+      btn.disabled = false;
+      $("#reset").textContent = t().resetSent;
+    }).catch(function () {
+      btn.disabled = false;
+      $("#reset").textContent = t().resetSent;
+    });
   });
 
   $("#lang").addEventListener("click", function () {
     lang = lang === "en" ? "ar" : "en";
     writeStore("kw.lang", lang);
     paint();
-    // Messages on screen should follow the language, not linger in the old one.
     if (submitted) showSummary(validate()); else showSummary([]);
   });
 
-  if (account && account.name) $("#name").value = account.name;
+  /* ----------------------------------------------------------------- init */
+  client = boot();
+  if (!client) $("#offline").hidden = false;
+
+  // index.html sends people here to sign out, so the real signOut() happens
+  // where the client lives rather than duplicating it on the main page.
+  var signingOut = /[?&]signout=1/.test(location.search);
+  if (signingOut) {
+    dropStore("kw.user");
+    mode = "signin";
+    if (client) client.auth.signOut().catch(function () { /* already gone */ });
+    history.replaceState(null, "", location.pathname);
+  }
+
+  var cached = readStore("kw.user", null);
+  if (cached && cached.email && !signingOut) {
+    $("#email").value = cached.email;
+    if (cached.name) $("#name").value = cached.name;
+    mode = "signin";
+  }
 
   paint();
   paintMeter();
+
+  // An existing session means there is nothing to do here.
+  if (client && !signingOut) {
+    client.auth.getSession().then(function (res) {
+      var session = res && res.data && res.data.session;
+      if (!session || !session.user) return;
+      mode = "signin";
+      displayName(session.user).then(function (name) {
+        $("#email").value = session.user.email || "";
+        writeStore("kw.user", { name: name, email: session.user.email || "" });
+        succeed(name);
+      });
+    }).catch(function () { /* stay on the form */ });
+  }
 })();
 </script>
 </body>

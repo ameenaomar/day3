@@ -363,7 +363,7 @@
     </div>
     <span class="who" id="who" hidden></span>
     <a class="icon-btn" id="signin" href="login.html" data-i18n="signIn">Sign in</a>
-    <button class="icon-btn" id="signout" type="button" hidden data-i18n="signOut">Sign out</button>
+    <a class="icon-btn" id="signout" href="login.html?signout=1" hidden data-i18n="signOut">Sign out</a>
     <button class="icon-btn" id="lang" type="button">عربي</button>
     <button class="icon-btn" id="theme" type="button" data-i18n-label="themeLabel">☾</button>
   </div>
@@ -661,10 +661,11 @@
     pickyDraft: { veg: false, seafood: false, familiar: false, meal: false }
   };
 
-  // Set by login.html. A signed-in name to greet, nothing more — this page
-  // gates nothing, because a lock with no server behind it would be theatre.
-  var account = readStore("kw.auth", null);
-  var signedIn = !!(readStore("kw.session", false) && account && account.name);
+  // Cached by login.html purely to greet by name. The real session is a
+  // Supabase one held by supabase-js on that page, which is also where signing
+  // out happens — so this page needs no client and no network of its own.
+  var account = readStore("kw.user", null);
+  var signedIn = !!(account && account.name);
 
   var places = (window.PLACES || []).slice();
 
@@ -1397,13 +1398,6 @@
     state.picky = null;
     renderList();
     $("#picky-opts").querySelector(".chip").focus();
-  });
-
-  if ($("#signout")) $("#signout").addEventListener("click", function () {
-    // Ends the session; the account itself stays, so the passcode still works.
-    signedIn = false;
-    try { localStorage.removeItem("kw.session"); } catch (e) { /* no-op */ }
-    renderStaticText();
   });
 
   $("#spin").addEventListener("click", openWheel);
