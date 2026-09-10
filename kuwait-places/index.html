@@ -19,6 +19,10 @@
     --accent-text: #085148;
     --gold: #a8762a;
     --shadow: 0 1px 2px rgba(34,29,23,.06), 0 8px 24px rgba(34,29,23,.06);
+    --seg-a: #0b6b5f;
+    --seg-b: #14867a;
+    --seg-c: #a8762a;
+    --seg-text: #ffffff;
     --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     --font-ar: "Segoe UI", Tahoma, "Geeza Pro", "Noto Naskh Arabic", system-ui, sans-serif;
   }
@@ -34,6 +38,10 @@
     --accent-text: #7fe3d2;
     --gold: #d9a55b;
     --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+    --seg-a: #14867a;
+    --seg-b: #0e5f56;
+    --seg-c: #8a5f1e;
+    --seg-text: #ffffff;
   }
 
   * { box-sizing: border-box; }
@@ -99,6 +107,13 @@
   }
   :root[data-theme="dark"] .surprise { color: #08201d; }
   .surprise:hover { filter: brightness(1.06); }
+  .spin {
+    background: var(--surface); color: var(--accent-text); border: 1px solid var(--accent);
+    border-radius: 10px; padding: 10px 16px; font-weight: 600; cursor: pointer;
+  }
+  .spin:hover { background: var(--accent-soft); }
+  .near[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent-text); font-weight: 600; }
+  .geo-msg { color: var(--muted); font-size: .82rem; flex-basis: 100%; }
 
   .chips { display: flex; flex-wrap: wrap; gap: 6px; }
   .chip {
@@ -129,6 +144,9 @@
   .where { color: var(--muted); font-size: .84rem; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
   .dot { opacity: .5; }
   .price { color: var(--gold); font-weight: 600; }
+  .dist { color: var(--accent-text); font-weight: 600; }
+  .maplink { color: var(--accent-text); font-size: .82rem; text-decoration: none; border-bottom: 1px solid currentColor; align-self: flex-start; }
+  .maplink:hover { opacity: .75; }
   .badges { display: flex; flex-wrap: wrap; gap: 5px; }
   .tag { background: var(--surface-2); border-radius: 6px; padding: 2px 8px; font-size: .74rem; color: var(--muted); }
   .note { margin: 0; font-size: .92rem; }
@@ -150,6 +168,39 @@
 
   footer { border-top: 1px solid var(--line); background: var(--surface); padding-block: 20px 32px; color: var(--muted); font-size: .82rem; }
   footer p { margin: 0 0 6px; }
+
+  /* ----------------------------------------------------------- wheel */
+  .modal {
+    position: fixed; inset: 0; z-index: 50; display: flex;
+    align-items: center; justify-content: center; padding: 16px;
+    background: rgba(20,16,12,.6);
+  }
+  .modal[hidden] { display: none !important; }
+  .sheet {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 16px;
+    padding: 20px 18px; width: 100%; max-width: 420px; max-height: 92vh;
+    overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,.35); text-align: center;
+  }
+  .sheet h2 { margin: 0 0 4px; font-size: 1.1rem; }
+  .sheet .hint { margin: 0 0 14px; color: var(--muted); font-size: .84rem; }
+  .wheel-box { position: relative; width: 100%; max-width: 300px; margin: 0 auto 14px; }
+  .wheel-box::before {
+    content: ""; position: absolute; top: -2px; inset-inline-start: 50%;
+    transform: translateX(-50%); z-index: 2;
+    border-inline: 10px solid transparent; border-top: 16px solid var(--text);
+  }
+  .wheel-rot { transition: transform 4.2s cubic-bezier(.16,.84,.28,1); transform-origin: 50% 50%; }
+  .wheel-box svg { display: block; width: 100%; height: auto; }
+  .legend { list-style: none; margin: 0 0 14px; padding: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px 10px; text-align: start; font-size: .8rem; color: var(--muted); }
+  .winner { margin: 0 0 14px; min-height: 2.6em; font-size: .9rem; color: var(--muted); }
+  .winner strong { display: block; font-size: 1.25rem; color: var(--text); margin-top: 2px; }
+  .winner em { display: block; font-style: normal; font-size: .82rem; }
+  .sheet-actions { display: flex; gap: 8px; }
+  .sheet-actions button { flex: 1; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .wheel-rot { transition: none; }
+  }
 
   @media (prefers-reduced-motion: no-preference) {
     .card.picked { animation: pop .35s ease; }
@@ -182,6 +233,11 @@
       <input class="search" id="search" type="search" data-i18n-ph="searchPh" data-i18n-label="searchPh" placeholder="Search a place…">
       <select id="area" data-i18n-label="areaLabel"></select>
       <button class="surprise" id="surprise" type="button" data-i18n="surprise">Surprise us</button>
+      <button class="spin" id="spin" type="button" hidden></button>
+    </div>
+    <div class="row">
+      <button class="chip near" id="near" type="button" aria-pressed="false" data-i18n="near">Near me</button>
+      <span class="geo-msg" id="geo-msg" role="status"></span>
     </div>
     <div class="row">
       <div class="chips" id="prices" role="group" data-i18n-label="priceLabel"></div>
@@ -204,6 +260,20 @@
   <div class="grid" id="grid"></div>
   <div class="empty" id="empty" hidden></div>
 </main>
+
+<div class="modal" id="wheel-modal" hidden role="dialog" aria-modal="true" aria-labelledby="wheel-title">
+  <div class="sheet">
+    <h2 id="wheel-title" data-i18n="wheelTitle">Spin for it</h2>
+    <p class="hint" id="wheel-hint"></p>
+    <div class="wheel-box"><div class="wheel-rot" id="wheel-rot"></div></div>
+    <ul class="legend" id="wheel-legend" hidden></ul>
+    <p class="winner" id="wheel-winner" aria-live="polite"></p>
+    <div class="sheet-actions">
+      <button class="surprise" id="wheel-go" type="button" data-i18n="spinGo">Spin</button>
+      <button class="icon-btn" id="wheel-close" type="button" data-i18n="close">Close</button>
+    </div>
+  </div>
+</div>
 
 <footer>
   <div class="wrap">
@@ -235,9 +305,25 @@
       save: "Add to list", saved: "On our list",
       tried: "Been there", didTry: "Been there",
       late: "Open late", outdoor: "Outdoor seating", group: "Big group",
+      near: "Near me",
+      directions: "Directions",
+      km: function (d) { return d < 1 ? Math.round(d * 1000) + " m" : d.toFixed(1) + " km"; },
+      sortedByDistance: "Sorted by distance from you.",
+      geoDenied: "Location permission denied, so the list is in its normal order.",
+      geoFailed: "Couldn't get your location.",
+      geoUnsupported: "This browser doesn't support location.",
+      geoWaiting: "Finding you…",
+      noPin: "Several branches",
+      spinBtn: function (n) { return "Spin the wheel (" + n + ")"; },
+      wheelTitle: "Spin for it",
+      wheelHint: function (n) { return "Your list has " + n + " spots. One spin decides it."; },
+      spinGo: "Spin", spinAgain: "Spin again", close: "Close",
+      spinning: "Spinning…",
+      winnerLabel: "Tonight:",
+      needTwo: "Add at least two spots to your list to spin.",
       count: function (n, total) { return n + (n === 1 ? " spot" : " spots") + " of " + total; },
       emptyAll: "Nothing matches. Try dropping a filter.",
-      emptySaved: "Your list is empty. Hit “Add to list” on a spot to keep it.",
+      emptySaved: "Your list is empty. Hit “Add to list” on a few spots, then spin the wheel to pick between them.",
       emptyTried: "Nothing marked yet.",
       footNote: "Hand-picked, not sponsored. Nothing here is paid for.",
       footVerify: "Hours and prices change fast — check before you drive out. Something wrong or missing? Edit places.js and open a pull request.",
@@ -266,9 +352,25 @@
       save: "أضف للقائمة", saved: "في قائمتنا",
       tried: "رحنا له", didTry: "رحنا له",
       late: "يفتح متأخر", outdoor: "جلسة خارجية", group: "جمعة كبيرة",
+      near: "قريب مني",
+      directions: "الاتجاهات",
+      km: function (d) { return d < 1 ? Math.round(d * 1000) + " م" : d.toFixed(1) + " كم"; },
+      sortedByDistance: "مرتّبة حسب المسافة منك.",
+      geoDenied: "ما سمحت بالموقع، فالترتيب رجع طبيعي.",
+      geoFailed: "ما قدرنا نحدد موقعك.",
+      geoUnsupported: "المتصفح ما يدعم تحديد الموقع.",
+      geoWaiting: "نحدد موقعك…",
+      noPin: "فروع متعددة",
+      spinBtn: function (n) { return "دوّر العجلة (" + n + ")"; },
+      wheelTitle: "خلّ العجلة تقرر",
+      wheelHint: function (n) { return "في قائمتكم " + n + " مكان. دورة واحدة تحسم." ; },
+      spinGo: "دوّر", spinAgain: "دوّر مرة ثانية", close: "إغلاق",
+      spinning: "تدور…",
+      winnerLabel: "الليلة:",
+      needTwo: "أضف مكانين على الأقل للقائمة عشان تدوّر.",
       count: function (n, total) { return n + " مكان من " + total; },
       emptyAll: "ما في نتائج. جرّب تشيل فلتر.",
-      emptySaved: "قائمتكم فاضية. اضغط «أضف للقائمة» على أي مكان.",
+      emptySaved: "قائمتكم فاضية. اضغط «أضف للقائمة» على عدة أماكن، وبعدها دوّر العجلة عشان تختار بينها.",
       emptyTried: "ما علّمتوا أي مكان.",
       footNote: "اختيار شخصي، وغير مدفوع. لا يوجد أي إعلان هنا.",
       footVerify: "المواعيد والأسعار تتغيّر بسرعة — تأكد قبل ما تسوق. في خطأ أو مكان ناقص؟ عدّل places.js وافتح pull request.",
@@ -314,7 +416,10 @@
     area: "",
     q: "",
     view: "all",
-    picked: null
+    picked: null,
+    here: null,        // [lat, lng] once the user shares their location
+    geoMsg: "",
+    spun: null         // id the wheel landed on
   };
 
   var places = (window.PLACES || []).slice();
@@ -324,6 +429,29 @@
   function t() { return STR[state.lang]; }
   function L(field) { return (field && (field[state.lang] || field.en)) || ""; }
   function priceMark(tier) { return t().prices[tier]; }
+
+  // Straight-line distance in km. Good enough to order a list — these are
+  // area-level coordinates, not surveyed pins.
+  function distanceKm(a, b) {
+    var R = 6371;
+    var toRad = Math.PI / 180;
+    var dLat = (b[0] - a[0]) * toRad;
+    var dLng = (b[1] - a[1]) * toRad;
+    var h = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(a[0] * toRad) * Math.cos(b[0] * toRad) *
+      Math.sin(dLng / 2) * Math.sin(dLng / 2);
+    return 2 * R * Math.asin(Math.min(1, Math.sqrt(h)));
+  }
+
+  function distanceTo(p) {
+    return (state.here && p.coords) ? distanceKm(state.here, p.coords) : null;
+  }
+
+  function mapsUrl(p) {
+    // Searching by name beats dropping our approximate pin on the map.
+    return "https://www.google.com/maps/search/?api=1&query=" +
+      encodeURIComponent(p.name.en + ", " + p.area.en + ", Kuwait");
+  }
 
   function isSaved(id) { return state.saved.indexOf(id) !== -1; }
   function isTried(id) { return state.tried.indexOf(id) !== -1; }
@@ -515,6 +643,14 @@
     price.className = "price";
     price.textContent = priceMark(p.price);
     where.appendChild(price);
+    var d = distanceTo(p);
+    if (state.here) {
+      where.appendChild(sep());
+      var dist = document.createElement("span");
+      dist.className = "dist";
+      dist.textContent = d === null ? t().noPin : t().km(d);
+      where.appendChild(dist);
+    }
     el.appendChild(where);
 
     var badges = document.createElement("div");
@@ -538,6 +674,14 @@
     tip.appendChild(document.createTextNode(L(p.tip)));
     el.appendChild(tip);
 
+    var link = document.createElement("a");
+    link.className = "maplink";
+    link.href = mapsUrl(p);
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.textContent = t().directions + " ↗";
+    el.appendChild(link);
+
     var actions = document.createElement("div");
     actions.className = "actions";
     actions.appendChild(actionBtn(
@@ -557,6 +701,18 @@
   function renderList() {
     var list = visible();
 
+    // Nearest first when the user has shared their location. Places with no
+    // single point (several branches) can't be measured, so they go last.
+    if (state.here) {
+      list = list.slice().sort(function (a, b) {
+        var da = distanceTo(a), db = distanceTo(b);
+        if (da === null && db === null) return 0;
+        if (da === null) return 1;
+        if (db === null) return -1;
+        return da - db;
+      });
+    }
+
     // A surprise pick floats to the top so nobody has to scroll for it.
     if (state.picked) {
       list = list.slice().sort(function (a, b) {
@@ -570,6 +726,8 @@
 
     $("#count").textContent = t().count(list.length, places.length);
     $("#clear").hidden = !filtersActive();
+    renderSpinButton();
+    $("#geo-msg").textContent = state.geoMsg;
 
     var empty = $("#empty");
     empty.hidden = list.length > 0;
@@ -578,6 +736,196 @@
         : state.view === "tried" ? t().emptyTried
         : t().emptyAll;
     }
+  }
+
+  /* ------------------------------------------------------------ the wheel */
+  // The wheel spins over the group's shortlist — every place on "Our list" —
+  // and only exists once there is more than one thing to choose between.
+  function shortlist() {
+    return state.saved.map(function (id) {
+      for (var i = 0; i < places.length; i++) {
+        if (places[i].id === id) return places[i];
+      }
+      return null;
+    }).filter(Boolean);
+  }
+
+  function renderSpinButton() {
+    var list = shortlist();
+    var btn = $("#spin");
+    btn.hidden = list.length < 2;
+    if (!btn.hidden) btn.textContent = t().spinBtn(list.length);
+  }
+
+  var SVG_NS = "http://www.w3.org/2000/svg";
+  function svgEl(name, attrs) {
+    var el = document.createElementNS(SVG_NS, name);
+    Object.keys(attrs).forEach(function (k) { el.setAttribute(k, attrs[k]); });
+    return el;
+  }
+
+  function pointOnCircle(deg, r) {
+    var rad = (deg - 90) * Math.PI / 180;
+    return [100 + r * Math.cos(rad), 100 + r * Math.sin(rad)];
+  }
+
+  var wheelState = { list: [], rotation: 0, spinning: false };
+
+  function buildWheel() {
+    var list = wheelState.list;
+    var n = list.length;
+    var step = 360 / n;
+    // Past 14 slices a name no longer fits, so the wheel shows numbers and
+    // a legend underneath does the naming.
+    var numbered = n > 14;
+    var fill = ["var(--seg-a)", "var(--seg-b)", "var(--seg-c)"];
+
+    var svg = svgEl("svg", { viewBox: "0 0 200 200", role: "img" });
+    svg.setAttribute("aria-label", list.map(function (p) { return L(p.name); }).join(", "));
+
+    for (var i = 0; i < n; i++) {
+      var a0 = i * step, a1 = (i + 1) * step;
+      var s0 = pointOnCircle(a0, 96), s1 = pointOnCircle(a1, 96);
+      var d = n === 1
+        ? "M4,100 A96,96 0 1,1 196,100 A96,96 0 1,1 4,100 Z"
+        : "M100,100 L" + s0[0].toFixed(2) + "," + s0[1].toFixed(2) +
+          " A96,96 0 " + (step > 180 ? 1 : 0) + ",1 " +
+          s1[0].toFixed(2) + "," + s1[1].toFixed(2) + " Z";
+      // Three colours never divide evenly into an even slice count, so nudge
+      // the last slice off its neighbour's colour.
+      var ci = i % 3;
+      if (i === n - 1 && ci === 0 && n > 1) ci = 1;
+      svg.appendChild(svgEl("path", { d: d, fill: fill[ci], stroke: "var(--surface)", "stroke-width": "1" }));
+
+      var mid = a0 + step / 2;
+      var at = pointOnCircle(mid, numbered ? 78 : 62);
+      var label = svgEl("text", {
+        x: at[0].toFixed(2), y: at[1].toFixed(2),
+        fill: "var(--seg-text)", "text-anchor": "middle",
+        "dominant-baseline": "middle",
+        "font-size": numbered ? 8 : (n <= 6 ? 9 : n <= 10 ? 7.5 : 6),
+        "font-weight": "600",
+        transform: "rotate(" + (mid + 90).toFixed(2) + " " + at[0].toFixed(2) + " " + at[1].toFixed(2) + ")"
+      });
+      var text = numbered ? String(i + 1) : L(list[i].name);
+      var cap = n <= 6 ? 18 : n <= 10 ? 14 : 11;
+      label.textContent = numbered ? text
+        : (text.length > cap ? text.slice(0, cap - 1) + "…" : text);
+      svg.appendChild(label);
+    }
+
+    svg.appendChild(svgEl("circle", { cx: 100, cy: 100, r: 9, fill: "var(--surface)", stroke: "var(--line)" }));
+
+    var rot = $("#wheel-rot");
+    rot.textContent = "";
+    rot.style.transition = "none";
+    rot.style.transform = "rotate(" + wheelState.rotation + "deg)";
+    rot.appendChild(svg);
+
+    var legend = $("#wheel-legend");
+    legend.textContent = "";
+    legend.hidden = !numbered;
+    if (numbered) {
+      list.forEach(function (place, i) {
+        var li = document.createElement("li");
+        li.textContent = (i + 1) + ". " + L(place.name);
+        legend.appendChild(li);
+      });
+    }
+  }
+
+  function openWheel() {
+    wheelState.list = shortlist();
+    if (wheelState.list.length < 2) return;
+    wheelState.rotation = 0;
+    buildWheel();
+    $("#wheel-hint").textContent = t().wheelHint(wheelState.list.length);
+    $("#wheel-winner").textContent = "";
+    $("#wheel-go").textContent = t().spinGo;
+    $("#wheel-modal").hidden = false;
+    $("#wheel-go").focus();
+  }
+
+  function closeWheel() {
+    $("#wheel-modal").hidden = true;
+    wheelState.spinning = false;
+    $("#spin").focus();
+  }
+
+  function announce(place) {
+    var box = $("#wheel-winner");
+    box.textContent = "";
+    var lbl = document.createTextNode(t().winnerLabel);
+    var name = document.createElement("strong");
+    name.textContent = L(place.name);
+    var where = document.createElement("em");
+    var d = distanceTo(place);
+    where.textContent = L(place.area) + (d === null ? "" : " · " + t().km(d));
+    box.appendChild(lbl);
+    box.appendChild(name);
+    box.appendChild(where);
+  }
+
+  function spin() {
+    var list = wheelState.list;
+    if (wheelState.spinning || list.length < 2) return;
+
+    var index = Math.floor(Math.random() * list.length);
+    var step = 360 / list.length;
+    // Land the chosen slice under the pointer at the top, offset a little
+    // inside the slice so it never stops dead on a border.
+    var jitter = (Math.random() - 0.5) * step * 0.7;
+    var target = -(index * step + step / 2) - jitter;
+    var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var turns = reduced ? 0 : 5;
+
+    // Always rotate forward from wherever it stopped, so repeat spins move.
+    var current = wheelState.rotation;
+    var next = target - 360 * turns;
+    while (next >= current) next -= 360;
+    wheelState.rotation = next;
+
+    var rot = $("#wheel-rot");
+    var winner = list[index];
+
+    var finish = function () {
+      wheelState.spinning = false;
+      $("#wheel-go").textContent = t().spinAgain;
+      $("#wheel-go").disabled = false;
+      announce(winner);
+      // Mirror the result on the page behind the modal.
+      state.spun = winner.id;
+      state.picked = winner.id;
+      renderList();
+    };
+
+    wheelState.spinning = true;
+    $("#wheel-go").disabled = true;
+    $("#wheel-winner").textContent = t().spinning;
+
+    if (reduced) {
+      rot.style.transition = "none";
+      rot.style.transform = "rotate(" + wheelState.rotation + "deg)";
+      finish();
+      return;
+    }
+
+    // Force a reflow so the browser animates from the current angle.
+    rot.style.transition = "none";
+    void rot.offsetWidth;
+    rot.style.transition = "";
+    rot.style.transform = "rotate(" + wheelState.rotation + "deg)";
+
+    var done = false;
+    var once = function () {
+      if (done) return;
+      done = true;
+      rot.removeEventListener("transitionend", once);
+      finish();
+    };
+    rot.addEventListener("transitionend", once);
+    // transitionend can be dropped if the tab is backgrounded mid-spin.
+    setTimeout(once, 4600);
   }
 
   function renderAll() {
@@ -593,7 +941,14 @@
   $("#lang").addEventListener("click", function () {
     state.lang = state.lang === "en" ? "ar" : "en";
     writeStore("kw.lang", state.lang);
+    if (state.geoMsg) state.geoMsg = state.here ? t().sortedByDistance : "";
     renderAll();
+    if (!$("#wheel-modal").hidden) {
+      buildWheel();
+      $("#wheel-hint").textContent = t().wheelHint(wheelState.list.length);
+      $("#wheel-go").textContent = t().spinGo;
+      $("#wheel-winner").textContent = "";
+    }
   });
 
   $("#theme").addEventListener("click", function () {
@@ -625,6 +980,69 @@
     state.picked = pool[Math.floor(Math.random() * pool.length)].id;
     renderList();
     window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  $("#near").addEventListener("click", function (e) {
+    var btn = e.currentTarget;
+    if (state.here) {
+      state.here = null;
+      state.geoMsg = "";
+      btn.setAttribute("aria-pressed", "false");
+      renderList();
+      return;
+    }
+    if (!navigator.geolocation) {
+      state.geoMsg = t().geoUnsupported;
+      renderList();
+      return;
+    }
+    state.geoMsg = t().geoWaiting;
+    $("#geo-msg").textContent = state.geoMsg;
+
+    // The `timeout` option below only covers acquiring a fix — it does not run
+    // while the permission prompt is still sitting there. A user who ignores
+    // the prompt would otherwise stay on "Finding you…" forever, so time it
+    // out ourselves. A fix that lands afterwards is still honoured.
+    var settled = false;
+    var watchdog = setTimeout(function () {
+      if (settled) return;
+      settled = true;
+      state.geoMsg = t().geoFailed;
+      btn.setAttribute("aria-pressed", "false");
+      renderList();
+    }, 12000);
+
+    navigator.geolocation.getCurrentPosition(
+      function (pos) {
+        clearTimeout(watchdog);
+        settled = true;
+        state.here = [pos.coords.latitude, pos.coords.longitude];
+        state.geoMsg = t().sortedByDistance;
+        state.picked = null;
+        btn.setAttribute("aria-pressed", "true");
+        renderList();
+      },
+      function (err) {
+        clearTimeout(watchdog);
+        if (settled) return;
+        settled = true;
+        state.here = null;
+        state.geoMsg = err && err.code === 1 ? t().geoDenied : t().geoFailed;
+        btn.setAttribute("aria-pressed", "false");
+        renderList();
+      },
+      { timeout: 10000, maximumAge: 300000 }
+    );
+  });
+
+  $("#spin").addEventListener("click", openWheel);
+  $("#wheel-go").addEventListener("click", spin);
+  $("#wheel-close").addEventListener("click", closeWheel);
+  $("#wheel-modal").addEventListener("click", function (e) {
+    if (e.target === e.currentTarget) closeWheel();
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && !$("#wheel-modal").hidden) closeWheel();
   });
 
   $("#clear").addEventListener("click", function () {
