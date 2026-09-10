@@ -1,64 +1,135 @@
 import type { Metadata } from "next";
-import { notFound, redirect } from "next/navigation";
-import { signIn } from "@/app/actions/auth";
-import { AuthShell } from "@/components/auth/AuthShell";
-import { CredentialsForm } from "@/components/auth/CredentialsForm";
-import { authCopy } from "@/lib/i18n/auth";
-import { isLocale, type Locale } from "@/lib/i18n/config";
-import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { notFound } from "next/navigation";
+import { signOut } from "@/app/actions/auth";
+import { SignInForm } from "@/components/ui/SignInForm";
+import { dirFor, isLocale, locales, otherLocale, type Locale } from "@/lib/i18n/config";
+import { SIGNIN, SIGNUP, t } from "@/lib/i18n/signup";
 import { currentUser } from "@/lib/supabase/server";
+import { siteUrl } from "@/lib/site";
+import "../signup/signup.css";
 
-/** An account screen has nothing a search engine should hold. */
-export const metadata: Metadata = { robots: { index: false, follow: false } };
+/**
+ * Sign-in: email and password, or a reason the last confirmation link did not
+ * work.
+ *
+ * `?e=` says what happened to a link /auth/confirm refused — expired, already
+ * used, not ours — because "that did not work" is not an answer anybody can
+ * act on.
+ */
 
-export default async function SignInPage({
-  params,
-  searchParams,
-}: {
+type Params = {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ next?: string; error?: string }>;
-}) {
+  searchParams: Promise<{ e?: string }>;
+};
+
+export async function generateMetadata({ params }: Params): Promise<Metadata> {
+  const { locale: raw } = await params;
+  const locale: Locale = isLocale(raw) ? raw : "en";
+  const base = siteUrl();
+  const title = locale === "ar" ? "الدخول · SIMPLY STYLED" : "Sign in · SIMPLY STYLED";
+
+  return {
+    title,
+    description: t(SIGNIN.lede, locale),
+    alternates: {
+      canonical: `${base}/${locale}/signin`,
+      languages: Object.fromEntries(locales.map((l) => [l, `${base}/${l}/signin`])),
+    },
+  };
+}
+
+const PROBLEM = {
+  invalid: SIGNIN.eInvalid,
+  expired: SIGNIN.eExpired,
+  used: SIGNIN.eUsed,
+  error: SIGNIN.eError,
+  signedout: SIGNIN.eSignedOut,
+} as const;
+
+function isProblem(value: string | undefined): value is keyof typeof PROBLEM {
+  return value !== undefined && value in PROBLEM;
+}
+
+export default async function SignInPage({ params, searchParams }: Params) {
   const { locale: raw } = await params;
   if (!isLocale(raw)) notFound();
   const locale: Locale = raw;
-  const t = authCopy(locale);
-
-  const { next, error } = await searchParams;
-
-  // Already signed in: the form would be a dead end.
-  if (await currentUser()) redirect(`/${locale}/account`);
-
-  const notice =
-    error === "link" ? t("errLinkInvalid") : error === "required" ? t("errSignInRequired") : undefined;
+  const other = otherLocale(locale);
+  const { e } = await searchParams;
+  const user = await currentUser();
+  const signedInName = (user?.user_metadata?.name as string | undefined) ?? user?.email ?? "";
 
   return (
-    <AuthShell
-      locale={locale}
-      title={t("signInTitle")}
-      lede={t("signInLede")}
-      footer={
-        <p>
-          {t("signInNoAccount")}{" "}
-          <a
-            className="text-brown underline decoration-dotted underline-offset-4"
-            href={`/${locale}/signup`}
-          >
-            {t("signInCreate")}
-          </a>
-        </p>
-      }
-    >
-      {notice ? (
-        <p role="alert" className="mb-4 border border-red bg-well px-3 py-2 text-sm text-red">
-          ! {notice}
-        </p>
-      ) : null}
+    <div className="swiss" dir={dirFor(locale)}>
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      />
 
-      {isSupabaseConfigured() ? (
-        <CredentialsForm mode="signin" locale={locale} action={signIn} next={next} />
-      ) : (
-        <p className="border border-red bg-well px-3 py-2 text-sm text-red">! {t("errNotConfigured")}</p>
-      )}
-    </AuthShell>
+      <div className="swiss-shell">
+        <header className="swiss-mast">
+          <a className="swiss-brand" href="/">
+            SIMPLY STYLED<i aria-hidden="true">.</i>
+          </a>
+          <a className="swiss-tool" href={`/${other}/signin`} lang={other} hrefLang={other}>
+            {other === "ar" ? "العربية" : "English"}
+          </a>
+        </header>
+
+        <div className="swiss-sheet">
+          <div className="swiss-rail">
+            <span className="swiss-mark" aria-hidden="true" />
+            <p className="swiss-railtag">{t(SIGNIN.tag, locale)}</p>
+            <p className="swiss-railnote">{t(SIGNIN.railNote, locale)}</p>
+          </div>
+
+          <main>
+            {isProblem(e) ? (
+              <p className="swiss-err" role="status">
+                {t(PROBLEM[e], locale)}
+              </p>
+            ) : null}
+
+            {user ? (
+              /* Already signed in: say so rather than asking again. */
+              <div>
+                <p className="swiss-stamp">
+                  <i aria-hidden="true">✓</i>
+                  {t(SIGNIN.signedInAs, locale)}
+                </p>
+                <h1 className="swiss-display">{signedInName}</h1>
+                <p className="swiss-mail">{user.email}</p>
+                <div className="swiss-actions">
+                  <a className="swiss-btn" href="/">
+                    {t(SIGNUP.backToFlow, locale)}
+                  </a>
+                  <form action={signOut}>
+                    <input type="hidden" name="locale" value={locale} />
+                    <button className="swiss-link" type="submit">
+                      {t(SIGNIN.signOut, locale)}
+                    </button>
+                  </form>
+                </div>
+              </div>
+            ) : (
+              <>
+                <SignInForm locale={locale} />
+                <p className="swiss-note">
+                  <a className="swiss-link" href="/">
+                    {t(SIGNIN.backToFlow, locale)}
+                  </a>
+                </p>
+              </>
+            )}
+          </main>
+        </div>
+
+        <footer className="swiss-foot">
+          <span>{locale === "ar" ? "نموذج للتجربة" : "Prototype for testing"}</span>
+          <span>{locale === "ar" ? "الكويت" : "KUWAIT"}</span>
+        </footer>
+      </div>
+    </div>
   );
 }

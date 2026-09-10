@@ -20,7 +20,7 @@ export const metadata: Metadata = { robots: { index: false, follow: false } };
  * 375px can be eyeballed at once.
  *
  * The labels here are generic on purpose — this is not product copy. The real
- * questions and their wording come verbatim from public/whatcaniwear.html.
+ * questions and their wording come verbatim from public/simply-styled.html.
  */
 export default async function DesignPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale: raw } = await params;

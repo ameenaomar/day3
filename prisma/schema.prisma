@@ -2,10 +2,11 @@
 //
 // Two things this schema is deliberately shaped around:
 //
-//  1. StyleProfile is versioned and an Order pins the version it was placed
-//     against. That is what lets a returning customer's saved answers pre-fill
-//     the whole flow, turning a repeat order into thirty seconds, while an old
-//     order still shows the stylist exactly what it was shopped from.
+//  1. StyleProfile and Measurement are both versioned, and an Order pins the
+//     profile version it was placed against. That is what lets a returning
+//     customer's saved answers pre-fill the whole flow, turning a repeat order
+//     into thirty seconds, while an old order still shows the stylist exactly
+//     what it was shopped from.
 //
 //  2. Both payment models are representable without a migration. Money is held
 //     as separate fee/budget/delivery columns and charges live in Payment rows,
@@ -42,6 +43,11 @@ model Customer {
   phoneE164 String?
   locale    Locale  @default(en)
 
+  /// "No marketing unless you ask for it" is a promise made on the front page,
+  /// so the flag that backs it is stored with the moment it was given.
+  marketingOptIn   Boolean   @default(false)
+  marketingOptInAt DateTime?
+
   /// The Supabase Auth user this customer signs in as. Sign-up and sign-in run
   /// through Supabase Auth, which owns the credential and the session; this row
   /// is created by the `on_auth_user_created` trigger inside that transaction.
@@ -51,10 +57,12 @@ model Customer {
   createdAt  DateTime @default(now())
   lastSeenAt DateTime @default(now())
 
-  profiles StyleProfile[]
-  orders   Order[]
-  tokens   MagicLinkToken[]
-  sessions Session[]
+  profiles     StyleProfile[]
+  measurements Measurement[]
+  addresses    Address[]
+  orders       Order[]
+  tokens       MagicLinkToken[]
+  sessions     Session[]
 
   @@index([createdAt])
 }
@@ -141,13 +149,68 @@ model StylistMagicLinkToken {
 }
 
 // ---------------------------------------------------------------------------
-// Style profile
+// Measurements
 // ---------------------------------------------------------------------------
 
 enum StylingFor {
   women
   men
 }
+
+/// What the measuring screen showed the customer. Stored rather than
+/// recomputed, because `tailor` is what the payment page promised them: one
+/// size per piece instead of two.
+enum FitAccuracy {
+  estimated
+  better
+  good
+  tailor
+}
+
+/// One row per set of measurements, versioned rather than updated in place:
+/// bodies change, and an order placed last Ramadan has to stay explainable.
+///
+/// Lengths are integer millimetres. The screen asks in centimetres and accepts
+/// one decimal, and there are no float amounts in this schema.
+///
+/// Personal data. Never logged, never rendered outside an authenticated
+/// session, and deleted with the customer.
+model Measurement {
+  id         String  @id @default(cuid())
+  customerId String
+  version    Int
+  isCurrent  Boolean @default(true)
+
+  heightMm   Int?
+  /// Women only; `chestMm` is the men's equivalent.
+  bustMm     Int?
+  chestMm    Int?
+  waistMm    Int?
+  hipMm      Int?
+  shoulderMm Int?
+  armMm      Int?
+  inseamMm   Int?
+
+  /// Set when the customer said they had no tape measure to hand.
+  noTape      Boolean     @default(false)
+  /// How many of the fields that apply to them were filled, and the tier that
+  /// number put them in.
+  filledCount Int         @default(0)
+  accuracy    FitAccuracy @default(estimated)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  customer Customer       @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  profiles StyleProfile[]
+
+  @@unique([customerId, version])
+  @@index([customerId, isCurrent])
+}
+
+// ---------------------------------------------------------------------------
+// Style profile
+// ---------------------------------------------------------------------------
 
 /// One row per version. `isCurrent` marks the one that pre-fills the flow.
 ///
@@ -157,13 +220,17 @@ enum StylingFor {
 /// question is reworded; all of it as JSON would make "which occasions actually
 /// sell" unqueryable.
 model StyleProfile {
-  id         String @id @default(cuid())
+  id         String  @id @default(cuid())
   customerId String
   version    Int
   isCurrent  Boolean @default(true)
 
   /// Bumped when the answer shape changes, so old profiles keep parsing.
-  answersSchemaVersion Int @default(1)
+  /// v2 = the eight-screen flow, with measurements on their own screen.
+  answersSchemaVersion Int @default(2)
+
+  /// The measurements this profile was built with, if any were given.
+  measurementId String?
 
   // Queryable slice.
   stylingFor     StylingFor
@@ -173,9 +240,9 @@ model StyleProfile {
   sizeShoe       String?
   budgetTierFils Int?
 
-  /// Every answer from the seven screens, validated by Zod on write.
-  /// Body measurements live in here — never logged, never left an
-  /// authenticated session.
+  /// Every answer from the eight screens, validated by Zod on write. The
+  /// centimetre measurements are not duplicated here — they live in
+  /// Measurement, which this row points at.
   answers Json
 
   /// The derived profile: palette ids, silhouette key, wear-more and skip rule
@@ -187,13 +254,51 @@ model StyleProfile {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  orders   Order[]
+  customer    Customer     @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  measurement Measurement? @relation(fields: [measurementId], references: [id])
+  orders      Order[]
 
   @@unique([customerId, version])
   @@index([customerId, isCurrent])
   @@index([occasion])
   @@index([stylingFor])
+}
+
+// ---------------------------------------------------------------------------
+// Delivery addresses
+// ---------------------------------------------------------------------------
+
+/// Kuwait addresses only, and shaped the way Kuwait writes them — governorate,
+/// area, block, street, building — because "address line 1" does not survive
+/// a delivery driver here.
+///
+/// Saved on the customer so a repeat order is one tap, and copied onto the
+/// order at checkout so editing this row can never rewrite where a past order
+/// actually went.
+model Address {
+  id         String  @id @default(cuid())
+  customerId String
+  /// What the customer calls it: home, work, mum's.
+  label      String?
+
+  governorate String
+  area        String
+  block       String
+  street      String
+  building    String
+  floor       String?
+  flat        String?
+  notes       String?
+
+  isDefault Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  orders   Order[]
+
+  @@index([customerId, isDefault])
 }
 
 // ---------------------------------------------------------------------------
@@ -225,10 +330,10 @@ enum OrderStatus {
 }
 
 model Order {
-  id         String @id @default(cuid())
+  id             String @id @default(cuid())
   /// Short human reference the stylist and customer can say out loud.
-  reference  String @unique
-  customerId String
+  reference      String @unique
+  customerId     String
   /// The exact profile version this order was shopped from.
   styleProfileId String
 
@@ -254,7 +359,9 @@ model Order {
   /// Where the stylist sends the look for approval.
   whatsappE164 String
 
-  // Kuwait-only delivery, validated server-side.
+  // Kuwait-only delivery, validated server-side. These columns are the
+  // snapshot; `addressId` is the row it was copied from, if it is still there.
+  addressId          String?
   addressGovernorate String
   addressArea        String
   addressBlock       String
@@ -275,6 +382,7 @@ model Order {
 
   customer     Customer     @relation(fields: [customerId], references: [id])
   styleProfile StyleProfile @relation(fields: [styleProfileId], references: [id])
+  address      Address?     @relation(fields: [addressId], references: [id])
 
   payments     Payment[]
   refunds      Refund[]
@@ -341,7 +449,7 @@ enum RefundStatus {
 /// clothing budget refunded within 3 working days" is a promise made on the
 /// payment page and has to be auditable.
 model Refund {
-  id        String @id @default(cuid())
+  id        String  @id @default(cuid())
   orderId   String
   paymentId String?
 
@@ -378,8 +486,8 @@ model OrderItem {
   id      String @id @default(cuid())
   orderId String
 
-  name     String
-  shopName String
+  name          String
+  shopName      String
   /// Free text, because Kuwait boutique sizing is not a clean enum.
   sizePrimary   String
   /// Set when a fit-risky piece went out in two sizes.

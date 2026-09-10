@@ -8,7 +8,7 @@ import { notFound } from "next/navigation";
 
 /**
  * Scaffold front page. The real wording, English and Arabic, is ported
- * verbatim from public/whatcaniwear.html — the working prototype, which `/`
+ * verbatim from public/simply-styled.html — the working prototype, which `/`
  * serves. Until that port lands, this screen proves out the machine (tokens,
  * both themes, RTL, fonts, the KWD formatter and the pricing module) rather
  * than presenting final copy.

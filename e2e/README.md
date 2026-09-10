@@ -22,6 +22,9 @@ What the mock is faithful about, because the code under test depends on it:
   again. `REFRESH_REUSE_MS=0` removes that grace, which is the setting that
   catches a proxy handing the route a token it has already spent.
 - Whether email confirmation is on, which changes what sign-up returns.
+- Refusing an unconfirmed sign-in, and returning a user with `identities: []`
+  for an address that already has an account — the shape that stops the form
+  becoming an account-enumeration oracle.
 
 What it does not do: verify JWT signatures, or enforce row level security. RLS
 is checked directly against the project in SQL — see the migration in
@@ -38,22 +41,22 @@ node e2e/mock-supabase.mjs                      # add CONFIRM_EMAIL=1 for the
 
 # 2. the app, built against it
 cat > .env.local <<'ENV'
-NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321
-NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_mock
+SUPABASE_URL=http://127.0.0.1:54321
+SUPABASE_PUBLISHABLE_KEY=sb_publishable_mock
 APP_URL=http://127.0.0.1:3100
 ENV
-# The prototype is a static file, so its Supabase URL is baked in — point it at
-# the mock for the run, and put it back afterwards.
-sed -i.bak 's|https://[a-z]*\.supabase\.co|http://127.0.0.1:54321|' public/whatcaniwear.html
 npm run build && npx next start -p 3100
 
-# 3. the checks
-node e2e/auth-flows.mjs
-node e2e/auth-email-confirmation.mjs            # mock started with CONFIRM_EMAIL=1
-TOKEN_TTL=100 REFRESH_REUSE_MS=0 node e2e/auth-session-refresh.mjs
-
-mv public/whatcaniwear.html.bak public/whatcaniwear.html
+# 3. the checks, each against a mock started for it
+node e2e/auth-flows.mjs                                    # default mock
+CONFIRM_EMAIL=1 …                                          # then:
+node e2e/auth-email-confirmation.mjs
+TOKEN_TTL=100 REFRESH_REUSE_MS=0 …                         # then:
+node e2e/auth-session-refresh.mjs
 ```
+
+The front door at `/` needs no patching: it holds no Supabase URL of its own,
+and asks `/api/me` who is signed in.
 
 `CHROMIUM_PATH` sets the browser binary if Playwright's own download is not
 where it expects. `BASE_URL` and `MOCK_URL` override the addresses.

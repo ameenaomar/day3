@@ -1,5 +1,9 @@
 import { chromium } from "@playwright/test";
 
+/**
+ * Sign-up, sign-in, sign-out and the front door's view of the session, with
+ * email confirmation switched off in the mock.
+ */
 const BASE = process.env.BASE_URL ?? "http://127.0.0.1:3100";
 const stamp = Date.now();
 const EMAIL = `noura.${stamp}@example.com`;
@@ -7,129 +11,121 @@ const PASS = "correct-horse-8";
 const NAME = "Noura Al-Sabah";
 
 let failures = 0;
-function check(label, ok, detail = "") {
+const check = (label, ok, detail = "") => {
   console.log(`${ok ? "PASS" : "FAIL"}  ${label}${detail && !ok ? ` — ${detail}` : ""}`);
   if (!ok) failures += 1;
-}
+};
 
 const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH });
 const page = await browser.newPage();
 page.on("pageerror", (e) => check("no page errors", false, String(e)));
 
-// ---------------------------------------------------------------- Next app
-await page.goto(`${BASE}/en/signin`);
-check("signin renders", (await page.textContent("h1")).includes("Sign in"));
-
-// The header's language switch is also a submit button, so target the form's
-// own button by its label.
+const submitSignUp = () => page.click('form button:has-text("Create my file")');
 const submitSignIn = () => page.click('form button:has-text("Sign in")');
-const submitSignUp = () => page.click('form button:has-text("Create account")');
 
-// A bad email is caught before the network.
-await page.fill('input[name="email"]', "not-an-email");
-await page.fill('input[name="password"]', "whatever1");
-await submitSignIn();
-await page.waitForSelector("text=does not look like an email address");
-check("signin rejects a malformed email", true);
-
-// Wrong credentials come back as our message, not the auth server's.
-await page.fill('input[name="email"]', "nobody@example.com");
-await page.fill('input[name="password"]', "whatever12");
-await submitSignIn();
-await page.waitForSelector("text=do not match an account");
-check("signin reports unknown credentials", true);
-
-// Sign up.
+// ------------------------------------------------------------------ sign-up
 await page.goto(`${BASE}/en/signup`);
-await page.fill('input[name="name"]', "Noura");
-await page.fill('input[name="email"]', EMAIL);
-await page.fill('input[name="password"]', PASS);
-await page.fill('input[name="passwordConfirm"]', PASS);
+check("signup renders", (await page.textContent("h1")).includes("Create your file"));
+
+await page.fill("#signup-name", "A");
+await page.fill("#signup-email", "not-an-email");
+await page.fill("#signup-password", PASS);
+await page.fill("#signup-password-confirm", PASS);
 await submitSignUp();
-await page.waitForSelector("text=first and last name");
-check("signup requires a full name", true);
-
-await page.fill('input[name="name"]', NAME);
-await page.fill('input[name="password"]', "short1");
-await page.fill('input[name="passwordConfirm"]', "short1");
-await submitSignUp();
-await page.waitForSelector("text=at least 8 characters");
-check("signup enforces the password length", true);
-
-await page.fill('input[name="password"]', PASS);
-await page.fill('input[name="passwordConfirm"]', `${PASS}x`);
-await submitSignUp();
-await page.waitForSelector("text=two passwords do not match");
-check("signup catches a mistyped confirmation", true);
-
-await page.fill('input[name="passwordConfirm"]', PASS);
-// The password fields still hold what was typed: the failed submits above were
-// stopped in the browser, so nothing was re-rendered.
-check("password survived the rejected submits",
-  (await page.inputValue('input[name="password"]')) === PASS);
-await submitSignUp();
-await page.waitForURL(`${BASE}/en/account`);
-check("signup lands on the account page", true);
-check("account shows the signed-in email", (await page.textContent("body")).includes(EMAIL));
-check("account greets by first name", (await page.textContent("h1")).includes("Noura"));
-
-// The session survives a reload, i.e. it is in a cookie and not in memory.
-await page.reload();
-check("session survives a reload", page.url() === `${BASE}/en/account`);
-
-// The session cookie is not readable by script.
-const scriptCookies = await page.evaluate(() => document.cookie);
-check("no supabase cookie is readable by script", !scriptCookies.includes("sb-"), scriptCookies);
-const jar = await page.context().cookies();
-const authCookies = jar.filter((c) => c.name.startsWith("sb-"));
-check("supabase cookies exist", authCookies.length > 0);
+await page.waitForSelector("#signup-name-error");
+check("signup rejects a one-letter name", true);
+check("signup rejects a malformed email", await page.isVisible("#signup-email-error"));
 check(
-  "every supabase cookie is httpOnly",
-  authCookies.every((c) => c.httpOnly),
-  authCookies.filter((c) => !c.httpOnly).map((c) => c.name).join(", "),
+  "the password survived a rejected submit",
+  (await page.inputValue("#signup-password")) === PASS,
 );
 
-// Signed in, the sign-in page is a dead end and redirects.
+await page.fill("#signup-name", NAME);
+await page.fill("#signup-email", EMAIL);
+await page.fill("#signup-phone", "2233 4455");
+await submitSignUp();
+await page.waitForSelector("#signup-phone-error");
+check("signup rejects a landline as a WhatsApp number", true);
+
+await page.fill("#signup-phone", "9988 7766");
+await page.fill("#signup-password", "short7!");
+await page.fill("#signup-password-confirm", "short7!");
+await submitSignUp();
+await page.waitForSelector("#signup-password-error");
+check("signup enforces the password length", true);
+
+await page.fill("#signup-password", PASS);
+await page.fill("#signup-password-confirm", `${PASS}x`);
+await submitSignUp();
+await page.waitForSelector("#signup-password-confirm-error");
+check("signup catches a mistyped confirmation", true);
+
+// The reveal toggle turns both boxes into text.
+await page.check('input[type="checkbox"]:right-of(:text("Show password"))').catch(() => {});
+await page.fill("#signup-password-confirm", PASS);
+await submitSignUp();
+// Confirmation off in the mock: signUp returns a session and lands on `/`.
+await page.waitForURL(`${BASE}/`);
+check("signup lands on the front door, signed in", true);
+
+// ------------------------------------------------- the front door's session
+const me = await page.evaluate(() => fetch("/api/me").then((r) => r.json()));
+check("api/me reports the signed-in customer", me.signedIn === true, JSON.stringify(me));
+check("api/me returns the name from sign-up", me.name === NAME, JSON.stringify(me));
+check("api/me returns the email", me.email === EMAIL, JSON.stringify(me));
+
+const scriptCookies = await page.evaluate(() => document.cookie);
+check("no supabase cookie is readable by script", !scriptCookies.includes("sb-"), scriptCookies);
+const jar = (await page.context().cookies()).filter((c) => c.name.startsWith("sb-"));
+check("supabase cookies exist", jar.length > 0);
+check(
+  "every supabase cookie is httpOnly",
+  jar.every((c) => c.httpOnly),
+  jar.filter((c) => !c.httpOnly).map((c) => c.name).join(", "),
+);
+
+// Already signed in: the sign-in page says so instead of asking again.
 await page.goto(`${BASE}/en/signin`);
-await page.waitForURL(`${BASE}/en/account`);
-check("signin redirects when already signed in", true);
+await page.waitForSelector("text=Signed in as");
+check("signin recognises an existing session", (await page.textContent("h1")).includes(NAME));
 
-// Sign out, then back in.
-await page.click('form button:has-text("Sign out")');
-await page.waitForURL(`${BASE}/en/signin`);
-check("sign out returns to signin", true);
+// ----------------------------------------------------------------- sign-out
+await page.click('form button:has-text("Log out")');
+await page.waitForURL(/\/en\/signin\?e=signedout/);
+check("sign out returns to signin and says so", await page.isVisible("text=You are signed out"));
+const after = await page.evaluate(() => fetch("/api/me").then((r) => r.json()));
+check("api/me reports nobody after sign-out", after.signedIn === false);
 
-await page.goto(`${BASE}/en/account`);
-await page.waitForURL(/\/en\/signin\?error=required/);
-check("account is protected once signed out", true);
-
-await page.fill('input[name="email"]', EMAIL);
-await page.fill('input[name="password"]', PASS);
+// ------------------------------------------------------------------ sign-in
+await page.fill("#signin-email", EMAIL);
+await page.fill("#signin-password", "wrong-password-1");
 await submitSignIn();
-await page.waitForURL(`${BASE}/en/account`);
-check("signin works with the account just created", true);
+await page.waitForSelector("text=do not match an account");
+check("signin reports a wrong password", true);
+check("the email survived the failed attempt", (await page.inputValue("#signin-email")) === EMAIL);
 
-// Signed in, the Arabic sign-up page is a dead end too.
+await page.fill("#signin-password", PASS);
+await submitSignIn();
+await page.waitForURL(`${BASE}/`);
+check("signin lands on the front door", true);
+
+// ------------------------------------------------------------------- arabic
+await page.goto(`${BASE}/ar/signin`);
+await page.waitForSelector("text=مسجّلة الدخول باسم");
+check("arabic signin is in arabic and right-to-left",
+  (await page.getAttribute(".swiss", "dir")) === "rtl");
+
+await page.click('form button:has-text("خروج")');
+await page.waitForURL(/\/ar\/signin/);
 await page.goto(`${BASE}/ar/signup`);
-await page.waitForURL(`${BASE}/ar/account`);
-check("arabic signup redirects when already signed in", true);
-check("arabic account is in arabic", (await page.textContent("h1")).includes("ملفك"));
+check("arabic signup is in arabic", (await page.textContent("h1")).includes("أنشئي ملفك"));
 
-// Arabic, signed out.
-await page.click('form button:has-text("تسجيل الخروج")');
-await page.waitForURL(`${BASE}/ar/signin`);
-await page.goto(`${BASE}/ar/signup`);
-const dir = await page.getAttribute("html", "dir");
-check("arabic signup is right-to-left", dir === "rtl", String(dir));
-check("arabic signup is in arabic", (await page.textContent("h1")).includes("إنشاء حساب"));
+// -------------------------------------------------------- confirmation links
+await page.goto(`${BASE}/auth/confirm?token_hash=nope&type=signup&locale=ar`);
+await page.waitForURL(/\/ar\/signin\?e=/);
+check("a bad confirmation link lands on an arabic reason", true);
 
-// A tampered confirmation link fails closed.
-await page.goto(`${BASE}/auth/confirm?token_hash=nope&type=signup&next=%2Far%2Faccount`);
-await page.waitForURL(/\/ar\/signin\?error=link/);
-check("a bad confirmation link lands on an arabic error", true);
-
-// An off-site `next` must not be honoured.
-await page.goto(`${BASE}/auth/confirm?next=https%3A%2F%2Fevil.example.com`);
+await page.goto(`${BASE}/auth/confirm?next=https%3A%2F%2Fevil.example.com&locale=en`);
 const landed = new URL(page.url());
 check(
   "confirm refuses an off-site redirect",
@@ -137,60 +133,12 @@ check(
   page.url(),
 );
 
-// ---------------------------------------------------------------- prototype
-const proto = await browser.newPage();
-proto.on("pageerror", (e) => check("no prototype page errors", false, String(e)));
-const PEMAIL = `dana.${stamp}@example.com`;
-
-await proto.goto(`${BASE}/`);
-await proto.waitForSelector("text=Sign in to your file");
-check("prototype opens on sign in", true);
-
-await proto.click('button:has-text("No account yet")');
-await proto.waitForSelector("text=Open a file");
-check("prototype switches to sign up", true);
-
-await proto.fill('#app input[type="text"]', "Dana Al-Fahad");
-await proto.fill('#app input[type="email"]', PEMAIL);
-await proto.fill('#app input[type="password"]', "short");
-await proto.click('#app button:has-text("Create my account")');
-await proto.waitForSelector("text=at least 8 characters");
-check("prototype enforces the password length", true);
-
-await proto.fill('#app input[type="password"]', PASS);
-await proto.click('#app button:has-text("Create my account")');
-await proto.waitForSelector("#who.on");
-check("prototype signs up and lands on the landing screen", true);
-check("prototype greets by first name", (await proto.textContent("#who")).includes("Dana"));
-
-const stored = await proto.evaluate(() => localStorage.getItem("ss.auth.v1"));
-check("prototype stored the session", Boolean(stored && JSON.parse(stored).access_token));
-
-await proto.reload();
-await proto.waitForSelector("#who.on");
-check("prototype restores the session on reload", true);
-
-await proto.click('#who button');
-await proto.waitForSelector("text=Sign in to your file");
-check("prototype signs out", true);
-check("prototype cleared the stored session",
-  (await proto.evaluate(() => localStorage.getItem("ss.auth.v1"))) === null);
-
-await proto.fill('#app input[type="email"]', PEMAIL);
-await proto.fill('#app input[type="password"]', "wrong-password-1");
-await proto.click('#app button:has-text("Sign in")');
-await proto.waitForSelector("text=do not match an account");
-check("prototype reports a wrong password", true);
-
-await proto.fill('#app input[type="password"]', PASS);
-await proto.click('#app button:has-text("Sign in")');
-await proto.waitForSelector("#who.on");
-check("prototype signs back in", true);
-
-// Arabic on the prototype.
-await proto.click("#lang");
-await proto.waitForSelector('body[dir="rtl"]');
-check("prototype switches to arabic", true);
+// GET must never end a session.
+await page.goto(`${BASE}/en/signin`);
+const getSignout = await page.evaluate(() =>
+  fetch("/api/signout", { method: "GET" }).then((r) => r.status),
+);
+check("api/signout refuses GET", getSignout === 405, String(getSignout));
 
 await browser.close();
 console.log(failures === 0 ? "\nALL CHECKS PASSED" : `\n${failures} CHECK(S) FAILED`);

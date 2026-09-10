@@ -35,13 +35,18 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   // Same-site only. `//host` is a protocol-relative URL, not a path.
   const next = rawNext.startsWith("/") && !rawNext.startsWith("//") ? rawNext : null;
 
-  // The locale for the failure page comes from the target path, so an Arabic
-  // customer whose link expired reads Arabic.
+  // The locale is carried on the link, so an Arabic customer whose link
+  // expired reads the reason in Arabic. Falls back to the target path's own
+  // prefix, then to the default.
+  const carried = searchParams.get("locale") ?? "";
   const segment = (next ?? "").split("/")[1] ?? "";
-  const locale = isLocale(segment) ? segment : defaultLocale;
-  const failure = new URL(`/${locale}/signin?error=link`, origin);
+  const locale = isLocale(carried) ? carried : isLocale(segment) ? segment : defaultLocale;
 
-  if (!isSupabaseConfigured()) return NextResponse.redirect(failure);
+  /** `?e=` is the convention the sign-in page already renders. */
+  const failure = (reason: "invalid" | "expired" | "error") =>
+    NextResponse.redirect(new URL(`/${locale}/signin?e=${reason}`, origin));
+
+  if (!isSupabaseConfigured()) return failure("error");
 
   const tokenHash = searchParams.get("token_hash");
   const type = searchParams.get("type") ?? "";
@@ -51,13 +56,16 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
   if (tokenHash && isOtpType(type)) {
     const { error } = await supabase.auth.verifyOtp({ type, token_hash: tokenHash });
-    if (error) return NextResponse.redirect(failure);
+    if (error) return failure(error.code === "otp_expired" ? "expired" : "invalid");
   } else if (code) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (error) return NextResponse.redirect(failure);
+    if (error) return failure(error.code === "otp_expired" ? "expired" : "invalid");
   } else {
-    return NextResponse.redirect(failure);
+    // No token and no code: not a link we issued.
+    return failure("invalid");
   }
 
-  return NextResponse.redirect(new URL(next ?? `/${locale}/account`, origin));
+  // Verified, and that call created the session — so this lands on a page that
+  // already knows who they are.
+  return NextResponse.redirect(new URL(next ?? "/", origin));
 }
