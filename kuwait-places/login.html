@@ -1,0 +1,616 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign in — Yalla, where to?</title>
+<meta name="description" content="Set a name and passcode for Yalla, where to? — kept in this browser only.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☕</text></svg>">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,500;6..96,600&family=Archivo:wght@400;500;600;700&display=swap">
+<style>
+  :root {
+    --bg: #f6f4f1; --surface: #ffffff; --surface-2: #edeae5;
+    --text: #1b1917; --muted: #6a635c; --line: #dcd6ce;
+    --accent: #b3121b; --accent-soft: #f9e9e9; --accent-text: #8e0d15;
+    --notice-bg: #fbf6f5; --notice-line: #e6dcd8; --notice-text: #8e0d15;
+    --band: #b3121b; --cream: #fbf6ef; --ok: #1c6b3f;
+    --font: "Archivo", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-ar: "Segoe UI", Tahoma, "Geeza Pro", "Noto Naskh Arabic", system-ui, sans-serif;
+    --font-display: "Bodoni Moda", Georgia, "Iowan Old Style", "Palatino Linotype", serif;
+    --font-display-ar: "Traditional Arabic", "Al Bayan", Georgia, "Times New Roman", serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #141211; --surface: #1d1a19; --surface-2: #272322;
+      --text: #f2efeb; --muted: #a29b94; --line: #34302d;
+      --accent: #e04a4f; --accent-soft: #2c1618; --accent-text: #f0888c;
+      --notice-bg: #211a1a; --notice-line: #3a302f; --notice-text: #ef8f92;
+      --band: #9c1a20; --ok: #6fcf97;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #141211; --surface: #1d1a19; --surface-2: #272322;
+    --text: #f2efeb; --muted: #a29b94; --line: #34302d;
+    --accent: #e04a4f; --accent-soft: #2c1618; --accent-text: #f0888c;
+    --notice-bg: #211a1a; --notice-line: #3a302f; --notice-text: #ef8f92;
+    --band: #9c1a20; --ok: #6fcf97;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: var(--font); font-size: 16px; line-height: 1.5;
+    min-height: 100vh; display: flex; flex-direction: column;
+  }
+  html[dir="rtl"] body { font-family: var(--font-ar); }
+  button, input { font: inherit; color: inherit; }
+
+  header { background: var(--band); }
+  .bar { max-width: 1060px; margin: 0 auto; padding: 14px 16px;
+    display: flex; align-items: baseline; gap: 12px; }
+  .bar a.home {
+    font-family: var(--font-display); color: var(--cream); font-size: 1.5rem;
+    font-weight: 600; text-decoration: none; margin-inline-end: auto; line-height: 1.1;
+  }
+  html[dir="rtl"] .bar a.home { font-family: var(--font-display-ar); }
+  .bar a.home:hover { opacity: .85; }
+  .ghost {
+    background: transparent; border: 1px solid rgba(251,246,239,.45);
+    color: var(--cream); border-radius: 2px; padding: 7px 11px; cursor: pointer;
+    font-size: .8rem; letter-spacing: .04em; line-height: 1;
+  }
+  .ghost:hover { background: rgba(251,246,239,.14); border-color: var(--cream); }
+
+  main { flex: 1; width: 100%; max-width: 430px; margin: 0 auto; padding: 34px 16px 48px; }
+  h1 {
+    font-family: var(--font-display); font-size: 2rem; font-weight: 600;
+    margin: 0 0 6px; line-height: 1.1; text-wrap: balance;
+  }
+  html[dir="rtl"] h1 { font-family: var(--font-display-ar); }
+  .lede { margin: 0 0 20px; color: var(--muted); font-size: .92rem; }
+
+  .note {
+    background: var(--notice-bg); border: 1px solid var(--notice-line);
+    border-inline-start: 3px solid var(--accent); border-radius: 3px;
+    padding: 12px 15px; margin: 0 0 22px; font-size: .83rem; color: var(--notice-text);
+  }
+  .note b { display: block; margin-bottom: 3px; font-size: .72rem;
+    text-transform: uppercase; letter-spacing: .1em; }
+
+  .modes { display: flex; gap: 4px; background: var(--surface-2);
+    border: 1px solid var(--line); border-radius: 2px; padding: 3px; margin-bottom: 22px; }
+  .modes button {
+    flex: 1; background: none; border: none; border-radius: 1px; padding: 8px 10px;
+    cursor: pointer; font-size: .74rem; text-transform: uppercase; letter-spacing: .08em;
+  }
+  .modes button[aria-selected="true"] {
+    background: var(--surface); font-weight: 600; box-shadow: 0 1px 2px rgba(0,0,0,.08);
+  }
+
+  form { display: flex; flex-direction: column; gap: 17px; }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field[hidden] { display: none !important; }
+  label { font-size: .72rem; text-transform: uppercase; letter-spacing: .1em;
+    font-weight: 600; color: var(--muted); }
+  .req { color: var(--accent-text); }
+  input {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 2px; padding: 11px 12px; width: 100%;
+  }
+  input:focus-visible, button:focus-visible, a:focus-visible {
+    outline: 2px solid var(--accent); outline-offset: 2px;
+  }
+  input[aria-invalid="true"] { border-color: var(--accent); background: var(--accent-soft); }
+  .pw-wrap { display: flex; gap: 6px; }
+  .pw-wrap input { flex: 1; }
+  .reveal {
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 2px;
+    padding: 0 12px; cursor: pointer; font-size: .7rem;
+    text-transform: uppercase; letter-spacing: .07em; white-space: nowrap;
+  }
+  .reveal:hover { border-color: var(--text); }
+  .hint { font-size: .78rem; color: var(--muted); }
+  .err { font-size: .8rem; color: var(--accent-text); font-weight: 500; }
+  .err:empty { display: none; }
+  .meter { display: flex; gap: 4px; margin-top: 2px; }
+  .meter span { height: 3px; flex: 1; background: var(--line); border-radius: 2px; }
+  .meter span.on { background: var(--accent); }
+  .meter span.strong { background: var(--ok); }
+
+  .submit {
+    background: var(--accent); color: var(--cream); border: 1px solid var(--accent);
+    border-radius: 2px; padding: 13px 18px; font-weight: 600; cursor: pointer;
+    margin-top: 3px; text-transform: uppercase; letter-spacing: .09em; font-size: .8rem;
+  }
+  .submit:hover { filter: brightness(1.07); }
+  .submit[disabled] { opacity: .6; cursor: progress; }
+
+  .summary {
+    border: 1px solid var(--accent); border-inline-start: 3px solid var(--accent);
+    background: var(--accent-soft); border-radius: 3px; padding: 12px 15px;
+    font-size: .85rem; color: var(--accent-text);
+  }
+  .summary[hidden] { display: none !important; }
+  .summary p { margin: 0 0 6px; font-weight: 600; }
+  .summary ul { margin: 0; padding-inline-start: 20px; }
+  .summary a { color: inherit; }
+
+  .reset {
+    margin-top: 20px; font-size: .8rem; color: var(--muted);
+    border-top: 1px solid var(--line); padding-top: 14px;
+  }
+  .reset[hidden] { display: none !important; }
+  .reset button {
+    background: none; border: none; padding: 0; cursor: pointer;
+    color: var(--accent-text); text-decoration: underline; font: inherit;
+  }
+
+  .done { text-align: center; padding: 26px 0; }
+  .done[hidden] { display: none !important; }
+  .done h2 { font-family: var(--font-display); font-size: 1.7rem; margin: 0 0 8px; font-weight: 600; }
+  html[dir="rtl"] .done h2 { font-family: var(--font-display-ar); }
+  .done p { color: var(--muted); margin: 0 0 20px; font-size: .9rem; }
+  .done a.go {
+    display: inline-block; background: var(--accent); color: var(--cream);
+    border-radius: 2px; padding: 12px 20px; text-decoration: none; font-weight: 600;
+    text-transform: uppercase; letter-spacing: .09em; font-size: .8rem;
+  }
+
+  footer {
+    border-top: 1px solid var(--line); background: var(--surface);
+    padding: 18px 16px 26px; color: var(--muted); font-size: .78rem; text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="bar">
+    <a class="home" href="index.html" data-i18n="brand">Yalla, where to?</a>
+    <button class="ghost" id="lang" type="button">عربي</button>
+  </div>
+</header>
+
+<main>
+  <div id="form-side">
+    <h1 id="title"></h1>
+    <p class="lede" id="lede"></p>
+
+    <p class="note">
+      <b data-i18n="noteLabel">This browser only</b>
+      <span data-i18n="noteBody">There is no server here. Your passcode is salted and hashed before it is stored, and only the hash is kept — but it lives in this browser, so it keeps nobody out except you. Don't reuse a password that matters.</span>
+    </p>
+
+    <div class="modes" role="tablist" aria-label="Sign in or sign up">
+      <button role="tab" id="tab-signup" data-mode="signup" aria-selected="true" data-i18n="modeSignup">Sign up</button>
+      <button role="tab" id="tab-signin" data-mode="signin" aria-selected="false" data-i18n="modeSignin">Sign in</button>
+    </div>
+
+    <div class="summary" id="summary" hidden tabindex="-1" role="alert"></div>
+
+    <form id="form" novalidate>
+      <div class="field">
+        <label for="name"><span data-i18n="lName">Name</span> <span class="req" aria-hidden="true">*</span></label>
+        <input id="name" name="name" type="text" autocomplete="username" required
+               aria-describedby="e-name" spellcheck="false">
+        <p class="err" id="e-name"></p>
+      </div>
+
+      <div class="field">
+        <label for="password"><span data-i18n="lPassword">Password</span> <span class="req" aria-hidden="true">*</span></label>
+        <div class="pw-wrap">
+          <input id="password" name="password" type="password" required
+                 autocomplete="new-password" aria-describedby="pw-hint e-pw">
+          <button class="reveal" id="reveal" type="button" aria-pressed="false" data-i18n="show">Show</button>
+        </div>
+        <div class="meter" id="meter" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+        <p class="hint" id="pw-hint" data-i18n="pwHint">At least 8 characters, with a letter and a number.</p>
+        <p class="err" id="e-pw"></p>
+      </div>
+
+      <div class="field" id="f-confirm">
+        <label for="confirm"><span data-i18n="lConfirm">Confirm password</span> <span class="req" aria-hidden="true">*</span></label>
+        <input id="confirm" name="confirm" type="password" required
+               autocomplete="new-password" aria-describedby="e-confirm">
+        <p class="err" id="e-confirm"></p>
+      </div>
+
+      <button class="submit" id="submit" type="submit"></button>
+    </form>
+
+    <p class="reset" id="reset" hidden>
+      <span data-i18n="resetLead">Forgotten it? Nothing here can email you a link.</span>
+      <button id="reset-btn" type="button" data-i18n="resetBtn">Clear this browser's account and start again</button>
+    </p>
+  </div>
+
+  <div class="done" id="done" hidden>
+    <h2 id="done-title"></h2>
+    <p id="done-body"></p>
+    <a class="go" href="index.html" data-i18n="goToSite">Find somewhere to go</a>
+  </div>
+</main>
+
+<footer><p data-i18n="footer">A device passcode, not an account. Real sign-in needs a server.</p></footer>
+
+<script>
+(function () {
+  "use strict";
+
+  var STR = {
+    en: {
+      brand: "Yalla, where to?",
+      signupTitle: "Pick a name and passcode",
+      signupLede: "So the list can greet you, and your saved spots stay yours on this device.",
+      signinTitle: "Welcome back",
+      signinLede: "Your passcode is checked against the one saved on this device.",
+      noteLabel: "This browser only",
+      noteBody: "There is no server here. Your passcode is salted and hashed before it is stored, and only the hash is kept — but it lives in this browser, so it keeps nobody out except you. Don't reuse a password that matters.",
+      modeSignup: "Sign up", modeSignin: "Sign in",
+      lName: "Name", lPassword: "Password", lConfirm: "Confirm password",
+      pwHint: "At least 8 characters, with a letter and a number.",
+      show: "Show", hide: "Hide",
+      submitSignup: "Sign up", submitSignin: "Sign in", working: "Checking…",
+      goToSite: "Find somewhere to go",
+      footer: "A device passcode, not an account. Real sign-in needs a server.",
+      resetLead: "Forgotten it? Nothing here can email you a link.",
+      resetBtn: "Clear this browser's account and start again",
+      summaryLead: "Fix these and try again:",
+      eNameEmpty: "Enter a name.",
+      eNameShort: "That looks too short — use at least two characters.",
+      ePwEmpty: "Choose a passcode.",
+      ePwShort: "Use at least 8 characters.",
+      ePwWeak: "Add a letter and a number.",
+      eConfirmEmpty: "Type the passcode again.",
+      eConfirmMismatch: "The two don't match.",
+      eNoAccount: "No account saved in this browser yet — sign up instead.",
+      eWrongName: "No account under that name on this device.",
+      eWrongPw: "That passcode doesn't match the one saved here.",
+      eNoCrypto: "This browser can't hash the passcode on an insecure page. Open the site over https or localhost.",
+      doneSignup: function (n) { return "You're set, " + n + "."; },
+      doneSignin: function (n) { return "Welcome back, " + n + "."; },
+      doneBody: "Saved in this browser. Nothing was sent anywhere.",
+      langBtn: "عربي"
+    },
+    ar: {
+      brand: "يلّا، وين؟",
+      signupTitle: "اختر اسم ورمز",
+      signupLede: "عشان القائمة تناديك، وأماكنك المحفوظة تبقى لك على هذا الجهاز.",
+      signinTitle: "هلا فيك مرة ثانية",
+      signinLede: "يتم التحقق من رمزك مقابل المحفوظ على هذا الجهاز.",
+      noteLabel: "هذا المتصفح فقط",
+      noteBody: "ما في سيرفر هنا. رمزك يُملّح ويُشفّر قبل الحفظ، ويُحفظ التشفير فقط — لكنه في هذا المتصفح، فهو ما يمنع أحد غيرك. لا تستخدم كلمة سر مهمة.",
+      modeSignup: "حساب جديد", modeSignin: "تسجيل الدخول",
+      lName: "الاسم", lPassword: "كلمة السر", lConfirm: "تأكيد كلمة السر",
+      pwHint: "٨ أحرف على الأقل، وفيها حرف ورقم.",
+      show: "إظهار", hide: "إخفاء",
+      submitSignup: "سجّل", submitSignin: "دخول", working: "جاري التحقق…",
+      goToSite: "دوّر على مكان",
+      footer: "رمز على الجهاز، وليس حساباً. تسجيل الدخول الحقيقي يحتاج سيرفر.",
+      resetLead: "نسيته؟ ما في شي هنا يرسل لك رابط.",
+      resetBtn: "امسح حساب هذا المتصفح وابدأ من جديد",
+      summaryLead: "صلّح هذي وجرّب مرة ثانية:",
+      eNameEmpty: "اكتب اسم.",
+      eNameShort: "قصير زيادة — استخدم حرفين على الأقل.",
+      ePwEmpty: "اختر رمز.",
+      ePwShort: "استخدم ٨ أحرف على الأقل.",
+      ePwWeak: "أضف حرف ورقم.",
+      eConfirmEmpty: "اكتب الرمز مرة ثانية.",
+      eConfirmMismatch: "الاثنان ما يتطابقان.",
+      eNoAccount: "ما في حساب محفوظ في هذا المتصفح — سجّل حساب جديد.",
+      eWrongName: "ما في حساب بهذا الاسم على هذا الجهاز.",
+      eWrongPw: "الرمز ما يطابق المحفوظ هنا.",
+      eNoCrypto: "هذا المتصفح ما يقدر يشفّر الرمز في صفحة غير آمنة. افتح الموقع عبر https أو localhost.",
+      doneSignup: function (n) { return "تم، يا " + n + "."; },
+      doneSignin: function (n) { return "هلا فيك، " + n + "."; },
+      doneBody: "محفوظ في هذا المتصفح. ما انرسل شي لأي مكان.",
+      langBtn: "EN"
+    }
+  };
+
+  var $ = function (s) { return document.querySelector(s); };
+  var lang = "en";
+  var mode = "signup";
+  var submitted = false;
+
+  function readStore(k, f) {
+    try { var v = localStorage.getItem(k); return v === null ? f : JSON.parse(v); }
+    catch (e) { return f; }
+  }
+  function writeStore(k, v) {
+    try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* no-op */ }
+  }
+  function dropStore(k) {
+    try { localStorage.removeItem(k); } catch (e) { /* no-op */ }
+  }
+
+  lang = readStore("kw.lang", null) ||
+    ((navigator.language || "en").slice(0, 2) === "ar" ? "ar" : "en");
+  function t() { return STR[lang]; }
+
+  // An account already on this device means signing in is the likely intent.
+  var account = readStore("kw.auth", null);
+  if (account && account.name) mode = "signin";
+
+  /* ------------------------------------------------------------- hashing */
+  // PBKDF2 rather than a bare digest: the stored value should be expensive to
+  // work backwards from even though this only ever guards a browser profile.
+  var ITERATIONS = 120000;
+
+  function hasCrypto() {
+    return !!(window.crypto && window.crypto.subtle && window.crypto.getRandomValues);
+  }
+
+  function toB64(bytes) {
+    var s = "";
+    for (var i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]);
+    return btoa(s);
+  }
+  function fromB64(str) {
+    var raw = atob(str);
+    var out = new Uint8Array(raw.length);
+    for (var i = 0; i < raw.length; i++) out[i] = raw.charCodeAt(i);
+    return out;
+  }
+
+  function derive(password, salt, iterations) {
+    var enc = new TextEncoder();
+    return crypto.subtle
+      .importKey("raw", enc.encode(password), "PBKDF2", false, ["deriveBits"])
+      .then(function (key) {
+        return crypto.subtle.deriveBits(
+          { name: "PBKDF2", salt: salt, iterations: iterations, hash: "SHA-256" },
+          key, 256);
+      })
+      .then(function (bits) { return toB64(new Uint8Array(bits)); });
+  }
+
+  // Length-independent compare, so a wrong passcode never leaks how much of
+  // it was right through timing. Cheap habit worth keeping.
+  function sameHash(a, b) {
+    if (a.length !== b.length) return false;
+    var diff = 0;
+    for (var i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+    return diff === 0;
+  }
+
+  /* ------------------------------------------------------------ rendering */
+  function paint() {
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+    Array.prototype.forEach.call(document.querySelectorAll("[data-i18n]"), function (el) {
+      var v = t()[el.getAttribute("data-i18n")];
+      if (typeof v === "string") el.textContent = v;
+    });
+    $("#lang").textContent = t().langBtn;
+    $("#title").textContent = mode === "signup" ? t().signupTitle : t().signinTitle;
+    $("#lede").textContent = mode === "signup" ? t().signupLede : t().signinLede;
+    $("#submit").textContent = mode === "signup" ? t().submitSignup : t().submitSignin;
+    $("#reveal").textContent = $("#password").type === "password" ? t().show : t().hide;
+    $("#f-confirm").hidden = mode !== "signup";
+    $("#pw-hint").hidden = mode !== "signup";
+    $("#password").setAttribute("autocomplete",
+      mode === "signup" ? "new-password" : "current-password");
+    $("#meter").hidden = mode !== "signup";
+    // Only offer to wipe an account that exists.
+    $("#reset").hidden = !(account && account.name);
+    Array.prototype.forEach.call(document.querySelectorAll(".modes button"), function (b) {
+      b.setAttribute("aria-selected", b.getAttribute("data-mode") === mode);
+    });
+  }
+
+  function strength(pw) {
+    var score = 0;
+    if (pw.length >= 8) score++;
+    if (pw.length >= 12) score++;
+    if (/[a-z]/i.test(pw) && /\d/.test(pw)) score++;
+    if (/[^\w\s]/.test(pw)) score++;
+    return score;
+  }
+  function paintMeter() {
+    var score = strength($("#password").value);
+    Array.prototype.forEach.call($("#meter").children, function (bar, i) {
+      bar.className = i < score ? (score >= 4 ? "on strong" : "on") : "";
+    });
+  }
+
+  function fieldOf(id) { return $("#" + (id === "pw" ? "password" : id)); }
+
+  function setError(id, msg) {
+    $("#e-" + id).textContent = msg || "";
+    var input = fieldOf(id);
+    if (msg) input.setAttribute("aria-invalid", "true");
+    else input.removeAttribute("aria-invalid");
+  }
+
+  function clearErrors() {
+    ["name", "pw", "confirm"].forEach(function (id) { setError(id, ""); });
+  }
+
+  function showSummary(problems) {
+    var box = $("#summary");
+    box.textContent = "";
+    if (!problems.length) { box.hidden = true; return; }
+    var lead = document.createElement("p");
+    lead.textContent = t().summaryLead;
+    box.appendChild(lead);
+    var list = document.createElement("ul");
+    problems.forEach(function (p) {
+      var li = document.createElement("li");
+      var link = document.createElement("a");
+      link.href = "#" + fieldOf(p.id).id;
+      link.textContent = p.msg;
+      link.addEventListener("click", function (e) { e.preventDefault(); fieldOf(p.id).focus(); });
+      li.appendChild(link);
+      list.appendChild(li);
+    });
+    box.appendChild(list);
+    box.hidden = false;
+    box.focus();
+  }
+
+  // Shape-only checks. Whether the passcode is *correct* is a separate step,
+  // because it needs to await the hash.
+  function validate() {
+    var problems = [];
+    var name = $("#name").value.trim();
+    var pw = $("#password").value;
+    var confirm = $("#confirm").value;
+    clearErrors();
+
+    if (!name) problems.push({ id: "name", msg: t().eNameEmpty });
+    else if (name.length < 2) problems.push({ id: "name", msg: t().eNameShort });
+
+    if (!pw) problems.push({ id: "pw", msg: t().ePwEmpty });
+    else if (mode === "signup" && pw.length < 8) problems.push({ id: "pw", msg: t().ePwShort });
+    else if (mode === "signup" && !(/[a-z]/i.test(pw) && /\d/.test(pw))) {
+      problems.push({ id: "pw", msg: t().ePwWeak });
+    }
+
+    if (mode === "signup") {
+      if (!confirm) problems.push({ id: "confirm", msg: t().eConfirmEmpty });
+      else if (confirm !== pw) problems.push({ id: "confirm", msg: t().eConfirmMismatch });
+    }
+
+    problems.forEach(function (p) { setError(p.id, p.msg); });
+    return problems;
+  }
+
+  function succeed(name) {
+    // The passcode itself is never written anywhere, and is wiped from the
+    // form as soon as it has been hashed.
+    $("#password").value = "";
+    $("#confirm").value = "";
+    writeStore("kw.session", true);
+    $("#done-title").textContent = mode === "signup"
+      ? t().doneSignup(name) : t().doneSignin(name);
+    $("#done-body").textContent = t().doneBody;
+    $("#form-side").hidden = true;
+    $("#done").hidden = false;
+  }
+
+  function busy(on) {
+    var b = $("#submit");
+    b.disabled = on;
+    b.textContent = on ? t().working
+      : (mode === "signup" ? t().submitSignup : t().submitSignin);
+  }
+
+  $("#form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    submitted = true;
+
+    var problems = validate();
+    showSummary(problems);
+    if (problems.length) { fieldOf(problems[0].id).focus(); return; }
+
+    if (!hasCrypto()) {
+      setError("pw", t().eNoCrypto);
+      showSummary([{ id: "pw", msg: t().eNoCrypto }]);
+      return;
+    }
+
+    var name = $("#name").value.trim();
+    var pw = $("#password").value;
+    busy(true);
+
+    if (mode === "signup") {
+      var salt = crypto.getRandomValues(new Uint8Array(16));
+      derive(pw, salt, ITERATIONS).then(function (hash) {
+        account = {
+          name: name, salt: toB64(salt), hash: hash,
+          iterations: ITERATIONS, algo: "PBKDF2-SHA256"
+        };
+        writeStore("kw.auth", account);
+        busy(false);
+        succeed(name);
+      }).catch(function () {
+        busy(false);
+        setError("pw", t().eNoCrypto);
+      });
+      return;
+    }
+
+    // Sign in: really compare, rather than wave everyone through.
+    if (!account || !account.name) {
+      busy(false);
+      setError("name", t().eNoAccount);
+      showSummary([{ id: "name", msg: t().eNoAccount }]);
+      return;
+    }
+    if (account.name.toLowerCase() !== name.toLowerCase()) {
+      busy(false);
+      setError("name", t().eWrongName);
+      showSummary([{ id: "name", msg: t().eWrongName }]);
+      return;
+    }
+    derive(pw, fromB64(account.salt), account.iterations || ITERATIONS)
+      .then(function (hash) {
+        busy(false);
+        if (!sameHash(hash, account.hash)) {
+          setError("pw", t().eWrongPw);
+          showSummary([{ id: "pw", msg: t().eWrongPw }]);
+          $("#password").select();
+          return;
+        }
+        succeed(account.name);
+      })
+      .catch(function () {
+        busy(false);
+        setError("pw", t().eNoCrypto);
+      });
+  });
+
+  $("#password").addEventListener("input", paintMeter);
+
+  $("#reveal").addEventListener("click", function () {
+    var input = $("#password");
+    var showing = input.type === "text";
+    input.type = showing ? "password" : "text";
+    this.setAttribute("aria-pressed", String(!showing));
+    this.textContent = showing ? t().show : t().hide;
+  });
+
+  Array.prototype.forEach.call(document.querySelectorAll(".modes button"), function (b) {
+    b.addEventListener("click", function () {
+      mode = b.getAttribute("data-mode");
+      submitted = false;
+      showSummary([]);
+      clearErrors();
+      paint();
+    });
+  });
+
+  $("#reset-btn").addEventListener("click", function () {
+    dropStore("kw.auth");
+    dropStore("kw.session");
+    account = null;
+    mode = "signup";
+    submitted = false;
+    $("#name").value = "";
+    $("#password").value = "";
+    $("#confirm").value = "";
+    showSummary([]);
+    clearErrors();
+    paint();
+    paintMeter();
+    $("#name").focus();
+  });
+
+  $("#lang").addEventListener("click", function () {
+    lang = lang === "en" ? "ar" : "en";
+    writeStore("kw.lang", lang);
+    paint();
+    // Messages on screen should follow the language, not linger in the old one.
+    if (submitted) showSummary(validate()); else showSummary([]);
+  });
+
+  if (account && account.name) $("#name").value = account.name;
+
+  paint();
+  paintMeter();
+})();
+</script>
+</body>
+</html>
