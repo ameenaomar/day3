@@ -163,6 +163,9 @@ body[dir="rtl"] h2.q::before{content:"< "}
 body[dir="rtl"] .label{letter-spacing:.02em}
 .hint{font-size:12px;color:var(--dim);margin-top:8px;max-width:62ch}
 .err{font-size:12px;color:var(--red);margin-top:12px;font-weight:600;background:var(--red-wash);border:1px solid var(--red);padding:8px 10px}
+.ok{font-size:12px;color:var(--green);margin-top:12px;font-weight:600;background:var(--green-wash);border:1px solid var(--green);padding:8px 10px}
+.link{background:none;border:0;padding:0;font:inherit;font-size:12px;color:var(--brown-soft);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.link:hover{color:var(--red)}
 
 /* ============ chips ============ */
 .chips{display:flex;flex-wrap:wrap;gap:6px}
@@ -334,14 +337,127 @@ body[dir="rtl"] .box h3{letter-spacing:.02em}
 var lang="en";
 var t=function(o){return (o&&o[lang])||"";};
 var A={};                      /* answers */
-var U={name:"",email:""};      /* signed-in customer */
-var view="login", qi=0, loginErr=false, showExact=false;
+var U={name:"",email:""};      /* signed-in customer, from the auth session */
+var F={};                      /* what is typed into the auth form */
+var view="signin", qi=0, showExact=false;
+var authErr="", authNote="", authBusy=false, booting=true;
 
 function firstName(){return (U.name||"").trim().split(/\s+/)[0]||"";}
 function initials(){var p=(U.name||"").trim().split(/\s+/).filter(Boolean);
   return p.length?(p[0][0]+(p.length>1?p[p.length-1][0]:"")).toUpperCase():"?";}
 function validEmail(v){return /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test((v||"").trim());}
-function signedIn(){return (U.name||"").trim().length>1&&validEmail(U.email);}
+function signedIn(){return !!(AUTH&&AUTH.access_token);}
+function isAuthView(){return view==="signin"||view==="signup";}
+
+/* ================= supabase auth =================
+   Sign-up and sign-in are Supabase Auth, called straight from this page.
+
+   The project URL and the publishable key below are public by design — this is
+   a static file, and both ship to every browser that loads it. What protects
+   the data is row level security in Postgres: the `anon` role is granted
+   nothing at all, and a signed-in customer can reach only their own row. See
+   supabase/migrations/20260910135127_customer_linked_to_supabase_auth.sql.
+
+   The session is kept in localStorage, which is what a page with no server of
+   its own can do. The Next app under /en and /ar signs the same accounts in
+   through server actions and holds its session in httpOnly cookies instead;
+   the two front ends share the accounts, not the session. */
+var SB_URL="https://djkpilwfcokgjjtbwker.supabase.co";
+var SB_KEY="sb_publishable_sIqsZRallR-MtrxEgWLVsQ_a0XtohY5";
+var SB_STORE="ss.auth.v1";
+
+var AUTH=null;                 /* {access_token, refresh_token, expires_at} */
+
+function sbSave(s){
+  AUTH=s;
+  try{ if(s){localStorage.setItem(SB_STORE,JSON.stringify(s));} else {localStorage.removeItem(SB_STORE);} }
+  catch(e){ /* private mode: the session then lasts for this page only */ }
+}
+function sbLoad(){
+  try{ var raw=localStorage.getItem(SB_STORE); return raw?JSON.parse(raw):null; }
+  catch(e){ return null; }
+}
+
+/* One shape for every call: {ok, status, body}. A non-JSON body becomes {}. */
+function sbCall(path,body,token){
+  var h={apikey:SB_KEY,"Content-Type":"application/json"};
+  if(token) h.Authorization="Bearer "+token;
+  return fetch(SB_URL+path,{
+    method:body?"POST":"GET",
+    headers:h,
+    body:body?JSON.stringify(body):undefined
+  }).then(function(r){
+    return r.json().then(function(j){return j;},function(){return {};}).then(function(j){
+      return {ok:r.ok,status:r.status,body:j||{}};
+    });
+  });
+}
+
+function sessionFrom(j){
+  if(!j||!j.access_token) return null;
+  var u=j.user||{};
+  return {
+    access_token:j.access_token,
+    refresh_token:j.refresh_token||"",
+    expires_at:j.expires_at||(Math.floor(Date.now()/1000)+(j.expires_in||3600)),
+    name:(u.user_metadata&&u.user_metadata.name)||"",
+    email:u.email||""
+  };
+}
+
+function sbSignIn(email,password){
+  return sbCall("/auth/v1/token?grant_type=password",{email:email,password:password});
+}
+function sbSignUp(name,email,password){
+  /* `data` becomes the user's metadata, which the on_auth_user_created trigger
+     reads to create the Customer row. redirect_to is where the confirmation
+     link lands — this page, which picks the tokens out of the fragment. */
+  return sbCall("/auth/v1/signup?redirect_to="+encodeURIComponent(location.origin+location.pathname),
+                {email:email,password:password,data:{name:name,locale:lang}});
+}
+function sbRefresh(token){
+  return sbCall("/auth/v1/token?grant_type=refresh_token",{refresh_token:token});
+}
+
+/* Reads the user the access token belongs to, refreshing once if it expired.
+   Resolves to true when there is a usable session. */
+function sbRestore(){
+  var s=AUTH;
+  if(!s||!s.access_token) return Promise.resolve(false);
+
+  var stale=(s.expires_at||0)<=Math.floor(Date.now()/1000)+60;
+  var start=stale&&s.refresh_token
+    ? sbRefresh(s.refresh_token).then(function(r){
+        var next=r.ok?sessionFrom(r.body):null;
+        sbSave(next);
+        return next?next.access_token:null;
+      })
+    : Promise.resolve(s.access_token);
+
+  return start.then(function(token){
+    if(!token) return false;
+    return sbCall("/auth/v1/user",null,token).then(function(r){
+      if(!r.ok){ sbSave(null); return false; }
+      var u=r.body||{};
+      U={name:(u.user_metadata&&u.user_metadata.name)||"",email:u.email||""};
+      return true;
+    });
+  }).catch(function(){ return false; });
+}
+
+/* GoTrue names its failures in `error_code`; the token endpoint uses OAuth's
+   `error`. The wording shown is ours, in the reader's language — an English
+   string from the auth server must not appear on an Arabic page. */
+function sbMessage(r){
+  var code=(r.body&&(r.body.error_code||r.body.error))||"";
+  if(code==="invalid_credentials"||code==="invalid_grant") return t(UI.eCred);
+  if(code==="email_not_confirmed") return t(UI.eConfirm);
+  if(code==="user_already_exists"||code==="email_exists") return t(UI.eTaken);
+  if(code==="weak_password") return t(UI.eWeak);
+  if(code==="validation_failed") return t(UI.eMail);
+  if(code==="over_request_rate_limit"||code==="over_email_send_rate_limit"||r.status===429) return t(UI.eRate);
+  return t(UI.eGeneric);
+}
 
 /* ================= copy ================= */
 var UI={
@@ -356,9 +472,33 @@ var UI={
   fEmail:{en:"Email",ar:"البريد الإلكتروني"},
   fEmailP:{en:"you@example.com",ar:"you@example.com"},
   fEmailH:{en:"Your style profile and order updates are sent here. No marketing unless you ask for it.",ar:"يُرسل ملفك وتحديثات طلبك إلى هنا. لا رسائل ترويجية إلا بطلبك."},
-  fGo:{en:"Open my file",ar:"افتحي ملفي"},
-  fBad:{en:"Name and a valid email are required to continue.",ar:"الاسم وبريد إلكتروني صحيح مطلوبان للمتابعة."},
   fReturn:{en:"Been here before? The same email loads your saved measurements.",ar:"زبونة سابقة؟ البريد نفسه يستعيد مقاساتك المحفوظة."},
+  /* accounts */
+  siH:{en:"Sign in to your file.",ar:"سجّلي الدخول إلى ملفك."},
+  siL:{en:"Your answers, your measurements and your orders are behind this. Nothing else is.",ar:"إجاباتك وقياساتك وطلباتك خلف هذه الشاشة. لا شيء آخر."},
+  suH:{en:"Open a file.",ar:"افتحي ملفًا."},
+  suL:{en:"One account, and the seven screens are filled in for you every time after this one.",ar:"حساب واحد، وتُملأ لك الشاشات السبع في كل مرة بعد هذه."},
+  fPass:{en:"Password",ar:"كلمة المرور"},
+  fPassP:{en:"At least 8 characters",ar:"٨ أحرف على الأقل"},
+  fPassH:{en:"At least 8 characters. Your measurements sit behind it, so use one you do not use elsewhere.",ar:"٨ أحرف على الأقل. مقاساتك محفوظة خلفها، فاختاري كلمة لا تستخدمينها في مكان آخر."},
+  siGo:{en:"Sign in",ar:"تسجيل الدخول"},
+  suGo:{en:"Create my account",ar:"إنشاء حسابي"},
+  toSignUp:{en:"No account yet? Open one",ar:"لا يوجد حساب؟ افتحي حسابًا"},
+  toSignIn:{en:"Already have an account? Sign in",ar:"لديك حساب؟ سجّلي الدخول"},
+  working:{en:"Working…",ar:"جارٍ التنفيذ…"},
+  checking:{en:"Checking your session…",ar:"جارٍ التحقق من جلستك…"},
+  suCheck:{en:"Check your email. A confirmation link is on its way — open it on this device and you will be signed in.",ar:"تحقّقي من بريدك. أُرسل رابط تأكيد — افتحيه على هذا الجهاز وسيتم تسجيل دخولك."},
+  eName:{en:"Please give your first and last name.",ar:"يُرجى كتابة الاسم الأول والأخير."},
+  eMail:{en:"That does not look like an email address.",ar:"هذا البريد غير صحيح."},
+  ePass:{en:"Passwords must be at least 8 characters.",ar:"كلمة المرور ٨ أحرف على الأقل."},
+  eCred:{en:"That email and password do not match an account.",ar:"البريد وكلمة المرور لا يطابقان أي حساب."},
+  eConfirm:{en:"Confirm your email first — open the link we sent you.",ar:"أكّدي بريدك أولًا — افتحي الرابط الذي أرسلناه إليك."},
+  eTaken:{en:"An account already uses that email. Sign in instead.",ar:"هذا البريد مستخدم بالفعل. سجّلي الدخول."},
+  eWeak:{en:"That password is too easy to guess. Try a longer one.",ar:"كلمة المرور ضعيفة. اختاري كلمة أطول."},
+  eRate:{en:"Too many attempts. Wait a minute and try again.",ar:"محاولات كثيرة. انتظري دقيقة ثم أعيدي المحاولة."},
+  eNet:{en:"Could not reach the server. Check your connection and try again.",ar:"لم نتمكن من الوصول إلى الخادم. تحقّقي من اتصالك وأعيدي المحاولة."},
+  eLink:{en:"That link has expired or has already been used. Sign in, or ask for a new one.",ar:"انتهت صلاحية الرابط أو استُخدم من قبل. سجّلي الدخول أو اطلبي رابطًا جديدًا."},
+  eGeneric:{en:"Something went wrong. Try again.",ar:"حدث خطأ. أعيدي المحاولة."},
   signout:{en:"Log out",ar:"خروج"},
   hi:{en:"User",ar:"المستخدمة"},
   acct:{en:"Account",ar:"الحساب"},
@@ -635,17 +775,20 @@ function render(){
   }
 
   var w=document.getElementById("who");w.innerHTML="";
-  w.className=(view!=="login"&&signedIn())?"who on":"who";
-  if(view!=="login"&&signedIn()){
+  var showWho=!isAuthView()&&signedIn();
+  w.className=showWho?"who on":"who";
+  if(showWho){
     w.appendChild(el("i",null,initials()));
     w.appendChild(el("em",null,firstName()));
     var so=el("button",null,t(UI.signout));so.type="button";
-    so.onclick=function(){U={name:"",email:""};A={};qi=0;loginErr=false;showExact=false;view="login";render();};
+    so.onclick=signOut;
     w.appendChild(so);
   }
 
   var app=document.getElementById("app");app.innerHTML="";
-  var v = view==="login"?login():view==="landing"?landing():view==="quiz"?quiz():
+  var v = booting?checking():
+          isAuthView()?authScreen():
+          view==="landing"?landing():view==="quiz"?quiz():
           view==="profile"?profile():view==="pay"?pay():done();
   app.appendChild(v);
   window.scrollTo(0,0);
@@ -662,46 +805,118 @@ function panel(){
   return c;
 }
 
-/* ---------------- front page ---------------- */
-function login(){
+/* ---------------- while the stored session is checked ---------------- */
+function checking(){
   var c=panel(),p=c.body;
   p.appendChild(el("div","eyebrow",t(UI.fpTag)));
   var h=el("h1","crt");h.textContent=t(UI.fpH);
   h.appendChild(document.createTextNode(" "));
   h.appendChild(el("span","cursor"));
   p.appendChild(h);
-  p.appendChild(el("p","sub",t(UI.fpL)));
+  p.appendChild(el("p","sub",t(UI.checking)));
+  return c;
+}
 
-  function go(){ if(signedIn()){loginErr=false;view="landing";render();} else {loginErr=true;render();} }
+/* ---------------- sign in / sign up ---------------- */
+function authScreen(){
+  var up=(view==="signup");
+  var c=panel(),p=c.body;
 
-  var f1=el("div","field first");
-  f1.appendChild(el("span","label",t(UI.fName)));
-  var n=document.createElement("input");n.type="text";n.placeholder=t(UI.fNameP);
-  n.value=U.name;n.autocomplete="name";
-  n.oninput=function(){U.name=n.value;};
-  n.onkeydown=function(e){if(e.key==="Enter")go();};
-  f1.appendChild(n);p.appendChild(f1);
+  p.appendChild(el("div","eyebrow",t(UI.fpTag)));
+  var h=el("h1","crt");h.textContent=up?t(UI.suH):t(UI.siH);
+  h.appendChild(document.createTextNode(" "));
+  h.appendChild(el("span","cursor"));
+  p.appendChild(h);
+  p.appendChild(el("p","sub",up?t(UI.suL):t(UI.siL)));
 
-  var f2=el("div","field");
-  f2.appendChild(el("span","label",t(UI.fEmail)));
-  var m=document.createElement("input");m.type="text";m.placeholder=t(UI.fEmailP);
-  m.value=U.email;m.autocomplete="email";m.setAttribute("inputmode","email");m.dir="ltr";
-  m.oninput=function(){U.email=m.value;};
-  m.onkeydown=function(e){if(e.key==="Enter")go();};
-  f2.appendChild(m);f2.appendChild(el("p","hint",t(UI.fEmailH)));
-  p.appendChild(f2);
+  function field(opts){
+    var f=el("div","field"+(opts.first?" first":""));
+    f.appendChild(el("span","label",opts.label));
+    var i=document.createElement("input");
+    i.type=opts.type;i.placeholder=opts.placeholder||"";
+    i.value=F[opts.key]||"";i.autocomplete=opts.autocomplete;
+    i.disabled=authBusy;
+    if(opts.inputmode) i.setAttribute("inputmode",opts.inputmode);
+    if(opts.ltr) i.dir="ltr";
+    i.oninput=function(){F[opts.key]=i.value;};
+    i.onkeydown=function(e){if(e.key==="Enter"){e.preventDefault();go();}};
+    f.appendChild(i);
+    if(opts.hint) f.appendChild(el("p","hint",opts.hint));
+    p.appendChild(f);
+    return i;
+  }
 
-  if(loginErr) p.appendChild(el("p","err","! "+t(UI.fBad)));
+  function go(){
+    if(authBusy) return;
+    var name=(F.name||"").trim().replace(/\s+/g," ");
+    var email=(F.email||"").trim();
+    var pass=F.password||"";
+
+    authErr="";authNote="";
+    /* Two words: the stylist addresses the customer by first name and the
+       delivery label needs the rest of it. */
+    if(up&&(name.length<3||name.indexOf(" ")<0)){authErr=t(UI.eName);return render();}
+    if(!validEmail(email)){authErr=t(UI.eMail);return render();}
+    if(pass.length<8){authErr=t(UI.ePass);return render();}
+
+    authBusy=true;render();
+    (up?sbSignUp(name,email,pass):sbSignIn(email,pass)).then(function(r){
+      authBusy=false;
+      if(!r.ok){authErr=sbMessage(r);return render();}
+
+      var session=sessionFrom(r.body);
+      if(session){
+        sbSave(session);
+        U={name:session.name||name,email:session.email||email};
+        F={};view="landing";return render();
+      }
+
+      /* Sign-up with email confirmation on: no session until the link is
+         opened. An address that already has an account lands here too —
+         Supabase declines to say which, and so do we, because "that email
+         exists" is an account-enumeration oracle on a public form. */
+      F.password="";authNote=t(UI.suCheck);render();
+    },function(){
+      authBusy=false;authErr=t(UI.eNet);render();
+    });
+  }
+
+  if(up) field({key:"name",label:t(UI.fName),placeholder:t(UI.fNameP),type:"text",autocomplete:"name",first:true});
+  field({key:"email",label:t(UI.fEmail),placeholder:t(UI.fEmailP),type:"email",autocomplete:"email",
+         inputmode:"email",ltr:true,first:!up,hint:up?t(UI.fEmailH):""});
+  field({key:"password",label:t(UI.fPass),placeholder:t(UI.fPassP),type:"password",
+         autocomplete:up?"new-password":"current-password",ltr:true,hint:up?t(UI.fPassH):""});
+
+  if(authErr) p.appendChild(el("p","err","! "+authErr));
+  if(authNote) p.appendChild(el("p","ok","✓ "+authNote));
 
   var tags=el("div","tags");
   t(UI.tr).forEach(function(x){tags.appendChild(el("span","tag",x));});
   p.appendChild(tags);
 
   var nav=el("div","nav");
-  var b=el("button","btn wide",t(UI.fGo));b.type="button";b.onclick=go;
+  var b=el("button","btn wide",authBusy?t(UI.working):(up?t(UI.suGo):t(UI.siGo)));
+  b.type="button";b.disabled=authBusy;b.onclick=go;
   nav.appendChild(b);p.appendChild(nav);
-  p.appendChild(el("p","hint",t(UI.fReturn)));
+
+  var swap=el("button","link",up?t(UI.toSignIn):t(UI.toSignUp));
+  swap.type="button";swap.disabled=authBusy;
+  swap.onclick=function(){view=up?"signin":"signup";authErr="";authNote="";F.password="";render();};
+  var sw=el("p","hint");sw.appendChild(swap);p.appendChild(sw);
+
+  if(!up) p.appendChild(el("p","hint",t(UI.fReturn)));
   return c;
+}
+
+/* Clear the session here first, then tell the auth server — the screen should
+   not wait on the network to sign someone out. */
+function signOut(){
+  var token=AUTH&&AUTH.access_token;
+  sbSave(null);
+  U={name:"",email:""};A={};F={};qi=0;showExact=false;
+  authErr="";authNote="";authBusy=false;
+  view="signin";render();
+  if(token) sbCall("/auth/v1/logout",{},token).then(function(){},function(){});
 }
 
 /* ---------------- landing ---------------- */
@@ -1133,7 +1348,56 @@ function done(){
 }
 
 document.getElementById("lang").onclick=function(){lang=lang==="ar"?"en":"ar";render();};
-render();
+
+/* ---------------- boot ----------------
+   Three ways in: a confirmation or recovery link, which arrives with the
+   tokens in the URL fragment; a session already in localStorage; or the
+   sign-in screen. */
+function boot(){
+  var hash=(location.hash||"").replace(/^#/,"");
+  var params=new URLSearchParams(hash);
+  var clean=function(){ history.replaceState(null,"",location.pathname+location.search); };
+
+  if(params.get("error")||params.get("error_description")){
+    clean();
+    authErr=t(UI.eLink);
+    booting=false;view="signin";return render();
+  }
+
+  if(params.get("access_token")){
+    sbSave({
+      access_token:params.get("access_token"),
+      refresh_token:params.get("refresh_token")||"",
+      expires_at:Number(params.get("expires_at"))||(Math.floor(Date.now()/1000)+3600),
+      name:"",email:""
+    });
+    /* Out of the address bar and out of history before anything else runs. */
+    clean();
+  } else {
+    AUTH=sbLoad();
+  }
+
+  if(!AUTH){booting=false;view="signin";return render();}
+
+  render();
+  sbRestore().then(function(ok){
+    booting=false;
+    view=ok?"landing":"signin";
+    render();
+  });
+}
+
+/* A confirmation link followed in a tab that is already sitting on this page
+   changes the fragment without loading a new document, so boot() never runs.
+   Pick that up too. */
+window.addEventListener("hashchange",function(){
+  var h=location.hash||"";
+  if(h.indexOf("access_token=")>-1||h.indexOf("error=")>-1||h.indexOf("error_description=")>-1){
+    booting=true;boot();
+  }
+});
+
+boot();
 </script>
 
 </body>

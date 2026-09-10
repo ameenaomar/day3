@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { LOCALE_COOKIE, defaultLocale, isLocale, locales, type Locale } from "@/lib/i18n/config";
+import { withRefreshedSession } from "@/lib/supabase/session";
 
 /**
  * Both locales live at real, indexable routes (/en/..., /ar/...). Anything
@@ -23,7 +24,7 @@ function preferredLocale(request: NextRequest): Locale {
   return defaultLocale;
 }
 
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // The prototype is the site: `/` is rewritten to public/whatcaniwear.html by
@@ -35,11 +36,21 @@ export function proxy(request: NextRequest) {
     (locale) => pathname === `/${locale}` || pathname.startsWith(`/${locale}/`),
   );
   if (alreadyLocalised) {
-    // Server components have no access to the pathname; the language switch
-    // needs it to send the viewer to the same screen in the other locale.
-    const headers = new Headers(request.headers);
-    headers.set("x-ss-pathname", pathname);
-    return NextResponse.next({ request: { headers } });
+    // Rebuilt on demand rather than once: refreshing the Supabase session can
+    // rotate the access token, and the response has to be recreated afterwards
+    // for the route to see the new one. Server components have no access to the
+    // pathname either; the language switch needs it to send the viewer to the
+    // same screen in the other locale.
+    const makeResponse = (cookieHeader: string) => {
+      const headers = new Headers(request.headers);
+      headers.set("x-ss-pathname", pathname);
+      // Written explicitly because a refresh replaces the session cookie and
+      // that change does not reach `request.headers` on its own.
+      headers.set("cookie", cookieHeader);
+      return NextResponse.next({ request: { headers } });
+    };
+
+    return await withRefreshedSession(request, makeResponse);
   }
 
   const locale = preferredLocale(request);
@@ -49,10 +60,14 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // Skip the API, the stylist's tool, Next's internals, and anything with a
-  // file extension. Matching on the extension rather than an explicit list of
-  // filenames matters: the list version silently missed /icon.svg, which was
-  // redirected to /en/icon.svg and 404ed, and it would have missed every
-  // static asset added later too.
-  matcher: ["/((?!api|admin|_next|.*\\.[a-zA-Z0-9]+$).*)"],
+  // Skip the API, the stylist's tool, the auth callbacks, Next's internals, and
+  // anything with a file extension. Matching on the extension rather than an
+  // explicit list of filenames matters: the list version silently missed
+  // /icon.svg, which was redirected to /en/icon.svg and 404ed, and it would
+  // have missed every static asset added later too.
+  //
+  // `/auth/*` is excluded because those URLs are baked into confirmation
+  // emails: a link opened weeks later must not be redirected through whatever
+  // locale the reader's cookie happens to say.
+  matcher: ["/((?!api|admin|auth|_next|.*\\.[a-zA-Z0-9]+$).*)"],
 };

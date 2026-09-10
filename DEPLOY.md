@@ -44,6 +44,11 @@ Probed against a local production build:
 | `/` | 307 to `/en` or `/ar`, by cookie then `Accept-Language` |
 | `/en`, `/ar` | 200, correct `lang`/`dir`, canonical + hreflang |
 | `/en/design`, `/ar/design` | 200, `noindex` |
+| `/en/signin`, `/ar/signin` | 200, `noindex`; redirects to `/account` when signed in |
+| `/en/signup`, `/ar/signup` | 200, `noindex` |
+| `/en/signup/check-email` | 200, `noindex` |
+| `/en/account`, `/ar/account` | 200 signed in; redirect to `/signin?error=required` otherwise |
+| `/auth/confirm` | 302 to `next` on a valid link, to `/<locale>/signin?error=link` otherwise |
 | `/icon.svg` | 200 |
 | `/robots.txt`, `/sitemap.xml` | 200, absolute URLs from `APP_URL` or Vercel's |
 | anything else under a locale | 404, styled, correct language and direction |
@@ -51,12 +56,21 @@ Probed against a local production build:
 
 ## Environment variables
 
-None are required — nothing deployed touches the database yet, and
-`siteUrl()` falls back to the URL Vercel injects, so the sitemap and canonical
-links are correct without configuration.
+Two are now required, because the sign-in and sign-up screens talk to Supabase:
 
-Set `APP_URL` once there is a custom domain, so those URLs point at it rather
-than at the `.vercel.app` host.
+```
+NEXT_PUBLIC_SUPABASE_URL=https://<project-ref>.supabase.co
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
+```
+
+Without them the app still builds and every other page still works — the two
+account screens say accounts are not configured rather than returning a 500.
+
+Everything else is still optional. `siteUrl()` falls back to the URL Vercel
+injects, so the sitemap and canonical links are correct without configuration.
+Set `APP_URL` once there is a custom domain, so those URLs — and the
+confirmation links in the emails — point at it rather than at the `.vercel.app`
+host.
 
 ### How that upload differs from the repo
 
@@ -83,9 +97,9 @@ scope here is `t054175-1826`.
    (Settings → Git → Production Branch) until this work merges.
 5. Deploy.
 
-**No environment variables are needed for the current snapshot.** Nothing on the
-front page or the design-check page touches the database, and `prisma generate`
-does not need a connection. The build will succeed with an empty environment.
+**Set the two `NEXT_PUBLIC_SUPABASE_*` variables** (see "Accounts" below) for
+all three environments. Nothing else is needed: `prisma generate` does not need
+a connection, and the build succeeds without the rest.
 
 Alternatively, create a Vercel team and I can do all of the above from here.
 
@@ -96,8 +110,10 @@ Alternatively, create a Vercel team and I can do all of the above from here.
   verbatim from `simply-styled.html`, which is not in the repo yet.
 - `/en/design`, `/ar/design` — every UI primitive on one screen, for checking
   both themes, RTL and 375px on a real phone. `noindex`.
+- `/en/signin`, `/en/signup`, `/en/account` and their Arabic twins — accounts,
+  on Supabase Auth. See "Accounts" below.
 
-The seven question screens, auth, payment and `/admin` are not built yet.
+The seven question screens, payment and `/admin` are not built yet.
 
 ## Environment variables, for when they are needed
 
@@ -106,11 +122,13 @@ relevant:
 
 | Variable | Needed for |
 | --- | --- |
-| `DATABASE_URL` | Neon **pooled** connection — the app's runtime queries |
-| `DIRECT_DATABASE_URL` | Neon **direct** connection — migrations only |
-| `APP_URL` | Where magic links point. No trailing slash. |
-| `AUTH_SECRET` | Signing sessions and magic-link tokens |
-| `RESEND_API_KEY`, `EMAIL_FROM` | Sending magic links and order confirmations |
+| `NEXT_PUBLIC_SUPABASE_URL` | **Required now** — sign-up and sign-in |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | **Required now** — sign-up and sign-in |
+| `APP_URL` | Where confirmation links come back to. No trailing slash. |
+| `DATABASE_URL` | Pooled connection — the app's Prisma queries |
+| `DIRECT_DATABASE_URL` | Direct connection — migrations only |
+| `AUTH_SECRET` | Anything this app signs itself. Nothing needs it yet. |
+| `RESEND_API_KEY`, `EMAIL_FROM` | Order confirmations. Supabase sends the auth emails. |
 | `PAYMENT_PROVIDER` | `mock` locally; the gateway in production |
 
 Set `DATABASE_URL` and `DIRECT_DATABASE_URL` in Vercel for all three
@@ -122,3 +140,85 @@ DIRECT_DATABASE_URL="…" npx prisma migrate deploy
 
 Neon's database branching pairs with Vercel preview deploys, so give previews
 their own branch database rather than pointing them at production.
+
+## Accounts
+
+Sign-up and sign-in run through **Supabase Auth**, email and password, against
+project `simply-styled` (`djkpilwfcokgjjtbwker`, eu-central-1).
+
+`auth.users` owns the credential and the session. `public."Customer"` stays the
+app's customer record, and `Customer.authUserId` links the two. An
+`on_auth_user_created` trigger creates the customer row inside the signup
+transaction, taking the name and locale out of the user's metadata, so a
+customer can never exist without one and the client never has to make a second,
+failable write. The SQL is in
+`supabase/migrations/20260910135127_customer_linked_to_supabase_auth.sql`.
+
+Row level security stays deny-by-default. The only policies in the schema say a
+signed-in customer can read and update **their own** `Customer` row; `anon` is
+granted nothing at all. Verified in SQL against the project: the owner sees one
+row, another signed-in user sees zero, `anon` is refused outright. The
+`rls_enabled_no_policy` notices the Supabase linter reports for the other 14
+tables are that posture working as intended — nothing can read them yet.
+
+### Two front ends, one set of accounts
+
+| | Sign-in lives at | Session kept in |
+| --- | --- | --- |
+| The prototype at `/` | its own first screen | `localStorage`, from the Auth REST API |
+| The Next app | `/en/signin`, `/ar/signin` | `httpOnly` cookies, via Server Actions |
+
+Same Supabase project, same accounts, same `Customer` rows — separate sessions.
+Signing in on one does not sign you in on the other. The prototype is a static
+file with no server of its own, so `localStorage` is what it can do; the Next
+app never puts a token anywhere a script can read it, and its password only ever
+travels in a POST to our own origin.
+
+### What has to be set in the Supabase dashboard
+
+Authentication → URL Configuration:
+
+- **Site URL** — the production origin, e.g.
+  `https://simply-styled-t054175-1826.vercel.app`.
+- **Redirect URLs** — add both, for each origin you use (production, previews,
+  `http://localhost:3000`):
+  - `<origin>/auth/confirm` — where the Next app's confirmation links land.
+  - `<origin>/` — where the prototype's do; it reads the tokens out of the URL
+    fragment and then scrubs them from the address bar and from history.
+
+Authentication → Providers → Email: **Confirm email** decides which of two
+paths a new customer takes, and both are built.
+
+- **On** (Supabase's default): sign-up sends a link and lands on
+  `/<locale>/signup/check-email`, or shows the same note on the prototype.
+  Signing in before confirming says exactly that, rather than "wrong password".
+- **Off**: sign-up returns a session and the customer is straight in.
+
+An address that already has an account gets the same "check your email" screen
+as a new one when confirmations are on. That is deliberate: a sign-up form that
+says "this email is taken" tells anyone who asks which of your customers is
+registered.
+
+### What was verified, and how
+
+`*.supabase.co` is blocked by this environment's egress policy, so the HTTP side
+could not be exercised against the real project from here. It was split:
+
+- **Against the project, in SQL** — the trigger (name trimmed, email
+  lower-cased, locale read from metadata, an existing customer adopted rather
+  than duplicated) and the RLS policies. The test rows were deleted afterwards;
+  `auth.users` and `Customer` are both empty.
+- **Against a stand-in auth server, in a real browser** — 55 checks over both
+  front ends: field validation, wrong credentials, unconfirmed sign-in,
+  confirmation links (valid, expired, and tampered), `httpOnly` on every session
+  cookie, protected routes, sign-out, Arabic and RTL, refusing an off-site
+  `next=`, and token refresh with the refresh-token reuse grace switched off.
+  See `e2e/README.md` for how to run them.
+
+Two bugs were found and fixed this way: a Server Action re-render emptied the
+password fields, and the proxy's refreshed token never reached the route — which
+signed a customer out an hour after they signed in.
+
+What that leaves unverified: that Supabase's own email delivery works on this
+project, and the exact wording of the templates. Sign up once on the deployed
+site to confirm the mail arrives and the link comes back to the right origin.
