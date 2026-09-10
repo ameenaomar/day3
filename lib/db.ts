@@ -1,21 +1,46 @@
-import { PrismaNeon } from "@prisma/adapter-neon";
+import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@prisma/client";
 
 /**
- * Prisma 7 needs a driver adapter. Neon's serverless driver rather than plain
- * TCP, because a serverless function per request will exhaust direct Postgres
- * connections.
+ * Prisma 7 needs a driver adapter, and this one has to be plain Postgres: the
+ * database is Supabase, and Neon's serverless driver — which this used to use —
+ * speaks Neon's own protocol. Pointed at Supabase it cannot connect at all.
+ *
+ * Nothing on the sign-in path goes through here. Sign-up and sign-in are
+ * Supabase Auth, and the account page reads its customer row over Supabase's
+ * REST API under the customer's own session, so row level security applies.
+ * Prisma is for the server-side work that comes later — the style profile,
+ * orders, the stylist's tool — and it connects as the database owner, which
+ * bypasses RLS. Every query written through it therefore has to scope itself to
+ * the signed-in customer by hand.
+ *
+ * Connection pressure is handled by Supabase's transaction pooler rather than
+ * by the driver, so DATABASE_URL must be the port 6543 pooler string: a
+ * serverless function per request would exhaust direct connections in minutes.
+ * `max: 1` keeps each function instance to a single connection, because the
+ * pooler is the pool.
  *
  * Query logging is deliberately off. Query parameters here include customers'
  * body measurements, and those must never reach a log.
  */
+
+export class DatabaseNotConfiguredError extends Error {
+  constructor() {
+    super("DATABASE_URL is not set — see .env.example");
+    this.name = "DatabaseNotConfiguredError";
+  }
+}
+
+export function databaseIsConfigured(): boolean {
+  return Boolean(process.env.DATABASE_URL);
+}
+
 function create(): PrismaClient {
   const connectionString = process.env.DATABASE_URL;
-  if (!connectionString) {
-    throw new Error("DATABASE_URL is not set — see .env.example");
-  }
+  if (!connectionString) throw new DatabaseNotConfiguredError();
+
   return new PrismaClient({
-    adapter: new PrismaNeon({ connectionString }),
+    adapter: new PrismaPg({ connectionString, max: 1 }),
     log: ["warn", "error"],
   });
 }
