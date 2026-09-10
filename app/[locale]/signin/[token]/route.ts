@@ -19,8 +19,10 @@ export async function GET(
 ) {
   const { locale: rawLocale, token } = await context.params;
   const locale: Locale = isLocale(rawLocale) ? rawLocale : "en";
+  const seeOther = (path: string) =>
+    new NextResponse(null, { status: 303, headers: { location: path, "cache-control": "no-store" } });
   const fail = (reason: "invalid" | "expired" | "used" | "error") =>
-    NextResponse.redirect(new URL(`/${locale}/signin?e=${reason}`, request.url));
+    seeOther(`/${locale}/signin?e=${reason}`);
 
   if (!token || token.length < 20) return fail("invalid");
 
@@ -48,7 +50,7 @@ export async function GET(
       data: { lastSeenAt: new Date() },
     });
 
-    return NextResponse.redirect(new URL(safeRedirect(link.redirectTo, locale), request.url));
+    return seeOther(safeRedirect(link.redirectTo, locale));
   } catch (error) {
     console.error("[signin] link exchange failed:", error instanceof Error ? error.name : "unknown error");
     return fail("error");

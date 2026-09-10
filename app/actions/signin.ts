@@ -1,7 +1,7 @@
 "use server";
 
 import { newMagicToken } from "@/lib/auth-tokens";
-import { prisma } from "@/lib/db";
+import { databaseIsConfigured, prisma } from "@/lib/db";
 import { sendMagicLink } from "@/lib/email";
 import type { Locale } from "@/lib/i18n/config";
 import { endSession } from "@/lib/session";
@@ -21,7 +21,7 @@ export type SignInState =
   | { status: "idle" }
   | { status: "invalid"; error: SignUpErrorCode }
   | { status: "sent"; email: string; devLink?: string }
-  | { status: "failed"; reason: "not_configured" | "unavailable" };
+  | { status: "failed"; reason: "not_configured" | "no_database" | "unavailable" };
 
 const THROTTLE_WINDOW_MINUTES = 10;
 const THROTTLE_MAX_LINKS = 3;
@@ -37,6 +37,8 @@ export async function requestSignIn(_previous: SignInState, form: FormData): Pro
     return { status: "invalid", error: parsed.errors.email ?? "email_invalid" };
   }
   const { email } = parsed.values;
+
+  if (!databaseIsConfigured()) return { status: "failed", reason: "no_database" };
 
   try {
     const customer = await prisma.customer.findUnique({

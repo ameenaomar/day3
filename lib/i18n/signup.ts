@@ -67,6 +67,10 @@ export const SIGNUP = {
     en: "Your file is saved, but this deployment has no mailer configured yet, so the link could not be sent. Set RESEND_API_KEY and try again.",
     ar: "تم حفظ ملفك، لكن لا يوجد بريد مهيأ في هذه النسخة، لذا لم يُرسل الرابط. أضيفوا RESEND_API_KEY ثم أعيدوا المحاولة.",
   },
+  failedNoDatabase: {
+    en: "Accounts are not switched on for this deployment yet, so nothing was saved. Nothing is wrong with what you typed.",
+    ar: "الحسابات غير مفعّلة في هذه النسخة بعد، لذا لم يُحفظ أي شيء. لا خطأ في ما أدخلتِه.",
+  },
   failedUnavailable: {
     en: "Something broke on our side, not yours. Try again in a moment.",
     ar: "حدث خطأ من جهتنا لا من جهتك. أعيدي المحاولة بعد قليل.",

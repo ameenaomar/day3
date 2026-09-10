@@ -105,13 +105,15 @@ them it renders its own error rather than a broken page:
 
 | Variable | Needed for |
 | --- | --- |
-| `DATABASE_URL` | Supabase transaction pooler, port 6543 — the customer write |
+| `DATABASE_URL` | Supabase transaction pooler, port 6543 — the customer write. Plain Postgres through `@prisma/adapter-pg`, so the pooler string is not optional: serverless functions exhaust direct connections. |
 | `DIRECT_DATABASE_URL` | Supabase direct connection, port 5432 — migrations |
 | `RESEND_API_KEY`, `EMAIL_FROM` | Sending the sign-in link. Without them the page saves the customer and says so, and outside production it prints the link instead of mailing it. |
 | `APP_URL` | Where the link points. Set it once there is a custom domain. |
 
 Copy the two database strings from the Supabase dashboard (Connect); they
-carry the password, so they are not in the repo. `siteUrl()` falls back to the
+carry the password, so they are not in the repo. **With none of them set the
+account pages now say so** — "accounts are not switched on for this deployment
+yet" — instead of reporting a generic failure. `siteUrl()` falls back to the
 URL Vercel injects, so the sitemap and canonical links are correct without
 `APP_URL`.
 

@@ -74,9 +74,15 @@ the session on the server rather than only locally. If that endpoint is
 unreachable — no database, no network — the guest path carries on as though
 accounts did not exist.
 
-Still to wire up: `lib/db.ts` uses the Neon serverless adapter and needs the
-Postgres one, and a signed-in customer's answers still are not saved to their
-file at the end of the flow.
+`lib/db.ts` talks to it with `@prisma/adapter-pg`. It used to use Neon's
+serverless driver, which speaks Neon's own protocol and cannot connect to
+Supabase at all — that is what turned every sign-up into "something broke on
+our side". `DATABASE_URL` must be the port 6543 transaction-pooler string, and
+the driver holds one connection per function instance, because the pooler is
+the pool.
+
+Still to wire up: a signed-in customer's answers are not saved to their file at
+the end of the flow.
 
 ---
 

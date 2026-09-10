@@ -97,7 +97,9 @@ export function SignInForm({ locale }: { locale: Locale }) {
           <p className="swiss-err" role="alert">
             {state.reason === "not_configured"
               ? t(SIGNUP.failedConfig, locale)
-              : t(SIGNUP.failedUnavailable, locale)}
+              : state.reason === "no_database"
+                ? t(SIGNUP.failedNoDatabase, locale)
+                : t(SIGNUP.failedUnavailable, locale)}
           </p>
         ) : null}
 

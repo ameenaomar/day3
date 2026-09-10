@@ -2,7 +2,7 @@
 
 import { cookies } from "next/headers";
 import { newMagicToken } from "@/lib/auth-tokens";
-import { prisma } from "@/lib/db";
+import { databaseIsConfigured, prisma } from "@/lib/db";
 import { sendMagicLink } from "@/lib/email";
 import { LOCALE_COOKIE, type Locale } from "@/lib/i18n/config";
 import { siteUrl } from "@/lib/site";
@@ -25,7 +25,7 @@ export type SignUpState =
   | { status: "invalid"; errors: Partial<Record<SignUpField, SignUpErrorCode>> }
   /** The customer exists and a link is on its way. */
   | { status: "sent"; email: string; devLink?: string }
-  | { status: "failed"; reason: "not_configured" | "unavailable" };
+  | { status: "failed"; reason: "not_configured" | "no_database" | "unavailable" };
 
 const THROTTLE_WINDOW_MINUTES = 10;
 const THROTTLE_MAX_LINKS = 3;
@@ -35,6 +35,10 @@ export async function signUp(_previous: SignUpState, form: FormData): Promise<Si
   if (!parsed.ok) return { status: "invalid", errors: parsed.errors };
 
   const { name, email, phone, marketingOptIn, locale } = parsed.values;
+
+  // Told apart from a failure on purpose: an unconfigured deployment is not a
+  // transient error, and "try again in a moment" would be a lie.
+  if (!databaseIsConfigured()) return { status: "failed", reason: "no_database" };
 
   try {
     // The customer record. A returning email updates rather than duplicates,
