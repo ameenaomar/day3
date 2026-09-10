@@ -33,6 +33,10 @@ else narrows from there.
   Stored in the browser, no account, no server.
 - **English and Arabic**, with proper RTL. Every place name, note and tip is
   written in both.
+- **A classic look with one bold colour** — paper neutrals, a serif for the
+  place names, and red spent only on what's active or primary. Line icons
+  rather than emoji, so the plan buttons take the theme's colour like
+  everything else.
 - **Dark mode**, following the system setting until you override it.
 - Mobile-first, because this gets opened in a car.
 
@@ -104,11 +108,12 @@ nothing else changes.
 
 ## About the data
 
-The 62 entries here are **seed data**. Hours, prices and whether a place is even
+The 69 entries here are **seed data**. Hours, prices and whether a place is even
 still open change fast in Kuwait, and none of it is verified against the venues
 themselves. Check an entry before you trust it, and correct it here when it's
 wrong — that's the whole maintenance model.
 
 Some entries were added from [2:48AM's restaurant coverage](https://248am.com/category/food/)
-and published Kuwait café guides — names and areas only, with the notes and
-tips written for this site. Nothing on this list is sponsored or paid for.
+and published Kuwait café, dessert and breakfast guides — names and areas only,
+with the notes and tips written for this site. Where a place came recommended
+but its area couldn't be pinned down, it was left out rather than guessed at. Nothing on this list is sponsored or paid for.
