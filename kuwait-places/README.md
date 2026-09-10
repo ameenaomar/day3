@@ -31,14 +31,6 @@ else narrows from there.
   full meal rather than just coffee. One tap on *No restrictions* clears it.
   The other two plans skip the question, and choosing a new plan asks again,
   since the answer belongs to the plan.
-- **A sign-in page** (`login.html`) — name, email, password and confirmation,
-  with real validation: inline messages, an error summary that links to each
-  bad field, `aria-invalid`, focus moved to the first problem, a strength
-  meter and a show/hide toggle. **It authenticates nothing.** This is a static
-  site with no server, so the page says so on its face, keeps only the name
-  and email in the browser, and never stores or transmits the password. The
-  main page greets you by name and offers a sign out; it does not gate
-  anything, because a lock with no server behind it is theatre.
 - **Our list / Been there** — save spots and tick off the ones you've done.
   Stored in the browser, no account, no server.
 - **English and Arabic**, with proper RTL. Every place name, note and tip is
@@ -161,31 +153,17 @@ but its area couldn't be pinned down, it was left out rather than guessed at. No
 
 ---
 
-## If you want real accounts
-
-Everything above is front-end only. Real sign-in needs a server to hold the
-accounts and issue sessions, and the password must never reach your own code
-in a form you could store. The short path from here is a hosted auth provider
-(Supabase Auth, Auth0, Clerk, Firebase): the provider handles hashing,
-sessions, email verification and password reset, and this page becomes a thin
-form in front of its SDK.
-
-Two rules survive that change, and they are the reason this page is built the
-way it is: never store a password yourself, and never imply an account is
-protected when nothing is checking it.
-
 ## Deployment notes
 
 A Vercel project `kuwait-places` exists and a production deployment was
 created from commit `250e99f`:
 
 - https://kuwait-places-t054175-1826.vercel.app
-- /login.html — the sign-in page
 - inspector: <https://vercel.com/t054175-1826/kuwait-places/FcVY7xbSEySKCkacNWBVv7DBPf1t>
 
-It was deployed through `vercel-bridge/`, which fetches `index.html`,
-`places.js` and `login.html` from a pinned commit at build time and verifies
-all three sha256 hashes before writing them. See the comment at the top of `vercel-bridge/build.mjs`
+It was deployed through `vercel-bridge/`, which fetches `index.html` and
+`places.js` from a pinned commit at build time and verifies both sha256
+hashes before writing them. See the comment at the top of `vercel-bridge/build.mjs`
 for why, and for how to point it at a newer commit.
 
 **Unverified from the session that deployed it.** The deployment was accepted,

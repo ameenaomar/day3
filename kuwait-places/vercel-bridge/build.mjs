@@ -11,7 +11,7 @@
 // directory directly, every push deploys itself, and this folder can go.
 //
 // To redeploy a newer commit: update COMMIT and both hashes
-//   git rev-parse HEAD && sha256sum index.html places.js login.html
+//   git rev-parse HEAD && sha256sum index.html places.js
 
 import { mkdir, writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
@@ -23,7 +23,6 @@ const BASE =
 const EXPECTED = {
   "index.html": "f3e89e75508f33f8b4844b26364cfb26b2cffee989b45ffc734adae0650a568f",
   "places.js": "70f4d0190e866b75fbafeb3e717fedbd12033168b4c83fd0f352d5768a906bee",
-  "login.html": "c769e052b410136363caf01ad98555722265fd60ab723efdad47207e4fc37157",
 };
 
 await mkdir("dist", { recursive: true });
