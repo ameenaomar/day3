@@ -193,14 +193,15 @@ network call of its own.
 ## Deployment notes
 
 A Vercel project `kuwait-places` exists and a production deployment was
-created from commit `afb0e26`:
+created from commit `a80c6d0`:
 
 - https://kuwait-places-t054175-1826.vercel.app
-- inspector: <https://vercel.com/t054175-1826/kuwait-places/3uYRFWSAHHbpMZpgmB3xyESiniKm>
+- /login.html — sign up or sign in
+- inspector: <https://vercel.com/t054175-1826/kuwait-places/5NzY2dq9dTeR9MTmRFxCVpyAsPqD>
 
-It was deployed through `vercel-bridge/`, which fetches `index.html` and
-`places.js` from a pinned commit at build time and verifies both sha256
-hashes before writing them. See the comment at the top of `vercel-bridge/build.mjs`
+It was deployed through `vercel-bridge/`, which fetches the site's files from
+a pinned commit at build time and verifies every sha256 hash before writing
+them. See the comment at the top of `vercel-bridge/build.mjs`
 for why, and for how to point it at a newer commit.
 
 **Unverified from the session that deployed it.** The deployment was accepted,
