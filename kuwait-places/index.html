@@ -1,0 +1,653 @@
+<!doctype html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Yalla, where to? — Hang out in Kuwait</title>
+<meta name="description" content="Coffee, a meal, or somewhere to chill — pick where to hang out in Kuwait, fast. Filter by area, price, outdoor seating and group size, or let it choose for you.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☕</text></svg>">
+<style>
+  :root {
+    --bg: #faf6f0;
+    --surface: #ffffff;
+    --surface-2: #f4ede3;
+    --text: #221d17;
+    --muted: #6d6158;
+    --line: #e3d8c9;
+    --accent: #0b6b5f;
+    --accent-soft: #d9ece8;
+    --accent-text: #085148;
+    --gold: #a8762a;
+    --shadow: 0 1px 2px rgba(34,29,23,.06), 0 8px 24px rgba(34,29,23,.06);
+    --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-ar: "Segoe UI", Tahoma, "Geeza Pro", "Noto Naskh Arabic", system-ui, sans-serif;
+  }
+  :root[data-theme="dark"] {
+    --bg: #16130f;
+    --surface: #211c17;
+    --surface-2: #2b241d;
+    --text: #f3ece2;
+    --muted: #a99c8d;
+    --line: #382f26;
+    --accent: #4fd1bd;
+    --accent-soft: #16342f;
+    --accent-text: #7fe3d2;
+    --gold: #d9a55b;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: var(--font); font-size: 16px; line-height: 1.5;
+  }
+  html[dir="rtl"] body { font-family: var(--font-ar); }
+  .wrap { max-width: 1060px; margin: 0 auto; padding: 0 16px; }
+  button, select, input { font: inherit; color: inherit; }
+
+  /* ---------------------------------------------------------- header */
+  header { background: var(--surface); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 20; }
+  .bar { display: flex; align-items: center; gap: 12px; padding-block: 12px; }
+  .brand { display: flex; align-items: baseline; gap: 8px; margin-inline-end: auto; min-width: 0; }
+  .brand h1 { font-size: 1.12rem; margin: 0; letter-spacing: -.02em; white-space: nowrap; }
+  .brand small { color: var(--muted); font-size: .78rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  @media (max-width: 620px) { .brand small { display: none; } }
+
+  .icon-btn {
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px;
+    padding: 7px 11px; cursor: pointer; line-height: 1; white-space: nowrap;
+  }
+  .icon-btn:hover { border-color: var(--accent); }
+  :is(.icon-btn, .chip, .vibe, .tab, select, input, .actions button):focus-visible {
+    outline: 2px solid var(--accent); outline-offset: 2px;
+  }
+
+  /* ------------------------------------------------------------ hero */
+  .hero { padding-block: 20px 4px; }
+  .hero h2 { margin: 0 0 12px; font-size: 1rem; font-weight: 600; color: var(--muted); }
+  .vibes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  @media (max-width: 620px) { .vibes { grid-template-columns: repeat(2, 1fr); } }
+  .vibe {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+    padding: 14px 10px; cursor: pointer; text-align: center;
+    display: flex; flex-direction: column; gap: 4px; align-items: center;
+    box-shadow: var(--shadow);
+  }
+  .vibe:hover { border-color: var(--accent); }
+  .vibe .emoji { font-size: 1.5rem; line-height: 1; }
+  .vibe .label { font-weight: 600; font-size: .95rem; }
+  .vibe .sub { font-size: .76rem; color: var(--muted); }
+  .vibe[aria-pressed="true"] {
+    background: var(--accent-soft); border-color: var(--accent);
+    box-shadow: 0 0 0 2px var(--accent-soft), var(--shadow);
+  }
+  .vibe[aria-pressed="true"] .label { color: var(--accent-text); }
+
+  /* -------------------------------------------------------- controls */
+  .controls { padding-block: 16px 4px; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .row + .row { margin-top: 10px; }
+  .search {
+    flex: 1 1 180px; min-width: 0; background: var(--surface);
+    border: 1px solid var(--line); border-radius: 10px; padding: 9px 12px;
+  }
+  select { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 9px 12px; cursor: pointer; max-width: 100%; }
+  .surprise {
+    background: var(--accent); color: #fff; border: none; border-radius: 10px;
+    padding: 10px 16px; font-weight: 600; cursor: pointer; box-shadow: var(--shadow);
+  }
+  :root[data-theme="dark"] .surprise { color: #08201d; }
+  .surprise:hover { filter: brightness(1.06); }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 999px;
+    padding: 6px 13px; cursor: pointer; font-size: .87rem; white-space: nowrap;
+  }
+  .chip:hover { border-color: var(--accent); }
+  .chip[aria-pressed="true"] {
+    background: var(--accent-soft); border-color: var(--accent);
+    color: var(--accent-text); font-weight: 600;
+  }
+
+  .tabs { display: flex; gap: 4px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; padding: 3px; }
+  .tab { background: none; border: none; border-radius: 8px; padding: 6px 12px; cursor: pointer; font-size: .87rem; white-space: nowrap; }
+  .tab[aria-selected="true"] { background: var(--surface); font-weight: 600; box-shadow: var(--shadow); }
+
+  .meta-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding-block: 14px 2px; color: var(--muted); font-size: .85rem; }
+  .clear { background: none; border: none; color: var(--accent-text); cursor: pointer; text-decoration: underline; padding: 0; font-size: .85rem; }
+
+  /* ----------------------------------------------------------- cards */
+  .grid { display: grid; gap: 12px; padding-block: 8px 40px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+  .card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+    padding: 16px; display: flex; flex-direction: column; gap: 8px; box-shadow: var(--shadow);
+  }
+  .card.picked { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft), var(--shadow); }
+  .card h3 { font-size: 1.05rem; margin: 0; letter-spacing: -.01em; }
+  .where { color: var(--muted); font-size: .84rem; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .dot { opacity: .5; }
+  .price { color: var(--gold); font-weight: 600; }
+  .badges { display: flex; flex-wrap: wrap; gap: 5px; }
+  .tag { background: var(--surface-2); border-radius: 6px; padding: 2px 8px; font-size: .74rem; color: var(--muted); }
+  .note { margin: 0; font-size: .92rem; }
+  .tip { margin: 0; font-size: .88rem; color: var(--accent-text); background: var(--accent-soft); border-radius: 10px; padding: 9px 11px; }
+  .tip b { font-weight: 600; }
+  .actions { display: flex; gap: 6px; margin-top: auto; padding-top: 4px; }
+  .actions button {
+    flex: 1; background: var(--surface-2); border: 1px solid var(--line);
+    border-radius: 9px; padding: 7px; cursor: pointer; font-size: .84rem;
+  }
+  .actions button:hover { border-color: var(--accent); }
+  .actions button[aria-pressed="true"] {
+    background: var(--accent-soft); border-color: var(--accent);
+    color: var(--accent-text); font-weight: 600;
+  }
+  .card.done h3, .card.done .note { opacity: .62; }
+
+  .empty { text-align: center; color: var(--muted); padding: 48px 16px; }
+
+  footer { border-top: 1px solid var(--line); background: var(--surface); padding-block: 20px 32px; color: var(--muted); font-size: .82rem; }
+  footer p { margin: 0 0 6px; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .card.picked { animation: pop .35s ease; }
+    @keyframes pop { from { transform: scale(.97); } to { transform: scale(1); } }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap bar">
+    <div class="brand">
+      <span aria-hidden="true">☕</span>
+      <h1 data-i18n="title">Yalla, where to?</h1>
+      <small data-i18n="tagline">Hang out in Kuwait — decided in five seconds</small>
+    </div>
+    <button class="icon-btn" id="lang" type="button">عربي</button>
+    <button class="icon-btn" id="theme" type="button" data-i18n-label="themeLabel">🌙</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <h2 data-i18n="plan">What's the plan?</h2>
+    <div class="vibes" id="vibes" role="group" data-i18n-label="plan"></div>
+  </section>
+
+  <div class="controls">
+    <div class="row">
+      <input class="search" id="search" type="search" data-i18n-ph="searchPh" data-i18n-label="searchPh" placeholder="Search a place…">
+      <select id="area" data-i18n-label="areaLabel"></select>
+      <button class="surprise" id="surprise" type="button" data-i18n="surprise">Surprise us</button>
+    </div>
+    <div class="row">
+      <div class="chips" id="prices" role="group" data-i18n-label="priceLabel"></div>
+      <div class="chips" id="flags" role="group" data-i18n-label="flagLabel"></div>
+    </div>
+    <div class="row">
+      <div class="tabs" id="tabs" role="tablist">
+        <button class="tab" role="tab" data-view="all" aria-selected="true" data-i18n="viewAll">All</button>
+        <button class="tab" role="tab" data-view="saved" aria-selected="false" data-i18n="viewSaved">Our list</button>
+        <button class="tab" role="tab" data-view="tried" aria-selected="false" data-i18n="viewTried">Been there</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="meta-row">
+    <span id="count" aria-live="polite"></span>
+    <button class="clear" id="clear" type="button" hidden data-i18n="clear">Clear filters</button>
+  </div>
+
+  <div class="grid" id="grid"></div>
+  <div class="empty" id="empty" hidden></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p data-i18n="footNote">Hand-picked, not sponsored. Nothing here is paid for.</p>
+    <p data-i18n="footVerify">Hours and prices change fast — check before you drive out. Something wrong or missing? Edit places.js and open a pull request.</p>
+  </div>
+</footer>
+
+<script src="places.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  /* ------------------------------------------------------------------ i18n */
+  var STR = {
+    en: {
+      title: "Yalla, where to?",
+      tagline: "Hang out in Kuwait — decided in five seconds",
+      plan: "What's the plan?",
+      searchPh: "Search a place…",
+      areaLabel: "Area", priceLabel: "Price", flagLabel: "Requirements",
+      themeLabel: "Toggle dark mode",
+      surprise: "Surprise us",
+      viewAll: "All", viewSaved: "Our list", viewTried: "Been there",
+      clear: "Clear filters",
+      allAreas: "Every area",
+      prices: ["Free", "Cheap", "Mid-range", "Splurge"],
+      tipLabel: "Try:",
+      save: "Add to list", saved: "On our list",
+      tried: "Been there", didTry: "Been there",
+      late: "Open late", outdoor: "Outdoor seating", group: "Big group",
+      count: function (n, total) { return n + (n === 1 ? " spot" : " spots") + " of " + total; },
+      emptyAll: "Nothing matches. Try dropping a filter.",
+      emptySaved: "Your list is empty. Hit “Add to list” on a spot to keep it.",
+      emptyTried: "Nothing marked yet.",
+      footNote: "Hand-picked, not sponsored. Nothing here is paid for.",
+      footVerify: "Hours and prices change fast — check before you drive out. Something wrong or missing? Edit places.js and open a pull request.",
+      vibes: {
+        coffee:    { label: "Coffee", sub: "Sit and talk", emoji: "☕" },
+        eat:       { label: "Eat", sub: "A proper meal", emoji: "🍽️" },
+        chill:     { label: "Chill", sub: "Just hang out", emoji: "🌊" },
+        different: { label: "Something else", sub: "Break the routine", emoji: "✨" }
+      },
+      cats: { cafe: "Café", food: "Restaurant", breakfast: "Breakfast", dessert: "Dessert", museum: "Museum", outdoors: "Outdoors", souq: "Souq", landmark: "Landmark", activity: "Activity" },
+      langBtn: "عربي"
+    },
+    ar: {
+      title: "يلّا، وين؟",
+      tagline: "تطلعون وين في الكويت — قرار في خمس ثواني",
+      plan: "شنو الخطة؟",
+      searchPh: "ابحث عن مكان…",
+      areaLabel: "المنطقة", priceLabel: "السعر", flagLabel: "الشروط",
+      themeLabel: "تغيير الوضع الليلي",
+      surprise: "اختر لنا",
+      viewAll: "الكل", viewSaved: "قائمتنا", viewTried: "رحنا له",
+      clear: "إزالة الفلاتر",
+      allAreas: "كل المناطق",
+      prices: ["مجاناً", "رخيص", "وسط", "غالي"],
+      tipLabel: "جرّب:",
+      save: "أضف للقائمة", saved: "في قائمتنا",
+      tried: "رحنا له", didTry: "رحنا له",
+      late: "يفتح متأخر", outdoor: "جلسة خارجية", group: "جمعة كبيرة",
+      count: function (n, total) { return n + " مكان من " + total; },
+      emptyAll: "ما في نتائج. جرّب تشيل فلتر.",
+      emptySaved: "قائمتكم فاضية. اضغط «أضف للقائمة» على أي مكان.",
+      emptyTried: "ما علّمتوا أي مكان.",
+      footNote: "اختيار شخصي، وغير مدفوع. لا يوجد أي إعلان هنا.",
+      footVerify: "المواعيد والأسعار تتغيّر بسرعة — تأكد قبل ما تسوق. في خطأ أو مكان ناقص؟ عدّل places.js وافتح pull request.",
+      vibes: {
+        coffee:    { label: "قهوة", sub: "نقعد ونسولف", emoji: "☕" },
+        eat:       { label: "أكل", sub: "عشاء أو غدا", emoji: "🍽️" },
+        chill:     { label: "نطلّع", sub: "بس نتمشى", emoji: "🌊" },
+        different: { label: "شي ثاني", sub: "نغيّر الروتين", emoji: "✨" }
+      },
+      cats: { cafe: "كافيه", food: "مطعم", breakfast: "ريوق", dessert: "حلا", museum: "متحف", outdoors: "في الخارج", souq: "سوق", landmark: "معلم", activity: "نشاط" },
+      langBtn: "EN"
+    }
+  };
+
+  var VIBE_ORDER = ["coffee", "eat", "chill", "different"];
+  var PRICE_TIERS = [0, 1, 2, 3];
+  var FLAGS = ["late", "outdoor", "group"];
+
+  /* --------------------------------------------------------------- storage */
+  // localStorage throws outright in some privacy modes, so every access is
+  // wrapped and the site works fine with nothing stored.
+  function readStore(key, fallback) {
+    try {
+      var raw = localStorage.getItem(key);
+      return raw === null ? fallback : JSON.parse(raw);
+    } catch (e) { return fallback; }
+  }
+  function writeStore(key, value) {
+    try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) { /* no-op */ }
+  }
+
+  var browserLang = (navigator.language || "en").slice(0, 2) === "ar" ? "ar" : "en";
+  var prefersDark = !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+
+  var state = {
+    lang: readStore("kw.lang", null) || browserLang,
+    theme: readStore("kw.theme", null) || (prefersDark ? "dark" : "light"),
+    saved: readStore("kw.saved", []),
+    tried: readStore("kw.tried", []),
+    vibe: "",        // "" means every vibe
+    prices: [],
+    flags: [],       // any of FLAGS — each narrows the list
+    area: "",
+    q: "",
+    view: "all",
+    picked: null
+  };
+
+  var places = (window.PLACES || []).slice();
+
+  var $ = function (sel) { return document.querySelector(sel); };
+  var each = function (nodes, fn) { Array.prototype.forEach.call(nodes, fn); };
+  function t() { return STR[state.lang]; }
+  function L(field) { return (field && (field[state.lang] || field.en)) || ""; }
+  function priceMark(tier) { return t().prices[tier]; }
+
+  function isSaved(id) { return state.saved.indexOf(id) !== -1; }
+  function isTried(id) { return state.tried.indexOf(id) !== -1; }
+  function toggleIn(list, value) {
+    var i = list.indexOf(value);
+    if (i === -1) { list.push(value); } else { list.splice(i, 1); }
+    return list;
+  }
+
+  /* ------------------------------------------------------------- filtering */
+  function visible() {
+    var q = state.q.trim().toLowerCase();
+    return places.filter(function (p) {
+      if (state.view === "saved" && !isSaved(p.id)) return false;
+      if (state.view === "tried" && !isTried(p.id)) return false;
+      if (state.vibe && p.vibe !== state.vibe) return false;
+      if (state.prices.length && state.prices.indexOf(p.price) === -1) return false;
+      if (state.area && L(p.area) !== state.area) return false;
+      for (var i = 0; i < state.flags.length; i++) {
+        if (!p[state.flags[i]]) return false;
+      }
+      if (q) {
+        var hay = [L(p.name), p.name.en, p.name.ar, L(p.area), L(p.note), L(p.tip)].join(" ").toLowerCase();
+        if (hay.indexOf(q) === -1) return false;
+      }
+      return true;
+    });
+  }
+
+  function filtersActive() {
+    return !!(state.vibe || state.prices.length || state.flags.length || state.area || state.q);
+  }
+
+  /* -------------------------------------------------------------- rendering */
+  function renderStaticText() {
+    document.documentElement.lang = state.lang;
+    document.documentElement.dir = state.lang === "ar" ? "rtl" : "ltr";
+    document.documentElement.setAttribute("data-theme", state.theme);
+    document.title = t().title + " — " + t().tagline;
+
+    each(document.querySelectorAll("[data-i18n]"), function (el) {
+      el.textContent = t()[el.getAttribute("data-i18n")];
+    });
+    each(document.querySelectorAll("[data-i18n-ph]"), function (el) {
+      el.placeholder = t()[el.getAttribute("data-i18n-ph")];
+    });
+    each(document.querySelectorAll("[data-i18n-label]"), function (el) {
+      el.setAttribute("aria-label", t()[el.getAttribute("data-i18n-label")]);
+    });
+
+    $("#lang").textContent = t().langBtn;
+    $("#theme").textContent = state.theme === "dark" ? "☀️" : "🌙";
+  }
+
+  function renderVibes() {
+    var box = $("#vibes");
+    box.textContent = "";
+    VIBE_ORDER.forEach(function (vibe) {
+      var copy = t().vibes[vibe];
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "vibe";
+      b.setAttribute("aria-pressed", state.vibe === vibe);
+
+      var e = document.createElement("span");
+      e.className = "emoji";
+      e.setAttribute("aria-hidden", "true");
+      e.textContent = copy.emoji;
+      var l = document.createElement("span");
+      l.className = "label";
+      l.textContent = copy.label;
+      var s = document.createElement("span");
+      s.className = "sub";
+      s.textContent = copy.sub;
+      b.appendChild(e); b.appendChild(l); b.appendChild(s);
+
+      b.addEventListener("click", function () {
+        // Tapping the active one clears it, which is how people expect a
+        // single big toggle to behave.
+        state.vibe = state.vibe === vibe ? "" : vibe;
+        state.picked = null;
+        renderVibes(); renderList();
+      });
+      box.appendChild(b);
+    });
+  }
+
+  function renderPrices() {
+    var box = $("#prices");
+    box.textContent = "";
+    PRICE_TIERS.forEach(function (tier) {
+      if (!places.some(function (p) { return p.price === tier; })) return;
+      box.appendChild(chip(priceMark(tier), state.prices.indexOf(tier) !== -1, function () {
+        toggleIn(state.prices, tier);
+        state.picked = null;
+        renderPrices(); renderList();
+      }));
+    });
+  }
+
+  function renderFlags() {
+    var box = $("#flags");
+    box.textContent = "";
+    FLAGS.forEach(function (flag) {
+      box.appendChild(chip(t()[flag], state.flags.indexOf(flag) !== -1, function () {
+        toggleIn(state.flags, flag);
+        state.picked = null;
+        renderFlags(); renderList();
+      }));
+    });
+  }
+
+  function chip(label, pressed, onClick) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "chip";
+    b.textContent = label;
+    b.setAttribute("aria-pressed", pressed);
+    b.addEventListener("click", onClick);
+    return b;
+  }
+
+  function renderAreas() {
+    var sel = $("#area");
+    var previous = state.area;
+    var areas = [];
+    places.forEach(function (p) {
+      var a = L(p.area);
+      if (areas.indexOf(a) === -1) areas.push(a);
+    });
+    areas.sort(function (a, b) { return a.localeCompare(b, state.lang); });
+
+    sel.textContent = "";
+    var all = document.createElement("option");
+    all.value = "";
+    all.textContent = t().allAreas;
+    sel.appendChild(all);
+    areas.forEach(function (a) {
+      var o = document.createElement("option");
+      o.value = a;
+      o.textContent = a;
+      sel.appendChild(o);
+    });
+    // An area picked in one language has no matching string in the other, so
+    // reset it on a language switch instead of silently matching nothing.
+    sel.value = areas.indexOf(previous) !== -1 ? previous : "";
+    state.area = sel.value;
+  }
+
+  function sep() {
+    var s = document.createElement("span");
+    s.className = "dot";
+    s.setAttribute("aria-hidden", "true");
+    s.textContent = "·";
+    return s;
+  }
+
+  function tag(text) {
+    var el = document.createElement("span");
+    el.className = "tag";
+    el.textContent = text;
+    return el;
+  }
+
+  function actionBtn(label, pressed, onClick) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.textContent = label;
+    b.setAttribute("aria-pressed", pressed);
+    b.addEventListener("click", onClick);
+    return b;
+  }
+
+  function card(p) {
+    var el = document.createElement("article");
+    el.className = "card" + (isTried(p.id) ? " done" : "") + (state.picked === p.id ? " picked" : "");
+
+    var h = document.createElement("h3");
+    h.textContent = L(p.name);
+    el.appendChild(h);
+
+    var where = document.createElement("div");
+    where.className = "where";
+    var area = document.createElement("span");
+    area.textContent = L(p.area);
+    where.appendChild(area);
+    where.appendChild(sep());
+    var price = document.createElement("span");
+    price.className = "price";
+    price.textContent = priceMark(p.price);
+    where.appendChild(price);
+    el.appendChild(where);
+
+    var badges = document.createElement("div");
+    badges.className = "badges";
+    badges.appendChild(tag(t().cats[p.cat] || p.cat));
+    if (p.outdoor) badges.appendChild(tag(t().outdoor));
+    if (p.group) badges.appendChild(tag(t().group));
+    if (p.late) badges.appendChild(tag(t().late));
+    el.appendChild(badges);
+
+    var note = document.createElement("p");
+    note.className = "note";
+    note.textContent = L(p.note);
+    el.appendChild(note);
+
+    var tip = document.createElement("p");
+    tip.className = "tip";
+    var b = document.createElement("b");
+    b.textContent = t().tipLabel + " ";
+    tip.appendChild(b);
+    tip.appendChild(document.createTextNode(L(p.tip)));
+    el.appendChild(tip);
+
+    var actions = document.createElement("div");
+    actions.className = "actions";
+    actions.appendChild(actionBtn(
+      (isSaved(p.id) ? "★ " : "☆ ") + (isSaved(p.id) ? t().saved : t().save),
+      isSaved(p.id),
+      function () { writeStore("kw.saved", toggleIn(state.saved, p.id)); renderList(); }
+    ));
+    actions.appendChild(actionBtn(
+      (isTried(p.id) ? "✓ " : "") + (isTried(p.id) ? t().didTry : t().tried),
+      isTried(p.id),
+      function () { writeStore("kw.tried", toggleIn(state.tried, p.id)); renderList(); }
+    ));
+    el.appendChild(actions);
+    return el;
+  }
+
+  function renderList() {
+    var list = visible();
+
+    // A surprise pick floats to the top so nobody has to scroll for it.
+    if (state.picked) {
+      list = list.slice().sort(function (a, b) {
+        return (b.id === state.picked) - (a.id === state.picked);
+      });
+    }
+
+    var grid = $("#grid");
+    grid.textContent = "";
+    list.forEach(function (p) { grid.appendChild(card(p)); });
+
+    $("#count").textContent = t().count(list.length, places.length);
+    $("#clear").hidden = !filtersActive();
+
+    var empty = $("#empty");
+    empty.hidden = list.length > 0;
+    if (!list.length) {
+      empty.textContent = state.view === "saved" ? t().emptySaved
+        : state.view === "tried" ? t().emptyTried
+        : t().emptyAll;
+    }
+  }
+
+  function renderAll() {
+    renderStaticText();
+    renderVibes();
+    renderPrices();
+    renderFlags();
+    renderAreas();
+    renderList();
+  }
+
+  /* ----------------------------------------------------------------- events */
+  $("#lang").addEventListener("click", function () {
+    state.lang = state.lang === "en" ? "ar" : "en";
+    writeStore("kw.lang", state.lang);
+    renderAll();
+  });
+
+  $("#theme").addEventListener("click", function () {
+    state.theme = state.theme === "dark" ? "light" : "dark";
+    writeStore("kw.theme", state.theme);
+    renderStaticText();
+  });
+
+  $("#search").addEventListener("input", function (e) {
+    state.q = e.target.value;
+    state.picked = null;
+    renderList();
+  });
+
+  $("#area").addEventListener("change", function (e) {
+    state.area = e.target.value;
+    state.picked = null;
+    renderList();
+  });
+
+  $("#surprise").addEventListener("click", function () {
+    // Pick from what's on screen, so the filters still mean something, and
+    // never hand back the same place twice in a row.
+    var pool = visible();
+    if (!pool.length) return;
+    if (pool.length > 1 && state.picked) {
+      pool = pool.filter(function (p) { return p.id !== state.picked; });
+    }
+    state.picked = pool[Math.floor(Math.random() * pool.length)].id;
+    renderList();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  $("#clear").addEventListener("click", function () {
+    state.vibe = ""; state.prices = []; state.flags = [];
+    state.area = ""; state.q = ""; state.picked = null;
+    $("#search").value = "";
+    $("#area").value = "";
+    renderVibes(); renderPrices(); renderFlags(); renderList();
+  });
+
+  each(document.querySelectorAll("#tabs .tab"), function (tab) {
+    tab.addEventListener("click", function () {
+      state.view = tab.getAttribute("data-view");
+      state.picked = null;
+      each(document.querySelectorAll("#tabs .tab"), function (other) {
+        other.setAttribute("aria-selected", other === tab);
+      });
+      renderList();
+    });
+  });
+
+  renderAll();
+})();
+</script>
+</body>
+</html>
