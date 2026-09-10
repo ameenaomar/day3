@@ -150,3 +150,41 @@ Some entries were added from [2:48AM's restaurant coverage](https://248am.com/ca
 and published Kuwait café, dessert and breakfast guides — names and areas only,
 with the notes and tips written for this site. Where a place came recommended
 but its area couldn't be pinned down, it was left out rather than guessed at. Nothing on this list is sponsored or paid for.
+
+---
+
+## Deployment notes
+
+A Vercel project `kuwait-places` exists and a production deployment was
+created from commit `cda2616`:
+
+- https://kuwait-places-t054175-1826.vercel.app
+- inspector: <https://vercel.com/t054175-1826/kuwait-places/2QhKz3s6T6a7LK89dQ5VUuygKhpA>
+
+It was deployed through `vercel-bridge/`, which fetches `index.html` and
+`places.js` from a pinned commit at build time and verifies both sha256 hashes
+before writing them. See the comment at the top of `vercel-bridge/build.mjs`
+for why, and for how to point it at a newer commit.
+
+**Unverified from the session that deployed it.** The deployment was accepted,
+but nothing there could read it back:
+
+- Every Vercel API call that names the team scope returns 403
+  (`You must re-authenticate to this scope`) — `list_projects`,
+  `get_deployment`, `get_deployment_build_logs` and `create_git_project` all
+  require a `teamId` and so all fail. `deploy_to_vercel` is the only call
+  where `teamId` is optional, and it succeeds when omitted, which is how the
+  deployment was made at all.
+- `web_fetch_vercel_url` checks the deployment first, so it fails the same way.
+- `vercel.app` is blocked by that environment's egress proxy, for both `curl`
+  and the web-fetch tool.
+
+What *was* verified: `vercel-bridge/build.mjs` was run locally, reproduced both
+files byte-for-byte, and all three browser suites passed against the resulting
+`dist/` — so the exact bytes the build serves are known good. Whether Vercel's
+build machine ran it is the only open question, and the page itself answers it.
+
+**The real fix** is to reconnect the Vercel authorization so the token carries
+team scope, then link the project to git (Settings → Git, root directory
+`kuwait-places`). Every push deploys itself after that and `vercel-bridge/`
+becomes dead weight.
