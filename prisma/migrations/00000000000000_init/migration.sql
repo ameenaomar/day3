@@ -11,6 +11,9 @@ CREATE TYPE "StylistRole" AS ENUM ('stylist', 'admin');
 CREATE TYPE "StylingFor" AS ENUM ('women', 'men');
 
 -- CreateEnum
+CREATE TYPE "FitAccuracy" AS ENUM ('estimated', 'better', 'good', 'tailor');
+
+-- CreateEnum
 CREATE TYPE "PaymentModel" AS ENUM ('prepaid_full', 'fee_first');
 
 -- CreateEnum
@@ -38,6 +41,8 @@ CREATE TABLE "Customer" (
     "email" TEXT NOT NULL,
     "phoneE164" TEXT,
     "locale" "Locale" NOT NULL DEFAULT 'en',
+    "marketingOptIn" BOOLEAN NOT NULL DEFAULT false,
+    "marketingOptInAt" TIMESTAMP(3),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "lastSeenAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -107,12 +112,36 @@ CREATE TABLE "StylistMagicLinkToken" (
 );
 
 -- CreateTable
+CREATE TABLE "Measurement" (
+    "id" TEXT NOT NULL,
+    "customerId" TEXT NOT NULL,
+    "version" INTEGER NOT NULL,
+    "isCurrent" BOOLEAN NOT NULL DEFAULT true,
+    "heightMm" INTEGER,
+    "bustMm" INTEGER,
+    "chestMm" INTEGER,
+    "waistMm" INTEGER,
+    "hipMm" INTEGER,
+    "shoulderMm" INTEGER,
+    "armMm" INTEGER,
+    "inseamMm" INTEGER,
+    "noTape" BOOLEAN NOT NULL DEFAULT false,
+    "filledCount" INTEGER NOT NULL DEFAULT 0,
+    "accuracy" "FitAccuracy" NOT NULL DEFAULT 'estimated',
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Measurement_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "StyleProfile" (
     "id" TEXT NOT NULL,
     "customerId" TEXT NOT NULL,
     "version" INTEGER NOT NULL,
     "isCurrent" BOOLEAN NOT NULL DEFAULT true,
-    "answersSchemaVersion" INTEGER NOT NULL DEFAULT 1,
+    "answersSchemaVersion" INTEGER NOT NULL DEFAULT 2,
+    "measurementId" TEXT,
     "stylingFor" "StylingFor" NOT NULL,
     "occasion" TEXT NOT NULL,
     "sizeTop" TEXT,
@@ -125,6 +154,26 @@ CREATE TABLE "StyleProfile" (
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "StyleProfile_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Address" (
+    "id" TEXT NOT NULL,
+    "customerId" TEXT NOT NULL,
+    "label" TEXT,
+    "governorate" TEXT NOT NULL,
+    "area" TEXT NOT NULL,
+    "block" TEXT NOT NULL,
+    "street" TEXT NOT NULL,
+    "building" TEXT NOT NULL,
+    "floor" TEXT,
+    "flat" TEXT,
+    "notes" TEXT,
+    "isDefault" BOOLEAN NOT NULL DEFAULT false,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Address_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -146,6 +195,7 @@ CREATE TABLE "Order" (
     "spentFils" INTEGER,
     "currency" TEXT NOT NULL DEFAULT 'KWD',
     "whatsappE164" TEXT NOT NULL,
+    "addressId" TEXT,
     "addressGovernorate" TEXT NOT NULL,
     "addressArea" TEXT NOT NULL,
     "addressBlock" TEXT NOT NULL,
@@ -285,6 +335,12 @@ CREATE UNIQUE INDEX "StylistMagicLinkToken_tokenHash_key" ON "StylistMagicLinkTo
 CREATE INDEX "StylistMagicLinkToken_stylistId_idx" ON "StylistMagicLinkToken"("stylistId");
 
 -- CreateIndex
+CREATE INDEX "Measurement_customerId_isCurrent_idx" ON "Measurement"("customerId", "isCurrent");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Measurement_customerId_version_key" ON "Measurement"("customerId", "version");
+
+-- CreateIndex
 CREATE INDEX "StyleProfile_customerId_isCurrent_idx" ON "StyleProfile"("customerId", "isCurrent");
 
 -- CreateIndex
@@ -295,6 +351,9 @@ CREATE INDEX "StyleProfile_stylingFor_idx" ON "StyleProfile"("stylingFor");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "StyleProfile_customerId_version_key" ON "StyleProfile"("customerId", "version");
+
+-- CreateIndex
+CREATE INDEX "Address_customerId_isDefault_idx" ON "Address"("customerId", "isDefault");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Order_reference_key" ON "Order"("reference");
@@ -345,13 +404,25 @@ ALTER TABLE "StylistSession" ADD CONSTRAINT "StylistSession_stylistId_fkey" FORE
 ALTER TABLE "StylistMagicLinkToken" ADD CONSTRAINT "StylistMagicLinkToken_stylistId_fkey" FOREIGN KEY ("stylistId") REFERENCES "StylistUser"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "Measurement" ADD CONSTRAINT "Measurement_customerId_fkey" FOREIGN KEY ("customerId") REFERENCES "Customer"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "StyleProfile" ADD CONSTRAINT "StyleProfile_customerId_fkey" FOREIGN KEY ("customerId") REFERENCES "Customer"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "StyleProfile" ADD CONSTRAINT "StyleProfile_measurementId_fkey" FOREIGN KEY ("measurementId") REFERENCES "Measurement"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Address" ADD CONSTRAINT "Address_customerId_fkey" FOREIGN KEY ("customerId") REFERENCES "Customer"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Order" ADD CONSTRAINT "Order_customerId_fkey" FOREIGN KEY ("customerId") REFERENCES "Customer"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Order" ADD CONSTRAINT "Order_styleProfileId_fkey" FOREIGN KEY ("styleProfileId") REFERENCES "StyleProfile"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Order" ADD CONSTRAINT "Order_addressId_fkey" FOREIGN KEY ("addressId") REFERENCES "Address"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Payment" ADD CONSTRAINT "Payment_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "Order"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -376,3 +447,4 @@ ALTER TABLE "OrderStatusEvent" ADD CONSTRAINT "OrderStatusEvent_orderId_fkey" FO
 
 -- AddForeignKey
 ALTER TABLE "OrderStatusEvent" ADD CONSTRAINT "OrderStatusEvent_actorId_fkey" FOREIGN KEY ("actorId") REFERENCES "StylistUser"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+

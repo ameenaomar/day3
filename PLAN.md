@@ -6,14 +6,83 @@ Status: **awaiting approval.** Nothing has been built yet.
 
 ## 0. The prototype is in the repo
 
-`public/whatcaniwear.html` is the working single-file prototype, committed
-verbatim apart from its `<head>` (the `<title>` and the font `<link>`s were in
-`<body>`; they were moved up, and a description and favicon link added). It is
-the **source of truth for exact wording, option lists, helper text and the
-already-written Arabic**, and it is what `/` serves in production — so the site
-is live and usable while the port under `/en` and `/ar` is built out against it.
+`public/simply-styled.html` is the working single-file app and the **source of
+truth for exact wording, option lists, helper text and the already-written
+Arabic**. It is what `/` serves in production, so the site is live and usable
+while the port under `/en` and `/ar` is built out against it.
 
-Nothing else here is blocked.
+It has since been reworked in three ways, and the port should follow it:
+
+- **International Typographic Style.** One neutral grotesque (Inter, with IBM
+  Plex Sans Arabic for Arabic), a 2-column asymmetric grid with the screen
+  number and index on the rail, hairline rules instead of boxes, and a single
+  accent red that only ever marks something — required fields, progress,
+  errors, the fit meter. No shadows, no rounded corners, no ornament. Both
+  themes, both directions.
+- **Measurements are their own screen.** Screen 04 of 8, open by default, with
+  a fit-accuracy meter, a plausible range per field, one instruction per
+  field, and a visible consequence: full measurements mean one size per piece
+  instead of two, and that promise is what the payment screen prints.
+- **Eight screens, not seven**, because of the above.
+
+## 0.1 The database exists
+
+Supabase project **`simply-styled`** (`djkpilwfcokgjjtbwker`, eu-central-1) holds
+all fifteen tables, applied from `prisma/migrations`. Decision 2 below is
+therefore settled: **Supabase, not Neon.**
+
+What changed in the model when the measuring screen did:
+
+- **`Measurement`** is its own versioned table, in integer millimetres, with
+  `noTape`, `filledCount` and an `accuracy` enum (`estimated` / `better` /
+  `good` / `tailor`). The tier is stored rather than recomputed, because
+  `tailor` is what the payment screen promises the customer: one size per
+  piece instead of two. `StyleProfile` points at the set it was built from.
+- **`Address`** exists, shaped the way Kuwait writes addresses — governorate,
+  area, block, street, building. `Order` keeps its own snapshot of it, so
+  editing an address never rewrites where a past order went. **The flow still
+  has no screen that asks for it**; that is the next gap to close.
+- **`Customer.marketingOptIn`** backs the front page's "no marketing unless you
+  ask for it".
+- `answersSchemaVersion` defaults to **2**: the eight-screen shape.
+
+Row-level security is on for every table with **no policies**, which denies the
+anon and authenticated API keys outright — the app reaches Postgres as the owner
+through Prisma and bypasses RLS. Measurements and phone numbers are never one
+leaked publishable key away from being public.
+
+Sign-up writes to it: `/en/signup` and `/ar/signup` create the `Customer` row,
+record the marketing consent and issue a hashed single-use magic link, with a
+three-links-per-ten-minutes throttle and the same answer whether or not the
+email was already on file. It is Swiss-styled in `signup.css`, scoped so the
+old scaffold pages are untouched — the first page of the port.
+
+Sign-in is built too: `/[locale]/signin` asks for a link and explains a dead
+one, and `/[locale]/signin/[token]` spends it — a conditional `usedAt` update,
+so a mail client's prefetch and the customer's own tap cannot both open a
+session — then starts a 60-day session whose token is stored only as a hash,
+in an httpOnly cookie.
+
+The prototype knows about accounts now, so there is one front door with two
+handles rather than two doors: its first screen leads with **Create my file**
+and **I already have a file**, pointing at `/{locale}/signup` and
+`/{locale}/signin`, and keeps the guest path underneath, labelled as staying
+in this browser. Being static HTML it cannot read an httpOnly cookie, so it
+asks `/api/me`, and a signed-in customer skips the front screen and gets their
+name back in the chrome. Logging out there POSTs `/api/signout`, so it ends
+the session on the server rather than only locally. If that endpoint is
+unreachable — no database, no network — the guest path carries on as though
+accounts did not exist.
+
+`lib/db.ts` talks to it with `@prisma/adapter-pg`. It used to use Neon's
+serverless driver, which speaks Neon's own protocol and cannot connect to
+Supabase at all — that is what turned every sign-up into "something broke on
+our side". `DATABASE_URL` must be the port 6543 transaction-pooler string, and
+the driver holds one connection per function instance, because the pooler is
+the pool.
+
+Still to wire up: a signed-in customer's answers are not saved to their file at
+the end of the flow.
 
 ---
 

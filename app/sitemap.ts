@@ -23,6 +23,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 1,
   };
 
+  const signup = locales.map((locale) => ({
+    url: `${base}/${locale}/signup`,
+    lastModified: new Date(),
+    changeFrequency: "monthly" as const,
+    priority: 0.6,
+    alternates: {
+      languages: Object.fromEntries(locales.map((l) => [l, `${base}/${l}/signup`])),
+    },
+  }));
+
   const localised = locales.map((locale) => ({
     url: `${base}/${locale}`,
     lastModified: new Date(),
@@ -33,5 +43,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   }));
 
-  return [root, ...localised];
+  return [root, ...localised, ...signup];
 }

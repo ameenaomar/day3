@@ -1,0 +1,456 @@
+/* ---------------------------------------------------------------------------
+   The sign-up page, in the same International Typographic Style as the live
+   prototype: one grotesque, an asymmetric grid, hairline rules, and a single
+   red that only ever marks something.
+
+   Every rule is scoped under .swiss and every token is prefixed --ss-, so
+   this file cannot reach the scaffold pages that still run the old beige
+   machine. When the port lands, these tokens move into globals.css and the
+   scope goes away.
+   --------------------------------------------------------------------------- */
+
+.swiss {
+  --ss-bg: #ffffff;
+  --ss-bg-2: #f4f4f2;
+  --ss-ink: #0b0b0b;
+  --ss-ink-2: #43433f;
+  --ss-ink-3: #78787a;
+  --ss-line: #cfcfc9;
+  --ss-hair: #e4e4df;
+  --ss-accent: #e1140a;
+  --ss-accent-soft: #fbe8e6;
+  --ss-focus: #0047ff;
+  --ss-sans: "Inter", "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
+  --ss-ar: "IBM Plex Sans Arabic", "Segoe UI", Tahoma, sans-serif;
+
+  min-height: 100dvh;
+  background: var(--ss-bg);
+  color: var(--ss-ink);
+  font-family: var(--ss-sans);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .swiss {
+    --ss-bg: #0b0b0b;
+    --ss-bg-2: #151513;
+    --ss-ink: #f5f5f3;
+    --ss-ink-2: #c4c4bf;
+    --ss-ink-3: #8c8c87;
+    --ss-line: #33332f;
+    --ss-hair: #242421;
+    --ss-accent: #ff3d2e;
+    --ss-accent-soft: #2a100d;
+    --ss-focus: #7fa9ff;
+  }
+}
+
+:root[data-theme="dark"] .swiss {
+  --ss-bg: #0b0b0b;
+  --ss-bg-2: #151513;
+  --ss-ink: #f5f5f3;
+  --ss-ink-2: #c4c4bf;
+  --ss-ink-3: #8c8c87;
+  --ss-line: #33332f;
+  --ss-hair: #242421;
+  --ss-accent: #ff3d2e;
+  --ss-accent-soft: #2a100d;
+  --ss-focus: #7fa9ff;
+}
+
+[dir="rtl"] .swiss {
+  font-family: var(--ss-ar);
+}
+
+.swiss ::selection {
+  background: var(--ss-accent);
+  color: var(--ss-bg);
+}
+.swiss :focus-visible {
+  outline: 2px solid var(--ss-focus);
+  outline-offset: 2px;
+}
+
+.swiss-shell {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 clamp(16px, 4vw, 44px);
+}
+
+/* masthead ---------------------------------------------------------------- */
+.swiss-mast {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 18px 0 12px;
+  border-bottom: 2px solid var(--ss-ink);
+}
+.swiss-brand {
+  font-size: clamp(19px, 2.5vw, 25px);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  text-transform: uppercase;
+  line-height: 1;
+  margin-inline-end: auto;
+  direction: ltr;
+  color: var(--ss-ink);
+  text-decoration: none;
+}
+.swiss-brand i {
+  font-style: normal;
+  color: var(--ss-accent);
+}
+.swiss-tool {
+  font: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: none;
+  border: 1px solid var(--ss-line);
+  color: var(--ss-ink-2);
+  min-height: 34px;
+  padding: 0 11px;
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+.swiss-tool:hover {
+  border-color: var(--ss-ink);
+  color: var(--ss-ink);
+}
+
+/* the sheet --------------------------------------------------------------- */
+.swiss-sheet {
+  display: grid;
+  grid-template-columns: minmax(150px, 2fr) minmax(0, 7fr);
+  gap: clamp(22px, 4.5vw, 60px);
+  padding: clamp(26px, 5vw, 54px) 0 40px;
+  align-items: start;
+}
+.swiss-rail {
+  position: sticky;
+  top: 22px;
+}
+.swiss-mark {
+  display: block;
+  height: 14px;
+  width: 56px;
+  background: var(--ss-accent);
+}
+.swiss-railtag {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 2px solid var(--ss-ink);
+}
+[dir="rtl"] .swiss-railtag {
+  letter-spacing: 0.02em;
+}
+.swiss-railnote {
+  font-size: 12.5px;
+  color: var(--ss-ink-3);
+  margin: 8px 0 0;
+  max-width: 26ch;
+}
+@media (max-width: 820px) {
+  .swiss-sheet {
+    grid-template-columns: 1fr;
+    gap: 0;
+    padding-top: 22px;
+  }
+  .swiss-rail {
+    position: static;
+    margin-bottom: 22px;
+  }
+  .swiss-railnote {
+    display: none;
+  }
+}
+
+/* type -------------------------------------------------------------------- */
+.swiss-display {
+  font-size: clamp(38px, 6.4vw, 76px);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 0.94;
+  margin: 0 0 18px;
+  text-wrap: balance;
+}
+[dir="rtl"] .swiss-display {
+  font-size: clamp(28px, 4.6vw, 50px);
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.18;
+}
+.swiss-lede {
+  font-size: clamp(15px, 1.6vw, 18px);
+  color: var(--ss-ink-2);
+  margin: 0;
+  max-width: 56ch;
+  line-height: 1.45;
+}
+.swiss-note {
+  font-size: 13px;
+  color: var(--ss-ink-3);
+  margin: 10px 0 0;
+  max-width: 62ch;
+}
+.swiss-note b {
+  color: var(--ss-ink);
+}
+
+/* fields ------------------------------------------------------------------ */
+.swiss-block {
+  margin-top: 26px;
+  padding-top: 22px;
+  border-top: 1px solid var(--ss-hair);
+}
+.swiss-block:first-of-type {
+  margin-top: 30px;
+  border-top: 2px solid var(--ss-ink);
+}
+.swiss-lab {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+[dir="rtl"] .swiss-lab {
+  letter-spacing: 0.02em;
+}
+.swiss-lab u {
+  text-decoration: none;
+  color: var(--ss-accent);
+}
+.swiss-lab i {
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--ss-ink-3);
+}
+.swiss input[type="text"],
+.swiss input[type="email"],
+.swiss input[type="tel"] {
+  font: inherit;
+  font-size: 16px;
+  width: 100%;
+  padding: 12px 13px;
+  color: var(--ss-ink);
+  background: var(--ss-bg-2);
+  border: 1px solid var(--ss-line);
+  border-radius: 0;
+  min-height: 44px;
+}
+.swiss input::placeholder {
+  color: var(--ss-ink-3);
+}
+.swiss input[aria-invalid="true"] {
+  border-color: var(--ss-accent);
+  background: var(--ss-accent-soft);
+}
+.swiss-tel {
+  display: flex;
+  align-items: stretch;
+}
+.swiss-tel span {
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  background: var(--ss-ink);
+  color: var(--ss-bg);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  border: 1px solid var(--ss-ink);
+  border-inline-end: 0;
+  direction: ltr;
+}
+.swiss-tel input {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
+}
+.swiss-hint {
+  font-size: 12.5px;
+  color: var(--ss-ink-3);
+  margin: 10px 0 0;
+  max-width: 64ch;
+}
+.swiss-err {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ss-accent);
+  margin: 10px 0 0;
+  border-inline-start: 3px solid var(--ss-accent);
+  padding: 6px 0 6px 10px;
+  background: var(--ss-accent-soft);
+}
+[dir="rtl"] .swiss-err {
+  padding: 6px 10px 6px 0;
+}
+
+/* consent ----------------------------------------------------------------- */
+.swiss-check {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+  align-items: start;
+  cursor: pointer;
+  font-size: 14px;
+}
+.swiss-check input {
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  border: 1px solid var(--ss-line);
+  background: var(--ss-bg-2);
+  cursor: pointer;
+  position: relative;
+}
+.swiss-check input:checked {
+  background: var(--ss-ink);
+  border-color: var(--ss-ink);
+}
+.swiss-check input:checked::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  background: var(--ss-accent);
+}
+
+/* actions ----------------------------------------------------------------- */
+.swiss-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-top: 30px;
+  padding-top: 18px;
+  border-top: 2px solid var(--ss-ink);
+}
+.swiss-btn {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  background: var(--ss-ink);
+  color: var(--ss-bg);
+  border: 1px solid var(--ss-ink);
+  min-height: 52px;
+  padding: 0 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-decoration: none;
+}
+.swiss-btn:hover {
+  background: var(--ss-accent);
+  border-color: var(--ss-accent);
+  color: #fff;
+}
+.swiss-btn[disabled] {
+  opacity: 0.5;
+  cursor: progress;
+}
+.swiss-btn-wide {
+  width: 100%;
+}
+.swiss-link {
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  background: none;
+  border: 0;
+  color: var(--ss-ink-3);
+  cursor: pointer;
+  min-height: 44px;
+  padding: 0 2px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+.swiss-link:hover {
+  color: var(--ss-accent);
+}
+
+/* the sent panel ---------------------------------------------------------- */
+.swiss-stamp {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+  background: var(--ss-ink);
+  color: var(--ss-bg);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 9px 14px;
+  margin-bottom: 20px;
+}
+[dir="rtl"] .swiss-stamp {
+  letter-spacing: 0.04em;
+}
+.swiss-stamp i {
+  font-style: normal;
+  color: var(--ss-accent);
+  font-size: 14px;
+}
+.swiss-mail {
+  font-size: clamp(18px, 2.4vw, 26px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 10px;
+  word-break: break-all;
+  direction: ltr;
+}
+.swiss-dev {
+  margin-top: 22px;
+  padding: 12px 14px;
+  border: 1px dashed var(--ss-accent);
+  font-size: 12.5px;
+  color: var(--ss-ink-2);
+}
+.swiss-dev a {
+  display: block;
+  margin-top: 6px;
+  color: var(--ss-accent);
+  word-break: break-all;
+  direction: ltr;
+  font-weight: 600;
+}
+
+/* footer ------------------------------------------------------------------ */
+.swiss-foot {
+  border-top: 2px solid var(--ss-ink);
+  margin-top: 20px;
+  padding: 16px 0 34px;
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ss-ink-3);
+}
+[dir="rtl"] .swiss-foot {
+  letter-spacing: 0.02em;
+}
