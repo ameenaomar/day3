@@ -11,8 +11,10 @@ else narrows from there.
 ## What it does
 
 - **Pick a plan first** — Coffee, Eat, Chill, or Something else. One tap.
-- **Filters that match how people actually decide** — area, price, outdoor
-  seating, fits a big group, still open late.
+- **Filters that match how people actually decide** — type of place, area,
+  price, quiet enough to talk, good with kids, shisha, outdoor seating, fits a
+  big group, still open late. The type-of-place row only offers what the chosen
+  plan contains, so Coffee never offers you a museum.
 - **"Surprise us"** — picks one spot at random from whatever is on screen, so
   the filters still count. It never repeats the same place twice in a row.
 - **Near me** — share your location and the list reorders nearest-first, with
@@ -33,10 +35,11 @@ else narrows from there.
   Stored in the browser, no account, no server.
 - **English and Arabic**, with proper RTL. Every place name, note and tip is
   written in both.
-- **A classic look with one bold colour** — paper neutrals, a serif for the
-  place names, and red spent only on what's active or primary. Line icons
-  rather than emoji, so the plan buttons take the theme's colour like
-  everything else.
+- **A nameplate, not a navbar** — the one bold colour is spent all at once on
+  a solid red masthead, and everything below it is paper. Bodoni Moda sets the
+  names, Archivo runs the controls, and both fall back to real stacks if the
+  fonts never load. Choosing a plan fills it solid red, so the decision feels
+  made. Line icons rather than emoji, so they take the theme's colour.
 - **Dark mode**, following the system setting until you override it.
 - Mobile-first, because this gets opened in a car.
 
@@ -83,6 +86,9 @@ Everything lives in `places.js`. Copy an existing entry and edit it:
 | `outdoor` | Real outdoor seating, or the place is outdoors. |
 | `group` | A big group fits without a fight over tables. |
 | `late` | Usually still going past midnight. |
+| `quiet` | You can hold a conversation without raising your voice. |
+| `kids` | A child is welcome and won't be bored or in the way. |
+| `shisha` | Shisha is served here. |
 | `picky` | Feeds the picky-eater banner. Required for `eat` and `coffee`, `null` otherwise: `veg` (a real vegetarian main), `seafood` (seafood is central, so "no seafood" rules it out), `familiar` (a menu a fussy eater recognises), `meal` (a full meal, not just coffee). |
 | `coords` | `[lat, lng]`, approximate — used **only** to order the list for "Near me". Use `null` for anything with several branches or no single point; those sort last. |
 | `note` | One line on what the place is. |
@@ -90,6 +96,12 @@ Everything lives in `places.js`. Copy an existing entry and edit it:
 
 Both languages are required — a missing `ar` falls back to English and looks
 broken next to everything else.
+
+### What `quiet`, `kids` and `shisha` are not
+
+Like `picky`, these three are judgements about each place rather than facts
+checked with the venue. They are the ones most worth correcting as you actually
+visit places.
 
 ### What `picky` is not
 

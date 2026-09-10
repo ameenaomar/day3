@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Yalla, where to? — Hang out in Kuwait</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,500;6..96,600;6..96,700&family=Archivo:wght@400;500;600;700&display=swap">
 <meta name="description" content="Coffee, a meal, or somewhere to chill — pick where to hang out in Kuwait, fast. Filter by area, price, outdoor seating and group size, or let it choose for you.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☕</text></svg>">
 <style>
@@ -27,10 +29,15 @@
     --notice-bg: #fbf6f5;
     --notice-line: #e6dcd8;
     --notice-text: #8e0d15;
-    --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --band: #b3121b;
+    --vibe-line: #1b1917;
+    /* A didone for the names and a slightly editorial grotesque for the
+       controls. Both degrade to real stacks if the fonts never arrive. */
+    --font: "Archivo", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     --font-ar: "Segoe UI", Tahoma, "Geeza Pro", "Noto Naskh Arabic", system-ui, sans-serif;
-    --font-display: Georgia, "Iowan Old Style", "Palatino Linotype", "Times New Roman", serif;
+    --font-display: "Bodoni Moda", Georgia, "Iowan Old Style", "Palatino Linotype", serif;
     --font-display-ar: "Traditional Arabic", "Al Bayan", Georgia, "Times New Roman", serif;
+    --cream: #fbf6ef;
   }
   :root[data-theme="dark"] {
     /* The red lifts on a dark ground; the deep one goes muddy there. */
@@ -51,6 +58,9 @@
     --notice-bg: #211a1a;
     --notice-line: #3a302f;
     --notice-text: #ef8f92;
+    --cream: #fbf6ef;
+    --band: #9c1a20;
+    --vibe-line: #5a534e;
   }
 
   * { box-sizing: border-box; }
@@ -68,44 +78,74 @@
   button, select, input { font: inherit; color: inherit; }
 
   /* ---------------------------------------------------------- header */
-  header { background: var(--surface); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 20; }
-  .bar { display: flex; align-items: center; gap: 12px; padding-block: 12px; }
-  .brand { display: flex; align-items: baseline; gap: 8px; margin-inline-end: auto; min-width: 0; }
-  .brand h1 { font-size: 1.12rem; margin: 0; letter-spacing: -.02em; white-space: nowrap; }
-  .brand .mark { color: var(--accent); font-size: 1.1rem; line-height: 1; }
-  .brand small { color: var(--muted); font-size: .78rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  @media (max-width: 620px) { .brand small { display: none; } }
+  /* The one bold colour, spent all at once: the nameplate is solid red and
+     everything below it is paper. */
+  header {
+    background: var(--band); position: sticky; top: 0; z-index: 20;
+    box-shadow: inset 0 -3px 0 rgba(0,0,0,.18);
+  }
+  .bar { display: flex; align-items: center; gap: 14px; padding-block: 14px; }
+  .brand { display: flex; align-items: baseline; gap: 10px; margin-inline-end: auto; min-width: 0; }
+  .brand h1 {
+    font-family: var(--font-display); color: var(--cream);
+    font-size: 1.5rem; font-weight: 600; margin: 0;
+    letter-spacing: .01em; white-space: nowrap; line-height: 1.1;
+  }
+  .brand .mark { display: none; }
+  .brand small {
+    color: var(--cream); opacity: .72; font-size: .72rem;
+    text-transform: uppercase; letter-spacing: .11em;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  @media (max-width: 700px) { .brand small { display: none; } }
+  @media (max-width: 420px) { .brand h1 { font-size: 1.25rem; } }
 
   .icon-btn {
-    background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px;
+    background: transparent; border: 1px solid rgba(251,246,239,.45);
+    color: var(--cream); border-radius: 2px;
     padding: 7px 11px; cursor: pointer; line-height: 1; white-space: nowrap;
+    font-size: .8rem; letter-spacing: .04em;
   }
-  .icon-btn:hover { border-color: var(--accent); }
+  .icon-btn:hover { background: rgba(251,246,239,.14); border-color: var(--cream); }
+  /* Buttons off the nameplate sit on paper, so they need paper styling. */
+  .sheet .icon-btn, .picky .icon-btn {
+    background: var(--surface); border-color: var(--line); color: var(--text);
+  }
+  .sheet .icon-btn:hover, .picky .icon-btn:hover { border-color: var(--accent); background: var(--surface-2); }
   :is(.icon-btn, .chip, .vibe, .tab, select, input, .actions button):focus-visible {
     outline: 2px solid var(--accent); outline-offset: 2px;
   }
 
   /* ------------------------------------------------------------ hero */
-  .hero { padding-block: 20px 4px; }
-  .hero h2 { margin: 0 0 12px; font-size: 1rem; font-weight: 600; color: var(--muted); }
+  .hero { padding-block: 26px 4px; }
+  .hero h2 {
+    margin: 0 0 14px; font-size: .72rem; font-weight: 600; color: var(--muted);
+    text-transform: uppercase; letter-spacing: .16em;
+  }
   .vibes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
   @media (max-width: 620px) { .vibes { grid-template-columns: repeat(2, 1fr); } }
   .vibe {
-    background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
-    padding: 14px 10px; cursor: pointer; text-align: center;
-    display: flex; flex-direction: column; gap: 4px; align-items: center;
-    box-shadow: var(--shadow);
+    background: var(--surface); border: 1px solid var(--vibe-line); border-radius: 2px;
+    padding: 18px 10px 15px; cursor: pointer; text-align: center;
+    display: flex; flex-direction: column; gap: 7px; align-items: center;
+    transition: background .16s ease, color .16s ease;
   }
-  .vibe:hover { border-color: var(--accent); }
-  .vibe .glyph { color: var(--muted); display: block; }
-  .vibe[aria-pressed="true"] .glyph { color: var(--accent); }
-  .vibe .label { font-weight: 600; font-size: .95rem; }
-  .vibe .sub { font-size: .76rem; color: var(--muted); }
+  .vibe:hover { background: var(--surface-2); }
+  .vibe .glyph { color: var(--text); display: block; }
+  .vibe .label {
+    font-family: var(--font-display); font-weight: 600; font-size: 1.12rem;
+    line-height: 1;
+  }
+  .vibe .sub {
+    font-size: .68rem; color: var(--muted);
+    text-transform: uppercase; letter-spacing: .1em;
+  }
+  /* Selected fills solid — the decision should feel made. */
   .vibe[aria-pressed="true"] {
-    background: var(--accent-soft); border-color: var(--accent);
-    box-shadow: 0 0 0 2px var(--accent-soft), var(--shadow);
+    background: var(--accent); border-color: var(--accent); color: var(--cream);
   }
-  .vibe[aria-pressed="true"] .label { color: var(--accent-text); }
+  .vibe[aria-pressed="true"] .glyph { color: var(--cream); }
+  .vibe[aria-pressed="true"] .sub { color: var(--cream); opacity: .8; }
 
   /* -------------------------------------------------------- controls */
   .controls { padding-block: 16px 4px; }
@@ -113,18 +153,19 @@
   .row + .row { margin-top: 10px; }
   .search {
     flex: 1 1 180px; min-width: 0; background: var(--surface);
-    border: 1px solid var(--line); border-radius: 10px; padding: 9px 12px;
+    border: 1px solid var(--line); border-radius: 2px; padding: 10px 12px;
   }
-  select { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 9px 12px; cursor: pointer; max-width: 100%; }
+  select { background: var(--surface); border: 1px solid var(--line); border-radius: 2px; padding: 10px 12px; cursor: pointer; max-width: 100%; }
   .surprise {
-    background: var(--accent); color: #fff; border: none; border-radius: 10px;
-    padding: 10px 16px; font-weight: 600; cursor: pointer; box-shadow: var(--shadow);
+    background: var(--accent); color: var(--cream); border: 1px solid var(--accent);
+    border-radius: 2px; padding: 10px 18px; font-weight: 600; cursor: pointer;
+    text-transform: uppercase; letter-spacing: .09em; font-size: .78rem;
   }
-  :root[data-theme="dark"] .surprise { color: #08201d; }
   .surprise:hover { filter: brightness(1.06); }
   .spin {
     background: var(--surface); color: var(--accent-text); border: 1px solid var(--accent);
-    border-radius: 10px; padding: 10px 16px; font-weight: 600; cursor: pointer;
+    border-radius: 2px; padding: 10px 16px; font-weight: 600; cursor: pointer;
+    text-transform: uppercase; letter-spacing: .09em; font-size: .78rem;
   }
   .spin:hover { background: var(--accent-soft); }
   .near[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent-text); font-weight: 600; }
@@ -132,8 +173,8 @@
 
   .chips { display: flex; flex-wrap: wrap; gap: 6px; }
   .chip {
-    background: var(--surface); border: 1px solid var(--line); border-radius: 999px;
-    padding: 6px 13px; cursor: pointer; font-size: .87rem; white-space: nowrap;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 2px;
+    padding: 6px 12px; cursor: pointer; font-size: .78rem; white-space: nowrap;
   }
   .chip:hover { border-color: var(--accent); }
   .chip[aria-pressed="true"] {
@@ -141,18 +182,23 @@
     color: var(--accent-text); font-weight: 600;
   }
 
-  .tabs { display: flex; gap: 4px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; padding: 3px; }
-  .tab { background: none; border: none; border-radius: 8px; padding: 6px 12px; cursor: pointer; font-size: .87rem; white-space: nowrap; }
-  .tab[aria-selected="true"] { background: var(--surface); font-weight: 600; box-shadow: var(--shadow); }
+  .tabs { display: flex; gap: 4px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 2px; padding: 3px; }
+  .tab {
+    background: none; border: none; border-radius: 1px; padding: 6px 13px;
+    cursor: pointer; font-size: .72rem; white-space: nowrap;
+    text-transform: uppercase; letter-spacing: .08em;
+  }
+  .tab[aria-selected="true"] { background: var(--surface); font-weight: 600; box-shadow: 0 1px 2px rgba(0,0,0,.08); }
 
   /* ------------------------------------------------------ picky eater */
   .picky {
     background: var(--notice-bg); border: 1px solid var(--notice-line);
-    border-radius: 14px; padding: 16px; margin-top: 16px;
-    display: flex; flex-direction: column; gap: 12px;
+    border-radius: 3px; padding: 18px; margin-top: 16px;
+    display: flex; flex-direction: column; gap: 13px;
+    border-inline-start: 3px solid var(--accent);
   }
   .picky[hidden], .picky-bar[hidden] { display: none !important; }
-  .picky h2 { margin: 0; font-size: 1rem; color: var(--notice-text); }
+  .picky h2 { margin: 0; font-size: 1.2rem; color: var(--notice-text); }
   .picky p { margin: 2px 0 0; font-size: .86rem; color: var(--notice-text); opacity: .85; }
   .picky .chip { background: var(--surface); }
   .picky .chip[aria-pressed="true"] {
@@ -174,8 +220,9 @@
   .picky-bar {
     display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
     background: var(--notice-bg); border: 1px solid var(--notice-line);
-    border-radius: 10px; padding: 8px 12px; margin-top: 14px;
-    font-size: .85rem; color: var(--notice-text);
+    border-radius: 2px; padding: 9px 12px; margin-top: 14px;
+    font-size: .8rem; color: var(--notice-text);
+    border-inline-start: 3px solid var(--accent);
   }
   .picky-bar button {
     background: none; border: none; padding: 0; cursor: pointer;
@@ -185,43 +232,75 @@
   .gate { text-align: center; color: var(--muted); padding: 32px 16px; }
   .gate[hidden] { display: none !important; }
 
-  .meta-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding-block: 14px 2px; color: var(--muted); font-size: .85rem; }
-  .clear { background: none; border: none; color: var(--accent-text); cursor: pointer; text-decoration: underline; padding: 0; font-size: .85rem; }
+  .meta-row {
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    padding-block: 14px 6px; color: var(--muted); font-size: .72rem;
+    text-transform: uppercase; letter-spacing: .1em;
+    border-top: 1px solid var(--line); margin-top: 16px;
+    font-variant-numeric: tabular-nums;
+  }
+  .clear {
+    background: none; border: none; color: var(--accent-text); cursor: pointer;
+    text-decoration: underline; padding: 0; font: inherit;
+  }
 
   /* ----------------------------------------------------------- cards */
   .grid { display: grid; gap: 12px; padding-block: 8px 40px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
   .card {
-    background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
-    padding: 16px; display: flex; flex-direction: column; gap: 8px; box-shadow: var(--shadow);
+    background: var(--surface); border: 1px solid var(--line); border-radius: 3px;
+    padding: 18px 18px 16px; display: flex; flex-direction: column; gap: 10px;
+    transition: border-color .16s ease;
   }
-  .card.picked { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft), var(--shadow); }
-  .card h3 { font-size: 1.05rem; margin: 0; letter-spacing: -.01em; }
-  .where { color: var(--muted); font-size: .84rem; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
-  .dot { opacity: .5; }
+  .card:hover { border-color: var(--text); }
+  /* The surprise or wheel pick is the one card that earns the accent. */
+  .card.picked { border-color: var(--accent); box-shadow: inset 0 3px 0 var(--accent); }
+  .card h3 {
+    font-size: 1.32rem; font-weight: 600; margin: 0; line-height: 1.15;
+    text-wrap: balance; padding-bottom: 9px; border-bottom: 1px solid var(--line);
+  }
+  .where {
+    color: var(--muted); font-size: .74rem; display: flex; flex-wrap: wrap;
+    gap: 5px; align-items: baseline;
+    text-transform: uppercase; letter-spacing: .08em;
+    font-variant-numeric: tabular-nums;
+  }
+  .dot { opacity: .45; }
   .price { color: var(--text); font-weight: 600; }
+  .traits {
+    margin: -3px 0 0; font-size: .7rem; color: var(--muted);
+    text-transform: uppercase; letter-spacing: .09em; line-height: 1.5;
+  }
+  .traits b { color: var(--text); font-weight: 600; }
   .dist { color: var(--accent-text); font-weight: 600; }
-  .maplink { color: var(--accent-text); font-size: .82rem; text-decoration: none; border-bottom: 1px solid currentColor; align-self: flex-start; }
-  .maplink:hover { opacity: .75; }
-  .badges { display: flex; flex-wrap: wrap; gap: 5px; }
-  .tag {
-    background: var(--surface-2); border-radius: 4px; padding: 2px 8px;
-    font-size: .7rem; color: var(--muted);
-    text-transform: uppercase; letter-spacing: .06em;
+  .maplink {
+    color: var(--accent-text); font-size: .7rem; text-decoration: none;
+    text-transform: uppercase; letter-spacing: .1em; font-weight: 600;
+    align-self: flex-start; padding-bottom: 2px;
+    border-bottom: 1px solid transparent;
   }
-  .note { margin: 0; font-size: .92rem; }
-  .tip { margin: 0; font-size: .88rem; color: var(--accent-text); background: var(--accent-soft); border-radius: 10px; padding: 9px 11px; }
-  .tip b { font-weight: 600; }
-  .actions { display: flex; gap: 6px; margin-top: auto; padding-top: 4px; }
+  .maplink:hover { border-bottom-color: currentColor; }
+  .note { margin: 0; font-size: .93rem; }
+  /* A ruled aside, not a filled panel — a pale red box reads like a warning. */
+  .tip {
+    margin: 0; font-size: .88rem; color: var(--text);
+    border-inline-start: 2px solid var(--accent); padding-inline-start: 11px;
+  }
+  .tip b {
+    font-weight: 600; color: var(--accent-text);
+    text-transform: uppercase; letter-spacing: .07em; font-size: .78rem;
+  }
+  .actions { display: flex; gap: 8px; margin-top: auto; padding-top: 6px; }
   .actions button {
-    flex: 1; background: var(--surface-2); border: 1px solid var(--line);
-    border-radius: 9px; padding: 7px; cursor: pointer; font-size: .84rem;
+    flex: 1; background: transparent; border: 1px solid var(--line);
+    border-radius: 2px; padding: 8px 6px; cursor: pointer;
+    font-size: .7rem; text-transform: uppercase; letter-spacing: .08em;
   }
-  .actions button:hover { border-color: var(--accent); }
+  .actions button:hover { border-color: var(--text); }
   .actions button[aria-pressed="true"] {
-    background: var(--accent-soft); border-color: var(--accent);
-    color: var(--accent-text); font-weight: 600;
+    background: var(--accent); border-color: var(--accent);
+    color: var(--cream); font-weight: 600;
   }
-  .card.done h3, .card.done .note { opacity: .62; }
+  .card.done h3, .card.done .note { opacity: .55; }
 
   .empty { text-align: center; color: var(--muted); padding: 48px 16px; }
 
@@ -236,11 +315,11 @@
   }
   .modal[hidden] { display: none !important; }
   .sheet {
-    background: var(--surface); border: 1px solid var(--line); border-radius: 16px;
-    padding: 20px 18px; width: 100%; max-width: 420px; max-height: 92vh;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 3px;
+    padding: 22px 20px; width: 100%; max-width: 420px; max-height: 92vh;
     overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,.35); text-align: center;
   }
-  .sheet h2 { margin: 0 0 4px; font-size: 1.1rem; }
+  .sheet h2 { margin: 0 0 4px; font-size: 1.45rem; font-weight: 600; }
   .sheet .hint { margin: 0 0 14px; color: var(--muted); font-size: .84rem; }
   .wheel-box { position: relative; width: 100%; max-width: 300px; margin: 0 auto 14px; }
   .wheel-box::before {
@@ -289,14 +368,13 @@
 
   <div class="controls">
     <div class="row">
+      <div class="chips" id="cats" role="group" data-i18n-label="catsLabel"></div>
+    </div>
+    <div class="row">
       <input class="search" id="search" type="search" data-i18n-ph="searchPh" data-i18n-label="searchPh" placeholder="Search a place…">
       <select id="area" data-i18n-label="areaLabel"></select>
       <button class="surprise" id="surprise" type="button" data-i18n="surprise">Surprise us</button>
       <button class="spin" id="spin" type="button" hidden></button>
-    </div>
-    <div class="row">
-      <button class="chip near" id="near" type="button" aria-pressed="false" data-i18n="near">Near me</button>
-      <span class="geo-msg" id="geo-msg" role="status"></span>
     </div>
     <div class="row">
       <div class="chips" id="prices" role="group" data-i18n-label="priceLabel"></div>
@@ -308,6 +386,8 @@
         <button class="tab" role="tab" data-view="saved" aria-selected="false" data-i18n="viewSaved">Our list</button>
         <button class="tab" role="tab" data-view="tried" aria-selected="false" data-i18n="viewTried">Been there</button>
       </div>
+      <button class="chip near" id="near" type="button" aria-pressed="false" data-i18n="near">Near me</button>
+      <span class="geo-msg" id="geo-msg" role="status"></span>
     </div>
   </div>
 
@@ -384,6 +464,12 @@
       tried: "Been there", didTry: "Been there",
       late: "Open late", outdoor: "Outdoor seating", group: "Big group",
       near: "Near me",
+      catsLabel: "Type of place",
+      quiet: "Quiet enough to talk",
+      kids: "Good with kids",
+      shisha: "Shisha",
+      short: { quiet: "Quiet", kids: "Kids OK", shisha: "Shisha",
+               outdoor: "Outdoor", group: "Big group", late: "Open late" },
       directions: "Directions",
       pickyTitle: "Picky eater in the group?",
       pickySub: "Tell us what they need. We'll only show places that fit.",
@@ -446,6 +532,12 @@
       tried: "رحنا له", didTry: "رحنا له",
       late: "يفتح متأخر", outdoor: "جلسة خارجية", group: "جمعة كبيرة",
       near: "قريب مني",
+      catsLabel: "نوع المكان",
+      quiet: "هادي للسولافة",
+      kids: "مناسب للأطفال",
+      shisha: "شيشة",
+      short: { quiet: "هادي", kids: "للأطفال", shisha: "شيشة",
+               outdoor: "جلسة خارجية", group: "جمعة كبيرة", late: "متأخر" },
       directions: "الاتجاهات",
       pickyTitle: "في أحد صعب في الأكل؟",
       pickySub: "قل لنا شنو يحتاج، وما نعرض إلا الأماكن اللي تناسبه.",
@@ -508,7 +600,10 @@
                 "M18.6 14.4l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z"]
   };
   var PRICE_TIERS = [0, 1, 2, 3];
-  var FLAGS = ["late", "outdoor", "group"];
+  var FLAGS = ["quiet", "kids", "shisha", "late", "outdoor", "group"];
+  // Broad to narrow, not alphabetical — the order people think in.
+  var CAT_ORDER = ["food", "breakfast", "cafe", "dessert", "souq",
+                   "outdoors", "activity", "museum", "landmark"];
   var PICKY_OPTS = ["veg", "seafood", "familiar", "meal"];
   // The banner only makes sense where there is a menu involved.
   var PICKY_VIBES = ["eat", "coffee"];
@@ -535,6 +630,7 @@
     saved: readStore("kw.saved", []),
     tried: readStore("kw.tried", []),
     vibe: "",        // "" means every vibe
+    cats: [],        // empty means every type of place
     prices: [],
     flags: [],       // any of FLAGS — each narrows the list
     area: "",
@@ -602,6 +698,7 @@
         if (state.picky.familiar && !p.picky.familiar) return false;
         if (state.picky.meal && !p.picky.meal) return false;
       }
+      if (state.cats.length && state.cats.indexOf(p.cat) === -1) return false;
       if (state.prices.length && state.prices.indexOf(p.price) === -1) return false;
       if (state.area && L(p.area) !== state.area) return false;
       for (var i = 0; i < state.flags.length; i++) {
@@ -624,7 +721,8 @@
   }
 
   function filtersActive() {
-    return !!(state.vibe || state.prices.length || state.flags.length || state.area || state.q);
+    return !!(state.vibe || state.cats.length || state.prices.length ||
+      state.flags.length || state.area || state.q);
   }
 
   /* -------------------------------------------------------------- rendering */
@@ -680,9 +778,40 @@
         state.picked = null;
         // A new plan means a fresh question — the answer is per plan.
         state.picky = null;
-        renderVibes(); renderList();
+        renderVibes(); renderCats(); renderList();
       });
       box.appendChild(b);
+    });
+  }
+
+  // Only the types that exist under the chosen plan — picking Coffee should
+  // not offer Museum. Deliberately ignores the other filters so the row does
+  // not shuffle underneath you while you use it.
+  function availableCats() {
+    return CAT_ORDER.filter(function (cat) {
+      return places.some(function (p) {
+        return p.cat === cat && (!state.vibe || p.vibe === state.vibe);
+      });
+    });
+  }
+
+  function renderCats() {
+    var avail = availableCats();
+    // Drop any selection the current plan doesn't offer.
+    state.cats = state.cats.filter(function (c) { return avail.indexOf(c) !== -1; });
+
+    var box = $("#cats");
+    box.textContent = "";
+    // One lone chip filters nothing, so the row stays out of the way.
+    box.parentNode.hidden = avail.length < 2;
+    if (avail.length < 2) return;
+
+    avail.forEach(function (cat) {
+      box.appendChild(chip(t().cats[cat], state.cats.indexOf(cat) !== -1, function () {
+        toggleIn(state.cats, cat);
+        state.picked = null;
+        renderCats(); renderList();
+      }));
     });
   }
 
@@ -778,13 +907,6 @@
     return s;
   }
 
-  function tag(text) {
-    var el = document.createElement("span");
-    el.className = "tag";
-    el.textContent = text;
-    return el;
-  }
-
   function actionBtn(label, pressed, onClick) {
     var b = document.createElement("button");
     b.type = "button";
@@ -822,13 +944,16 @@
     }
     el.appendChild(where);
 
-    var badges = document.createElement("div");
-    badges.className = "badges";
-    badges.appendChild(tag(t().cats[p.cat] || p.cat));
-    if (p.outdoor) badges.appendChild(tag(t().outdoor));
-    if (p.group) badges.appendChild(tag(t().group));
-    if (p.late) badges.appendChild(tag(t().late));
-    el.appendChild(badges);
+    // The category leads in bold, then whatever else is true, as one line.
+    var traits = document.createElement("p");
+    traits.className = "traits";
+    var lead = document.createElement("b");
+    lead.textContent = t().cats[p.cat] || p.cat;
+    traits.appendChild(lead);
+    FLAGS.filter(function (f) { return p[f]; }).forEach(function (f) {
+      traits.appendChild(document.createTextNode(" · " + t().short[f]));
+    });
+    el.appendChild(traits);
 
     var note = document.createElement("p");
     note.className = "note";
@@ -1117,6 +1242,7 @@
     renderStaticText();
     renderVibes();
     renderPicky();
+    renderCats();
     renderPrices();
     renderFlags();
     renderAreas();
@@ -1254,13 +1380,13 @@
   });
 
   $("#clear").addEventListener("click", function () {
-    state.vibe = ""; state.prices = []; state.flags = [];
+    state.vibe = ""; state.cats = []; state.prices = []; state.flags = [];
     state.area = ""; state.q = ""; state.picked = null;
     state.picky = null;
     state.pickyDraft = { veg: false, seafood: false, familiar: false, meal: false };
     $("#search").value = "";
     $("#area").value = "";
-    renderVibes(); renderPrices(); renderFlags(); renderList();
+    renderVibes(); renderCats(); renderPrices(); renderFlags(); renderList();
   });
 
   each(document.querySelectorAll("#tabs .tab"), function (tab) {
