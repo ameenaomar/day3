@@ -8,46 +8,49 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☕</text></svg>">
 <style>
   :root {
-    --bg: #faf6f0;
+    /* Paper neutrals carry the whole page. Red is the only bold colour on
+       it, so it is spent only where something is active or primary. */
+    --bg: #f6f4f1;
     --surface: #ffffff;
-    --surface-2: #f4ede3;
-    --text: #221d17;
-    --muted: #6d6158;
-    --line: #e3d8c9;
-    --accent: #0b6b5f;
-    --accent-soft: #d9ece8;
-    --accent-text: #085148;
-    --gold: #a8762a;
-    --shadow: 0 1px 2px rgba(34,29,23,.06), 0 8px 24px rgba(34,29,23,.06);
-    --seg-a: #0b6b5f;
-    --seg-b: #14867a;
-    --seg-c: #a8762a;
+    --surface-2: #edeae5;
+    --text: #1b1917;
+    --muted: #6a635c;
+    --line: #dcd6ce;
+    --accent: #b3121b;
+    --accent-soft: #f9e9e9;
+    --accent-text: #8e0d15;
+    --shadow: 0 1px 2px rgba(27,25,23,.05), 0 8px 24px rgba(27,25,23,.06);
+    --seg-a: #b3121b;
+    --seg-b: #2b2724;
+    --seg-c: #6e6862;
     --seg-text: #ffffff;
-    --notice-bg: #fdf4e6;
-    --notice-line: #e6d3ac;
-    --notice-text: #6b4d16;
+    --notice-bg: #fbf6f5;
+    --notice-line: #e6dcd8;
+    --notice-text: #8e0d15;
     --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     --font-ar: "Segoe UI", Tahoma, "Geeza Pro", "Noto Naskh Arabic", system-ui, sans-serif;
+    --font-display: Georgia, "Iowan Old Style", "Palatino Linotype", "Times New Roman", serif;
+    --font-display-ar: "Traditional Arabic", "Al Bayan", Georgia, "Times New Roman", serif;
   }
   :root[data-theme="dark"] {
-    --bg: #16130f;
-    --surface: #211c17;
-    --surface-2: #2b241d;
-    --text: #f3ece2;
-    --muted: #a99c8d;
-    --line: #382f26;
-    --accent: #4fd1bd;
-    --accent-soft: #16342f;
-    --accent-text: #7fe3d2;
-    --gold: #d9a55b;
-    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
-    --seg-a: #14867a;
-    --seg-b: #0e5f56;
-    --seg-c: #8a5f1e;
+    /* The red lifts on a dark ground; the deep one goes muddy there. */
+    --bg: #141211;
+    --surface: #1d1a19;
+    --surface-2: #272322;
+    --text: #f2efeb;
+    --muted: #a29b94;
+    --line: #34302d;
+    --accent: #e04a4f;
+    --accent-soft: #2c1618;
+    --accent-text: #f0888c;
+    --shadow: 0 1px 2px rgba(0,0,0,.35), 0 8px 24px rgba(0,0,0,.4);
+    --seg-a: #c0393e;
+    --seg-b: #34302d;
+    --seg-c: #504a44;
     --seg-text: #ffffff;
-    --notice-bg: #2a2116;
-    --notice-line: #4a3a22;
-    --notice-text: #e2c288;
+    --notice-bg: #211a1a;
+    --notice-line: #3a302f;
+    --notice-text: #ef8f92;
   }
 
   * { box-sizing: border-box; }
@@ -57,6 +60,10 @@
     font-family: var(--font); font-size: 16px; line-height: 1.5;
   }
   html[dir="rtl"] body { font-family: var(--font-ar); }
+  /* A serif on the names only — the controls stay sans, so the page reads
+     classic without dressing up the whole interface. */
+  .brand h1, .card h3, .sheet h2, .picky h2 { font-family: var(--font-display); }
+  html[dir="rtl"] :is(.brand h1, .card h3, .sheet h2, .picky h2) { font-family: var(--font-display-ar); }
   .wrap { max-width: 1060px; margin: 0 auto; padding: 0 16px; }
   button, select, input { font: inherit; color: inherit; }
 
@@ -65,6 +72,7 @@
   .bar { display: flex; align-items: center; gap: 12px; padding-block: 12px; }
   .brand { display: flex; align-items: baseline; gap: 8px; margin-inline-end: auto; min-width: 0; }
   .brand h1 { font-size: 1.12rem; margin: 0; letter-spacing: -.02em; white-space: nowrap; }
+  .brand .mark { color: var(--accent); font-size: 1.1rem; line-height: 1; }
   .brand small { color: var(--muted); font-size: .78rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   @media (max-width: 620px) { .brand small { display: none; } }
 
@@ -89,7 +97,8 @@
     box-shadow: var(--shadow);
   }
   .vibe:hover { border-color: var(--accent); }
-  .vibe .emoji { font-size: 1.5rem; line-height: 1; }
+  .vibe .glyph { color: var(--muted); display: block; }
+  .vibe[aria-pressed="true"] .glyph { color: var(--accent); }
   .vibe .label { font-weight: 600; font-size: .95rem; }
   .vibe .sub { font-size: .76rem; color: var(--muted); }
   .vibe[aria-pressed="true"] {
@@ -189,12 +198,16 @@
   .card h3 { font-size: 1.05rem; margin: 0; letter-spacing: -.01em; }
   .where { color: var(--muted); font-size: .84rem; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
   .dot { opacity: .5; }
-  .price { color: var(--gold); font-weight: 600; }
+  .price { color: var(--text); font-weight: 600; }
   .dist { color: var(--accent-text); font-weight: 600; }
   .maplink { color: var(--accent-text); font-size: .82rem; text-decoration: none; border-bottom: 1px solid currentColor; align-self: flex-start; }
   .maplink:hover { opacity: .75; }
   .badges { display: flex; flex-wrap: wrap; gap: 5px; }
-  .tag { background: var(--surface-2); border-radius: 6px; padding: 2px 8px; font-size: .74rem; color: var(--muted); }
+  .tag {
+    background: var(--surface-2); border-radius: 4px; padding: 2px 8px;
+    font-size: .7rem; color: var(--muted);
+    text-transform: uppercase; letter-spacing: .06em;
+  }
   .note { margin: 0; font-size: .92rem; }
   .tip { margin: 0; font-size: .88rem; color: var(--accent-text); background: var(--accent-soft); border-radius: 10px; padding: 9px 11px; }
   .tip b { font-weight: 600; }
@@ -259,12 +272,12 @@
 <header>
   <div class="wrap bar">
     <div class="brand">
-      <span aria-hidden="true">☕</span>
+      <span aria-hidden="true" class="mark">&#9642;</span>
       <h1 data-i18n="title">Yalla, where to?</h1>
       <small data-i18n="tagline">Hang out in Kuwait — decided in five seconds</small>
     </div>
     <button class="icon-btn" id="lang" type="button">عربي</button>
-    <button class="icon-btn" id="theme" type="button" data-i18n-label="themeLabel">🌙</button>
+    <button class="icon-btn" id="theme" type="button" data-i18n-label="themeLabel">☾</button>
   </div>
 </header>
 
@@ -408,10 +421,10 @@
       footNote: "Hand-picked, not sponsored. Nothing here is paid for.",
       footVerify: "Hours and prices change fast — check before you drive out. Something wrong or missing? Edit places.js and open a pull request.",
       vibes: {
-        coffee:    { label: "Coffee", sub: "Sit and talk", emoji: "☕" },
-        eat:       { label: "Eat", sub: "A proper meal", emoji: "🍽️" },
-        chill:     { label: "Chill", sub: "Just hang out", emoji: "🌊" },
-        different: { label: "Something else", sub: "Break the routine", emoji: "✨" }
+        coffee:    { label: "Coffee", sub: "Sit and talk" },
+        eat:       { label: "Eat", sub: "A proper meal" },
+        chill:     { label: "Chill", sub: "Just hang out" },
+        different: { label: "Something else", sub: "Break the routine" }
       },
       cats: { cafe: "Café", food: "Restaurant", breakfast: "Breakfast", dessert: "Dessert", museum: "Museum", outdoors: "Outdoors", souq: "Souq", landmark: "Landmark", activity: "Activity" },
       langBtn: "عربي"
@@ -470,10 +483,10 @@
       footNote: "اختيار شخصي، وغير مدفوع. لا يوجد أي إعلان هنا.",
       footVerify: "المواعيد والأسعار تتغيّر بسرعة — تأكد قبل ما تسوق. في خطأ أو مكان ناقص؟ عدّل places.js وافتح pull request.",
       vibes: {
-        coffee:    { label: "قهوة", sub: "نقعد ونسولف", emoji: "☕" },
-        eat:       { label: "أكل", sub: "عشاء أو غدا", emoji: "🍽️" },
-        chill:     { label: "نطلّع", sub: "بس نتمشى", emoji: "🌊" },
-        different: { label: "شي ثاني", sub: "نغيّر الروتين", emoji: "✨" }
+        coffee:    { label: "قهوة", sub: "نقعد ونسولف" },
+        eat:       { label: "أكل", sub: "عشاء أو غدا" },
+        chill:     { label: "نطلّع", sub: "بس نتمشى" },
+        different: { label: "شي ثاني", sub: "نغيّر الروتين" }
       },
       cats: { cafe: "كافيه", food: "مطعم", breakfast: "ريوق", dessert: "حلا", museum: "متحف", outdoors: "في الخارج", souq: "سوق", landmark: "معلم", activity: "نشاط" },
       langBtn: "EN"
@@ -481,6 +494,19 @@
   };
 
   var VIBE_ORDER = ["coffee", "eat", "chill", "different"];
+  // Drawn rather than emoji — a colour emoji next to a serif reads as a
+  // sticker. Stroked paths take the theme's colour like everything else.
+  var ICONS = {
+    coffee: ["M4 8h11v5a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V8z",
+             "M15 9h2.5a2.5 2.5 0 0 1 0 5H15", "M3 21h14"],
+    eat: ["M7 3v6a2 2 0 0 0 4 0V3", "M9 9v12",
+          "M17 3c0 4-2 5-2 7h4c0-2-2-3-2-7", "M17 10v11"],
+    chill: ["M3 6c1.8-2 3.6-2 5.4 0s3.6 2 5.4 0 3.6-2 5.4 0",
+            "M3 11.5c1.8-2 3.6-2 5.4 0s3.6 2 5.4 0 3.6-2 5.4 0",
+            "M3 17c1.8-2 3.6-2 5.4 0s3.6 2 5.4 0 3.6-2 5.4 0"],
+    different: ["M11 3.5l1.7 5 5 1.7-5 1.7-1.7 5-1.7-5-5-1.7 5-1.7z",
+                "M18.6 14.4l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z"]
+  };
   var PRICE_TIERS = [0, 1, 2, 3];
   var FLAGS = ["late", "outdoor", "group"];
   var PICKY_OPTS = ["veg", "seafood", "familiar", "meal"];
@@ -619,7 +645,7 @@
     });
 
     $("#lang").textContent = t().langBtn;
-    $("#theme").textContent = state.theme === "dark" ? "☀️" : "🌙";
+    $("#theme").textContent = state.theme === "dark" ? "☼" : "☾";
   }
 
   function renderVibes() {
@@ -632,10 +658,13 @@
       b.className = "vibe";
       b.setAttribute("aria-pressed", state.vibe === vibe);
 
-      var e = document.createElement("span");
-      e.className = "emoji";
-      e.setAttribute("aria-hidden", "true");
-      e.textContent = copy.emoji;
+      var e = svgEl("svg", {
+        viewBox: "0 0 24 24", width: "26", height: "26", fill: "none",
+        stroke: "currentColor", "stroke-width": "1.4",
+        "stroke-linecap": "round", "stroke-linejoin": "round",
+        "aria-hidden": "true", "class": "glyph"
+      });
+      ICONS[vibe].forEach(function (d) { e.appendChild(svgEl("path", { d: d })); });
       var l = document.createElement("span");
       l.className = "label";
       l.textContent = copy.label;

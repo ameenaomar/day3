@@ -74,6 +74,17 @@ window.PLACES = [
     tip: { en: "Weekend mornings are packed — go early or go midweek.", ar: "صبح نهاية الأسبوع زحمة — روح بدري أو وسط الأسبوع." }
   },
   {
+    id: "cafe-bazza",
+    name: { en: "Café Bazza", ar: "كافيه بزة" },
+    area: { en: "Several branches", ar: "فروع متعددة" },
+    vibe: "eat", cat: "breakfast", price: 1,
+    outdoor: false, group: true, late: true,
+    coords: null,
+    picky: { veg: true, seafood: false, familiar: true, meal: true },
+    note: { en: "Kuwaiti breakfast and Arabic grills, with the décor to match.", ar: "ريوق كويتي ومشاوي عربية، وديكور على نفس الطراز." },
+    tip: { en: "A Kuwaiti breakfast spread, shared, mid-morning.", ar: "سفرة ريوق كويتي، مشتركة، وسط الصبح." }
+  },
+  {
     id: "dar-hamad",
     name: { en: "Dar Hamad", ar: "دار حمد" },
     area: { en: "Sharq — Gulf Road", ar: "شرق — طريق الخليج" },
@@ -250,6 +261,17 @@ window.PLACES = [
     tip: { en: "Spanish latte, then walk it off along the corniche.", ar: "سبانش لاتيه، وبعدها تمشَّ على الكورنيش." }
   },
   {
+    id: "before-chocolate",
+    name: { en: "Before Chocolate", ar: "بيفور شوكلت" },
+    area: { en: "Salmiya", ar: "السالمية" },
+    vibe: "coffee", cat: "dessert", price: 2,
+    outdoor: false, group: false, late: true,
+    coords: [29.3339, 48.0783],
+    picky: { veg: true, seafood: false, familiar: true, meal: false },
+    note: { en: "A small dessert café that people cross town for.", ar: "كافيه حلا صغير يقطعون له المدينة." },
+    tip: { en: "The Davos cake. That's what you came for.", ar: "كيكة الدافوس. هذا اللي يّيت له." }
+  },
+  {
     id: "beit-lothan",
     name: { en: "Beit Lothan", ar: "بيت لوثان" },
     area: { en: "Salmiya", ar: "السالمية" },
@@ -259,6 +281,17 @@ window.PLACES = [
     picky: { veg: true, seafood: false, familiar: true, meal: false },
     note: { en: "An old seafront house turned art space, with a quiet garden café.", ar: "بيت قديم على البحر صار مساحة فنية، وفيه كافيه هادئ بالحديقة." },
     tip: { en: "Go when you want to talk without shouting.", ar: "روح لمّا تبغى تتكلم بدون ما تصرخ." }
+  },
+  {
+    id: "chocolate-bar",
+    name: { en: "The Chocolate Bar", ar: "ذا شوكلت بار" },
+    area: { en: "Salmiya", ar: "السالمية" },
+    vibe: "coffee", cat: "dessert", price: 2,
+    outdoor: false, group: true, late: true,
+    coords: [29.3339, 48.0783],
+    picky: { veg: true, seafood: false, familiar: true, meal: false },
+    note: { en: "The after-dinner stop, and it fits a table of six.", ar: "محطة بعد العشاء، وتستوعب طاولة لستة." },
+    tip: { en: "Molten cake, one between two. It is a lot.", ar: "مولتن كيك، واحدة بين اثنين. الكمية كبيرة." }
   },
   {
     id: "cocoa-room",
@@ -283,6 +316,28 @@ window.PLACES = [
     tip: { en: "Ask them to brew a method you've never tried.", ar: "اطلب منهم طريقة تحضير ما جرّبتها قبل." }
   },
   {
+    id: "hallab",
+    name: { en: "Abdul Rahman Hallab", ar: "عبد الرحمن حلاب" },
+    area: { en: "Salmiya", ar: "السالمية" },
+    vibe: "coffee", cat: "dessert", price: 2,
+    outdoor: false, group: false, late: true,
+    coords: [29.3339, 48.0783],
+    picky: { veg: true, seafood: false, familiar: true, meal: false },
+    note: { en: "The Tripoli sweets house — oriental sweets made fresh, not stacked.", ar: "بيت حلويات طرابلس — حلويات شرقية طازجة، ما هي مركومة." },
+    tip: { en: "Warm knafeh by the piece, eaten standing up.", ar: "كنافة سخنة بالحبة، وتاكلها واقف." }
+  },
+  {
+    id: "haute-dolci",
+    name: { en: "Haute Dolci", ar: "هوت دولتشي" },
+    area: { en: "Al-Rai", ar: "الري" },
+    vibe: "coffee", cat: "dessert", price: 3,
+    outdoor: true, group: true, late: true,
+    coords: [29.302, 47.933],
+    picky: { veg: true, seafood: false, familiar: true, meal: false },
+    note: { en: "Dessert treated like a night out, with rooftop seating.", ar: "الحلا كأنه طلعة، وفيه جلسة على السطح." },
+    tip: { en: "Ask for the roof. The inside is the ordinary version.", ar: "اطلب السطح. الداخل هو النسخة العادية." }
+  },
+  {
     id: "karak-corniche",
     name: { en: "Karak on the corniche", ar: "كرك على الكورنيش" },
     area: { en: "Gulf Road", ar: "طريق الخليج" },
@@ -292,6 +347,17 @@ window.PLACES = [
     picky: { veg: true, seafood: false, familiar: true, meal: false },
     note: { en: "Not a place so much as a ritual: tea in the car, facing the sea.", ar: "ليست مكاناً بقدر ما هي عادة: چاي في السيارة قبال البحر." },
     tip: { en: "Karak and chebab from any roadside stand after sunset.", ar: "كرك وچباب من أي بسطة بعد المغرب." }
+  },
+  {
+    id: "life-with-cacao",
+    name: { en: "Life with Cacao", ar: "لايف ويث كاكاو" },
+    area: { en: "Several branches", ar: "فروع متعددة" },
+    vibe: "coffee", cat: "dessert", price: 3,
+    outdoor: false, group: false, late: true,
+    coords: null,
+    picky: { veg: true, seafood: false, familiar: true, meal: false },
+    note: { en: "For the chocolate end of the spectrum, in most of the big malls.", ar: "للطرف الشوكلاتي، وموجود في معظم المجمعات الكبيرة." },
+    tip: { en: "The baklava cheesecake — both traditions at once.", ar: "تشيز كيك البقلاوة — التقليدين مع بعض." }
   },
   {
     id: "marina-crescent",
@@ -347,6 +413,17 @@ window.PLACES = [
     picky: { veg: true, seafood: false, familiar: true, meal: false },
     note: { en: "Roastery-led and serious about the coffee, not the decor.", ar: "محمصة تهتم بالقهوة أكثر من الديكور." },
     tip: { en: "Ask what they roasted this week and take it black.", ar: "اسأل شنو حمّصوا هذا الأسبوع واشربها سادة." }
+  },
+  {
+    id: "sale-sucre",
+    name: { en: "Salé Sucré", ar: "ساليه سوكريه" },
+    area: { en: "Salmiya", ar: "السالمية" },
+    vibe: "coffee", cat: "dessert", price: 2,
+    outdoor: false, group: true, late: true,
+    coords: [29.3339, 48.0783],
+    picky: { veg: true, seafood: false, familiar: true, meal: false },
+    note: { en: "Arabic sweets and cakes side by side, done properly.", ar: "حلويات عربية وكيك جنب جنب، ومتقنة." },
+    tip: { en: "Mango kunafa, in season.", ar: "كنافة المانجو، في موسمها." }
   },
   {
     id: "tobys-estate",
