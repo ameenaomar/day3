@@ -12,8 +12,8 @@ else narrows from there.
 
 - **Pick a plan first** — Coffee, Eat, Chill, or Something else. One tap.
 - **Filters that match how people actually decide** — type of place, area,
-  price, quiet enough to talk, good with kids, shisha, outdoor seating, fits a
-  big group, still open late. The type-of-place row only offers what the chosen
+  price, quiet enough to talk, good with kids, outdoor seating, fits a big
+  group, still open late. The type-of-place row only offers what the chosen
   plan contains, so Coffee never offers you a museum.
 - **"Surprise us"** — picks one spot at random from whatever is on screen, so
   the filters still count. It never repeats the same place twice in a row.
@@ -112,7 +112,6 @@ Everything lives in `places.js`. Copy an existing entry and edit it:
 | `late` | Usually still going past midnight. |
 | `quiet` | You can hold a conversation without raising your voice. |
 | `kids` | A child is welcome and won't be bored or in the way. |
-| `shisha` | Shisha is served here. |
 | `picky` | Feeds the picky-eater banner. Required for `eat` and `coffee`, `null` otherwise: `veg` (a real vegetarian main), `seafood` (seafood is central, so "no seafood" rules it out), `familiar` (a menu a fussy eater recognises), `meal` (a full meal, not just coffee). |
 | `coords` | `[lat, lng]`, approximate — used **only** to order the list for "Near me". Use `null` for anything with several branches or no single point; those sort last. |
 | `note` | One line on what the place is. |
@@ -121,9 +120,9 @@ Everything lives in `places.js`. Copy an existing entry and edit it:
 Both languages are required — a missing `ar` falls back to English and looks
 broken next to everything else.
 
-### What `quiet`, `kids` and `shisha` are not
+### What `quiet` and `kids` are not
 
-Like `picky`, these three are judgements about each place rather than facts
+Like `picky`, these two are judgements about each place rather than facts
 checked with the venue. They are the ones most worth correcting as you actually
 visit places.
 
@@ -144,7 +143,7 @@ nothing else changes.
 
 ## About the data
 
-The 69 entries here are **seed data**. Hours, prices and whether a place is even
+The 68 entries here are **seed data**. Hours, prices and whether a place is even
 still open change fast in Kuwait, and none of it is verified against the venues
 themselves. Check an entry before you trust it, and correct it here when it's
 wrong — that's the whole maintenance model.
