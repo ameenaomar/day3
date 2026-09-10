@@ -192,11 +192,11 @@ network call of its own.
 ## Deployment notes
 
 A Vercel project `kuwait-places` exists and a production deployment was
-created from commit `a80c6d0`:
+created from commit `1bd61c3`:
 
 - https://kuwait-places-t054175-1826.vercel.app
 - /login.html — sign up or sign in
-- inspector: <https://vercel.com/t054175-1826/kuwait-places/5NzY2dq9dTeR9MTmRFxCVpyAsPqD>
+- inspector: <https://vercel.com/t054175-1826/kuwait-places/6txvutm8sZkFaYAQSdpc43qmmcva>
 
 It was deployed through `vercel-bridge/`, which fetches the site's files from
 a pinned commit at build time and verifies every sha256 hash before writing
