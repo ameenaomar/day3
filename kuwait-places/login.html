@@ -252,7 +252,9 @@
 <footer><p data-i18n="footer">Accounts and passwords are handled by Supabase Auth. This page only talks to it.</p></footer>
 
 <script src="supabase-config.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js"
+        integrity="sha384-iLddHTLokph6Omwoyid4XKxHaWa6w41BnoEj0q5oOrzmYPpHIKt1wyjReA7s//pP"
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
 (function () {
   "use strict";
@@ -291,7 +293,7 @@
       eConfirmEmpty: "Type the password again.",
       eConfirmMismatch: "The two passwords don't match.",
       eBadLogin: "That email and password don't match an account.",
-      eTaken: "There's already an account with that email — sign in instead.",
+      eTaken: "We couldn't create an account with those details. Check them and try again.",
       eUnconfirmed: "Confirm your email first — check your inbox for the link.",
       eWeakServer: "Supabase rejected that password as too weak.",
       eRate: "Too many attempts. Wait a minute and try again.",
@@ -336,7 +338,7 @@
       eConfirmEmpty: "اكتب كلمة السر مرة ثانية.",
       eConfirmMismatch: "كلمتا السر ما تتطابقان.",
       eBadLogin: "الإيميل وكلمة السر ما يطابقان أي حساب.",
-      eTaken: "في حساب بهذا الإيميل — سجّل دخول بدلاً من ذلك.",
+      eTaken: "ما قدرنا ننشئ حساب بهذي البيانات. تأكد منها وجرّب مرة ثانية.",
       eUnconfirmed: "أكّد إيميلك أول — شوف الرابط في بريدك.",
       eWeakServer: "Supabase رفض كلمة السر لأنها ضعيفة.",
       eRate: "محاولات كثيرة. انتظر دقيقة وجرّب.",
