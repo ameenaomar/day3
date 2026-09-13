@@ -29,8 +29,8 @@ export const SIGNUP = {
   },
   phone: { en: "WhatsApp number", ar: "رقم الواتساب" },
   phoneHint: {
-    en: "Only used to send you the look for approval before it ships. You can add it later.",
-    ar: "يُستخدم فقط لإرسال الإطلالة للموافقة قبل الشحن. يمكنك إضافته لاحقاً.",
+    en: "Only used to send you the look for approval. You can add it later.",
+    ar: "يُستخدم فقط لإرسال الإطلالة للموافقة. يمكنك إضافته لاحقاً.",
   },
   optional: { en: "optional", ar: "اختياري" },
   consent: {

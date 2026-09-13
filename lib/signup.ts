@@ -65,7 +65,7 @@ export const signUpSchema = z.object({
     .min(1, "email_required")
     .max(EMAIL_MAX)
     .pipe(z.email("email_invalid")),
-  /** Optional at sign-up. The order flow asks again before it ships anything. */
+  /** Optional at sign-up. The order flow asks again before the stylist starts. */
   phone: z
     .string()
     .trim()

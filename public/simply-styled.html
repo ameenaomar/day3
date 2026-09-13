@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>SIMPLY STYLED</title>
-<meta name="description" content="A personal stylist for Kuwait. Answer eight short screens, give us your measurements, and a stylist shops Kuwait for a look that fits — delivered to your door.">
+<meta name="description" content="A personal stylist for Kuwait. Answer eight short screens, give us your measurements, and a stylist puts together a look that fits — chosen from Kuwait boutiques.">
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme:light)">
 <meta name="theme-color" content="#0b0b0b" media="(prefers-color-scheme:dark)">
 <link rel="icon" href="/icon.svg">
@@ -748,8 +748,8 @@ var UI={
   p1s:{en:"One screen is the measuring tape. It is the one that decides the fit.",ar:"شاشة واحدة لشريط القياس. وهي التي تحدد المقاس."},
   p2:{en:"Your style profile, free",ar:"ملفك الشخصي، مجاناً"},
   p2s:{en:"Your palette and your silhouette on screen before you pay anything.",ar:"لوحة ألوانك وقَصّتك على الشاشة قبل أي دفع."},
-  p3:{en:"Delivered in 3–5 days",ar:"التوصيل في ٣–٥ أيام"},
-  p3s:{en:"Try it at home. Keep the look or return it free within 3 days.",ar:"قيسيها في البيت. احتفظي بها أو أرجعيها مجاناً خلال ٣ أيام."},
+  p3:{en:"You approve before anything is bought",ar:"توافقين قبل شراء أي قطعة"},
+  p3s:{en:"Your stylist sends the look on WhatsApp. Nothing is bought until you say yes.",ar:"ترسل لك المنسّقة الإطلالة على واتساب. لا يُشترى شيء حتى توافقي."},
   tr:{en:["Kuwait only","KNET & Apple Pay","Free returns","Women & men"],ar:["الكويت فقط","كي نت وآبل باي","إرجاع مجاني","نساء ورجال"]},
   next:{en:"Continue",ar:"متابعة"},
   back:{en:"Back",ar:"رجوع"},
@@ -829,8 +829,6 @@ var UI={
   rStyle:{en:"Styling",ar:"التنسيق"},
   rBudget:{en:"Clothing budget held",ar:"ميزانية الملابس المحجوزة"},
   rBudgetE:{en:"Unused amount refunded in 3 working days",ar:"يُعاد المبلغ غير المستخدم خلال ٣ أيام عمل"},
-  rShip:{en:"Delivery in Kuwait",ar:"التوصيل داخل الكويت"},
-  free:{en:"Free",ar:"مجاناً"},
   rTotal:{en:"Total today",ar:"الإجمالي اليوم"},
   payWith:{en:"Pay with",ar:"طريقة الدفع"},
   payPick:{en:"Choose how to pay.",ar:"اختاري طريقة الدفع."},
@@ -841,11 +839,11 @@ var UI={
   tabby:{en:"Tabby — 4 payments",ar:"تابي — ٤ أقساط"},
   phone:{en:"WhatsApp number",ar:"رقم الواتساب"},
   phoneP:{en:"9XXX XXXX",ar:"9XXX XXXX"},
-  phoneH:{en:"Your stylist sends the look here for approval before it ships.",ar:"ترسل لك المنسّقة الإطلالة هنا للموافقة قبل الشحن."},
+  phoneH:{en:"Your stylist sends the look here for approval.",ar:"ترسل لك المنسّقة الإطلالة هنا للموافقة."},
   phoneBad:{en:"Eight digits, starting 5, 6 or 9.",ar:"ثماني خانات تبدأ بـ ٥ أو ٦ أو ٩."},
   payBtn:{en:"Pay",ar:"ادفع"},
-  tShip:{en:"3–5 working days",ar:"٣–٥ أيام عمل"},
-  tShipD:{en:"Sourced from Kuwait boutiques after your approval.",ar:"يتم الشراء من بوتيكات الكويت بعد موافقتك."},
+  tSource:{en:"Kuwait boutiques",ar:"بوتيكات الكويت"},
+  tSourceD:{en:"Everything is chosen locally, and only after you approve the look.",ar:"يتم اختيار كل قطعة محلياً، وبعد موافقتك على الإطلالة فقط."},
   tSize:{en:"Sizing",ar:"المقاسات"},
   tSizeTwo:{en:"Anything fit-risky comes in two sizes. Return the one that does not fit.",ar:"أي قطعة قد لا تناسب المقاس تُرسل بمقاسين. أرجعي غير المناسب."},
   tSizeOne:{en:"Your measurements are on file, so each piece is picked in one size.",ar:"مقاساتك محفوظة، لذا تُختار كل قطعة بمقاس واحد."},
@@ -856,7 +854,7 @@ var UI={
   doneStamp:{en:"Order received",ar:"تم استلام الطلب"},
   doneTag:{en:"Confirmation",ar:"التأكيد"},
   doneH:{en:"You are all set,",ar:"تم كل شيء،"},
-  doneL:{en:"You will get a WhatsApp with your look for approval within 24 hours. After you approve, delivery is 3–5 working days.",ar:"ستصلك رسالة واتساب بإطلالتك للموافقة خلال ٢٤ ساعة. بعد موافقتك، التوصيل ٣–٥ أيام عمل."},
+  doneL:{en:"You will get a WhatsApp with your look for approval within 24 hours. Nothing is bought until you approve it.",ar:"ستصلك رسالة واتساب بإطلالتك للموافقة خلال ٢٤ ساعة. لا يُشترى شيء حتى توافقي عليها."},
   doneMail:{en:"A copy of your order and your style profile is on its way to",ar:"نسخة من طلبك وملفك الشخصي في الطريق إلى"},
   again:{en:"Run it again",ar:"تجربة مرة أخرى"},
   footer:{en:"Prototype for testing",ar:"نموذج للتجربة"}
@@ -1633,7 +1631,7 @@ function quiz(){
 
   if(qi===Q.length-1){
     var mb=el("div","block");
-    mb.appendChild(orderSummary(false));
+    mb.appendChild(orderSummary());
     p.appendChild(mb);
   }
 
@@ -1802,8 +1800,8 @@ function kd(n){return n.toFixed(3);}
 function cur(n){return kd(n)+(lang==="ar"?" د.ك":" KD");}
 function money(){
   var looks=parseInt(A.looks||"1",10),hold=parseInt(A.budget||"80",10);
-  var styling=looks*10,clothes=looks*hold,ship=(styling+clothes)>=100?0:2;
-  return {looks:looks,styling:styling,clothes:clothes,ship:ship,total:styling+clothes+ship};
+  var styling=looks*10,clothes=looks*hold;
+  return {looks:looks,styling:styling,clothes:clothes,total:styling+clothes};
 }
 function row(a,b,sub){
   var r=el("div","row"),L=el("span");
@@ -1812,12 +1810,11 @@ function row(a,b,sub){
   r.appendChild(L);r.appendChild(el("span",null,b));
   return r;
 }
-function orderSummary(withShip){
+function orderSummary(){
   var m=money(),s=el("div","summary");
   s.appendChild(row(t(UI.rStyle)+" × "+m.looks,cur(m.styling)));
   s.appendChild(row(t(UI.rBudget)+" × "+m.looks,cur(m.clothes),t(UI.rBudgetE)));
-  if(withShip) s.appendChild(row(t(UI.rShip),m.ship?cur(m.ship):t(UI.free),t(UI.tShip)));
-  var tt=row(t(UI.rTotal),cur(withShip?m.total:m.styling+m.clothes));
+  var tt=row(t(UI.rTotal),cur(m.total));
   tt.className="row total";
   s.appendChild(tt);
   return s;
@@ -1891,7 +1888,7 @@ function profile(){
   f3.appendChild(two);p.appendChild(f3);
 
   var f4=el("div","block");
-  f4.appendChild(orderSummary(false));
+  f4.appendChild(orderSummary());
   p.appendChild(f4);
 
   var nav=el("div","actions");
@@ -2062,7 +2059,6 @@ function pay(){
   sum.appendChild(row(t(UI.acct),firstName(),U.email));
   sum.appendChild(row(t(UI.rStyle)+" × "+m.looks,cur(m.styling)));
   sum.appendChild(row(t(UI.rBudget)+" × "+m.looks,cur(m.clothes),t(UI.rBudgetE)));
-  sum.appendChild(row(t(UI.rShip),m.ship?cur(m.ship):t(UI.free),t(UI.tShip)));
   var tt=row(t(UI.rTotal),cur(m.total));tt.className="row total";
   sum.appendChild(tt);
   f0.appendChild(sum);p.appendChild(f0);
@@ -2126,7 +2122,7 @@ function pay(){
 
   /* terms — the sizing line depends on whether we have the measurements */
   var terms=el("div","terms");
-  [[UI.tShip,UI.tShipD],
+  [[UI.tSource,UI.tSourceD],
    [UI.tSize,accuracy()===3?UI.tSizeOne:UI.tSizeTwo],
    [UI.tRet,UI.tRetD]].forEach(function(x){
     var r2=el("p");
@@ -2179,7 +2175,7 @@ function done(){
   mail.appendChild(el("b",null,U.email));
   p.appendChild(mail);
   var f=el("div","block first");
-  f.appendChild(orderSummary(true));
+  f.appendChild(orderSummary());
   p.appendChild(f);
   var nav=el("div","actions");
   var again=el("button","btn wide",t(UI.again));again.type="button";

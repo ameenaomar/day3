@@ -1,18 +1,12 @@
 import { describe, expect, it } from "vitest";
-import {
-  BUDGET_TIERS_FILS,
-  DELIVERY_FEE_FILS,
-  PricingError,
-  computeQuote,
-  computeRefund,
-} from "@/lib/pricing";
+import { BUDGET_TIERS_FILS, PricingError, computeQuote, computeRefund } from "@/lib/pricing";
 
 describe("computeQuote", () => {
   it("charges 10.000 KD styling per look plus the tier per look", () => {
     const q = computeQuote({ lookCount: 1, budgetTierFils: 40_000, paymentModel: "prepaid_full" });
     expect(q.stylingFeeFils).toBe(10_000);
     expect(q.clothingBudgetFils).toBe(40_000);
-    expect(q.subtotalFils).toBe(50_000);
+    expect(q.totalFils).toBe(50_000);
   });
 
   it("scales both the fee and the budget with the number of looks", () => {
@@ -22,23 +16,13 @@ describe("computeQuote", () => {
     expect(q.totalFils).toBe(270_000);
   });
 
-  it("charges delivery under 100 KD and waives it over", () => {
-    const under = computeQuote({ lookCount: 1, budgetTierFils: 80_000, paymentModel: "prepaid_full" });
-    expect(under.subtotalFils).toBe(90_000);
-    expect(under.deliveryFeeFils).toBe(DELIVERY_FEE_FILS);
-    expect(under.totalFils).toBe(92_000);
-
-    const over = computeQuote({ lookCount: 1, budgetTierFils: 150_000, paymentModel: "prepaid_full" });
-    expect(over.freeDelivery).toBe(true);
-    expect(over.deliveryFeeFils).toBe(0);
-    expect(over.totalFils).toBe(160_000);
-  });
-
-  it("charges delivery at exactly 100.000 KD, since the promise is 'over'", () => {
-    // Reachable: two looks at the 40 KD tier. Flagged in lib/pricing.ts.
-    const q = computeQuote({ lookCount: 2, budgetTierFils: 40_000, paymentModel: "prepaid_full" });
-    expect(q.subtotalFils).toBe(100_000);
-    expect(q.deliveryFeeFils).toBe(DELIVERY_FEE_FILS);
+  it("adds nothing to the fee and the budget — there is no delivery to charge", () => {
+    for (const tier of BUDGET_TIERS_FILS) {
+      for (let looks = 1; looks <= 5; looks++) {
+        const q = computeQuote({ lookCount: looks, budgetTierFils: tier, paymentModel: "prepaid_full" });
+        expect(q.totalFils).toBe(q.stylingFeeFils + q.clothingBudgetFils);
+      }
+    }
   });
 
   it("under fee_first takes only the styling fee at checkout", () => {

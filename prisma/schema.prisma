@@ -9,7 +9,7 @@
 //     what it was shopped from.
 //
 //  2. Both payment models are representable without a migration. Money is held
-//     as separate fee/budget/delivery columns and charges live in Payment rows,
+//     as separate fee and budget columns and charges live in Payment rows,
 //     so an order can be settled in one charge (prepaid_full) or two
 //     (fee_first) purely by configuration.
 //
@@ -53,7 +53,6 @@ model Customer {
 
   profiles     StyleProfile[]
   measurements Measurement[]
-  addresses    Address[]
   orders       Order[]
   tokens       MagicLinkToken[]
   sessions     Session[]
@@ -259,43 +258,6 @@ model StyleProfile {
 }
 
 // ---------------------------------------------------------------------------
-// Delivery addresses
-// ---------------------------------------------------------------------------
-
-/// Kuwait addresses only, and shaped the way Kuwait writes them — governorate,
-/// area, block, street, building — because "address line 1" does not survive
-/// a delivery driver here.
-///
-/// Saved on the customer so a repeat order is one tap, and copied onto the
-/// order at checkout so editing this row can never rewrite where a past order
-/// actually went.
-model Address {
-  id         String  @id @default(cuid())
-  customerId String
-  /// What the customer calls it: home, work, mum's.
-  label      String?
-
-  governorate String
-  area        String
-  block       String
-  street      String
-  building    String
-  floor       String?
-  flat        String?
-  notes       String?
-
-  isDefault Boolean @default(false)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  orders   Order[]
-
-  @@index([customerId, isDefault])
-}
-
-// ---------------------------------------------------------------------------
 // Orders
 // ---------------------------------------------------------------------------
 
@@ -316,8 +278,7 @@ enum OrderStatus {
   awaiting_approval
   approved
   shopping
-  shipped
-  delivered
+  completed
   returned
   refunded
   cancelled
@@ -341,7 +302,6 @@ model Order {
   // order can always be re-explained even if the prices change later.
   stylingFeeFils     Int
   clothingBudgetFils Int
-  deliveryFeeFils    Int
   totalFils          Int
   dueNowFils         Int
   dueOnApprovalFils  Int
@@ -353,30 +313,16 @@ model Order {
   /// Where the stylist sends the look for approval.
   whatsappE164 String
 
-  // Kuwait-only delivery, validated server-side. These columns are the
-  // snapshot; `addressId` is the row it was copied from, if it is still there.
-  addressId          String?
-  addressGovernorate String
-  addressArea        String
-  addressBlock       String
-  addressStreet      String
-  addressBuilding    String
-  addressFloor       String?
-  addressFlat        String?
-  addressNotes       String?
-
   createdAt   DateTime  @default(now())
   paidAt      DateTime?
   approvedAt  DateTime?
-  shippedAt   DateTime?
-  deliveredAt DateTime?
+  completedAt DateTime?
   closedAt    DateTime?
-  /// 3-5 working days after approval; set when the look is approved.
+  /// When the stylist committed to having the look ready.
   dueBy       DateTime?
 
   customer     Customer     @relation(fields: [customerId], references: [id])
   styleProfile StyleProfile @relation(fields: [styleProfileId], references: [id])
-  address      Address?     @relation(fields: [addressId], references: [id])
 
   payments     Payment[]
   refunds      Refund[]

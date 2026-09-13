@@ -1,10 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  GOVERNORATES,
-  formatKuwaitiPhone,
-  isGovernorate,
-  normaliseKuwaitiPhone,
-} from "@/lib/kuwait";
+import { formatKuwaitiPhone, normaliseKuwaitiPhone } from "@/lib/kuwait";
 
 describe("normaliseKuwaitiPhone", () => {
   it("accepts the three valid prefixes", () => {
@@ -54,17 +49,5 @@ describe("formatKuwaitiPhone", () => {
 
   it("passes anything unexpected through untouched", () => {
     expect(formatKuwaitiPhone("+4477009001")).toBe("+4477009001");
-  });
-});
-
-describe("isGovernorate", () => {
-  it("accepts the six governorates", () => {
-    expect(GOVERNORATES).toHaveLength(6);
-    for (const g of GOVERNORATES) expect(isGovernorate(g)).toBe(true);
-  });
-
-  it("rejects anywhere else", () => {
-    expect(isGovernorate("dubai")).toBe(false);
-    expect(isGovernorate("")).toBe(false);
   });
 });

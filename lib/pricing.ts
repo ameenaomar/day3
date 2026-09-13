@@ -13,10 +13,6 @@ export const BUDGET_TIERS_FILS = [40_000, 80_000, 150_000, 250_000] as const;
 
 export type BudgetTierFils = (typeof BUDGET_TIERS_FILS)[number];
 
-/** 2.000 KD, free over 100 KD. */
-export const DELIVERY_FEE_FILS = 2_000;
-export const FREE_DELIVERY_OVER_FILS = 100_000;
-
 export const MIN_LOOKS = 1;
 /** TODO: confirm against public/simply-styled.html — the prototype sets the ceiling. */
 export const MAX_LOOKS = 5;
@@ -49,9 +45,6 @@ export interface Quote {
   stylingFeeFils: number;
   /** tier × looks — held, not spent. */
   clothingBudgetFils: number;
-  subtotalFils: number;
-  deliveryFeeFils: number;
-  freeDelivery: boolean;
   totalFils: number;
   /** Charged at checkout. */
   dueNowFils: number;
@@ -78,15 +71,7 @@ export function computeQuote(input: QuoteInput): Quote {
 
   const stylingFeeFils = STYLING_FEE_PER_LOOK_FILS * lookCount;
   const clothingBudgetFils = budgetTierFils * lookCount;
-  const subtotalFils = stylingFeeFils + clothingBudgetFils;
-
-  // "Free over 100 KD total" read literally: strictly greater than 100.000 KD,
-  // on the pre-delivery subtotal.
-  // TODO: two looks at the 40 KD tier land on exactly 100.000, so this edge is
-  // reachable in practice — confirm the prototype's intent before launch.
-  const freeDelivery = subtotalFils > FREE_DELIVERY_OVER_FILS;
-  const deliveryFeeFils = freeDelivery ? 0 : DELIVERY_FEE_FILS;
-  const totalFils = subtotalFils + deliveryFeeFils;
+  const totalFils = stylingFeeFils + clothingBudgetFils;
 
   const dueNowFils = paymentModel === "fee_first" ? stylingFeeFils : totalFils;
   const dueOnApprovalFils = totalFils - dueNowFils;
@@ -97,9 +82,6 @@ export function computeQuote(input: QuoteInput): Quote {
     paymentModel,
     stylingFeeFils,
     clothingBudgetFils,
-    subtotalFils,
-    deliveryFeeFils,
-    freeDelivery,
     totalFils,
     dueNowFils,
     dueOnApprovalFils,

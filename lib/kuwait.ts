@@ -1,23 +1,7 @@
 /**
- * Kuwait-only delivery, validated server-side. The client-side checks are a
+ * Kuwaiti phone numbers, validated server-side. The client-side checks are a
  * convenience; these are the defence.
  */
-
-/** The six governorates. Anything else is not a Kuwaiti address. */
-export const GOVERNORATES = [
-  "al_asimah",
-  "hawalli",
-  "farwaniya",
-  "mubarak_al_kabeer",
-  "ahmadi",
-  "jahra",
-] as const;
-
-export type Governorate = (typeof GOVERNORATES)[number];
-
-export function isGovernorate(value: string): value is Governorate {
-  return (GOVERNORATES as readonly string[]).includes(value);
-}
 
 const ARABIC_INDIC_RANGE = /[٠-٩]/g;
 

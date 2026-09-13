@@ -54,10 +54,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             <dt>{locale === "ar" ? "ميزانية الملابس" : "Clothing budget"}</dt>
             <dd>{formatKwd(example.clothingBudgetFils, locale)}</dd>
           </div>
-          <div className="flex justify-between gap-4">
-            <dt>{locale === "ar" ? "التوصيل" : "Delivery"}</dt>
-            <dd>{formatKwd(example.deliveryFeeFils, locale)}</dd>
-          </div>
           <div className="mt-2 flex justify-between gap-4 border-t border-rule pt-2 font-semibold">
             <dt>{locale === "ar" ? "المطلوب الآن" : "Due now"}</dt>
             <dd className="text-green">{formatKwd(example.dueNowFils, locale)}</dd>

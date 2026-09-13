@@ -38,10 +38,6 @@ What changed in the model when the measuring screen did:
   `good` / `tailor`). The tier is stored rather than recomputed, because
   `tailor` is what the payment screen promises the customer: one size per
   piece instead of two. `StyleProfile` points at the set it was built from.
-- **`Address`** exists, shaped the way Kuwait writes addresses — governorate,
-  area, block, street, building. `Order` keeps its own snapshot of it, so
-  editing an address never rewrites where a past order went. **The flow still
-  has no screen that asks for it**; that is the next gap to close.
 - **`Customer.marketingOptIn`** backs the front page's "no marketing unless you
   ask for it".
 - `answersSchemaVersion` defaults to **2**: the eight-screen shape.
@@ -155,8 +151,8 @@ revisit — flag it and I will.
 Schema will support both from day one, so switching is a config change and no migration:
 
 - `Order.paymentModel` — `prepaid_full` | `fee_first`
-- money held as separate `stylingFeeFils`, `clothingBudgetFils`, `deliveryFeeFils`,
-  `totalFils` columns rather than one amount
+- money held as separate `stylingFeeFils`, `clothingBudgetFils` and `totalFils`
+  columns rather than one amount
 - a `Payment` table with `kind` = `styling_fee` | `clothing_budget` | `balance`, so an order
   can be paid in one charge or two
 - `OrderStatus` gets `created` and `awaiting_clothing_payment` members now, unused under
@@ -234,10 +230,6 @@ JS, is indexable and the back button behaves; a small client island records the 
 advances instantly, and POSTs the answer in the background with a retry. Answers persist
 per screen, so a dropped connection or a closed tab resumes where they left off.
 
-**"Free over 100 KD total" is ambiguous** — 100 KD of clothing budget, or of the grand
-total including the styling fee? I will implement it as the pre-delivery subtotal (styling
-fee + clothing budget) and the prototype will settle it when I can read it.
-
 ## 8. Architecture
 
 ```
@@ -291,8 +283,8 @@ StyleProfile      customerId, version, isCurrent, answersSchemaVersion,
                   gender, occasion, sizeTop, sizeBottom, sizeShoe, budgetTierFils,
                   answers Json, generated Json
 Order             customerId, styleProfileId, paymentModel, lookCount, budgetTierFils,
-                  stylingFeeFils, clothingBudgetFils, deliveryFeeFils, totalFils,
-                  currency, status, whatsappE164, address, timestamps
+                  stylingFeeFils, clothingBudgetFils, totalFils,
+                  currency, status, whatsappE164, timestamps
 Payment           orderId, kind, provider, providerRef, amountFils, status, raw Json
 Refund            orderId, paymentId, amountFils, reason, providerRef, status, settledAt
 OrderItem         orderId, name, shopName, sizePrimary, sizeAlternate?, sentTwoSizes,
