@@ -522,7 +522,7 @@
     wipePasswords();
     // Cached for the main page's greeting only. The session itself is held by
     // supabase-js; this is a display name, not a credential.
-    writeStore("kw.user", { name: name, email: $("#email").value.trim() });
+    writeStore("kw.user", { name: name });
     $("#done-title").textContent = mode === "signup"
       ? t().doneSignup(name) : t().doneSignin(name);
     $("#done-body").textContent = t().doneBody;
@@ -661,9 +661,10 @@
   }
 
   var cached = readStore("kw.user", null);
-  if (cached && cached.email && !signingOut) {
-    $("#email").value = cached.email;
-    if (cached.name) $("#name").value = cached.name;
+  if (cached && cached.name && !signingOut) {
+    // Name only. The email is not cached, so a shared computer does not
+    // hand the next person the last person's address.
+    $("#name").value = cached.name;
     mode = "signin";
   }
 
@@ -678,7 +679,7 @@
       mode = "signin";
       displayName(session.user).then(function (name) {
         $("#email").value = session.user.email || "";
-        writeStore("kw.user", { name: name, email: session.user.email || "" });
+        writeStore("kw.user", { name: name });
         succeed(name);
       });
     }).catch(function () { /* stay on the form */ });

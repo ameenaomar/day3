@@ -13,7 +13,7 @@
 // To redeploy a newer commit: update COMMIT and both hashes
 //   git rev-parse HEAD && sha256sum index.html places.js login.html supabase-config.js
 
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 
 const COMMIT = "1bd61c3edc1a953b7705146e1508fe8bba79915d";
@@ -27,6 +27,7 @@ const EXPECTED = {
   "supabase-config.js": "256bbff1a1251b4561d330edf257fc7a83fd3f78ca947d2a48d163ca72021af2",
 };
 
+const built = {};
 await mkdir("dist", { recursive: true });
 
 for (const [name, want] of Object.entries(EXPECTED)) {
@@ -40,7 +41,29 @@ for (const [name, want] of Object.entries(EXPECTED)) {
     throw new Error(`${name}: sha256 mismatch\n  expected ${want}\n  got      ${got}`);
   }
   await writeFile(`dist/${name}`, bytes);
+  built[name] = bytes;
   console.log(`${name}: ${bytes.length} bytes, sha256 verified`);
 }
+
+// The Content-Security-Policy in vercel.json pins the fingerprint of each
+// page's inline script. Vercel reads that file before the build runs, so it
+// cannot be generated here — it has to be checked instead. If a page's script
+// changed and the policy did not, the browser would refuse to run the page,
+// so fail the build now rather than ship a blank site.
+const policy = await readFile("vercel.json", "utf8");
+for (const [name, bytes] of Object.entries(built)) {
+  if (!name.endsWith(".html")) continue;
+  const inline = [...bytes.toString("utf8")
+    .matchAll(/<script(?![^>]*\ssrc=)[^>]*>([\s\S]*?)<\/script>/g)];
+  for (const [, code] of inline) {
+    const digest = "sha256-" + createHash("sha256").update(code, "utf8").digest("base64");
+    if (!policy.includes(digest)) {
+      throw new Error(
+        `${name}: its inline script is not allowed by the Content-Security-Policy.\n` +
+        `  Add this to script-src in vercel-bridge/vercel.json: '${digest}'`);
+    }
+  }
+}
+console.log("Content-Security-Policy covers every inline script");
 
 console.log(`Built from commit ${COMMIT}`);
