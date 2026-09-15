@@ -38,16 +38,20 @@
      approximations — correct them against a physical chip if you have one. */
   --color-paper: #f0e9dd; /* PANTONE 11-0608 TCX Coconut Milk — page ground */
   --color-sand: #c7a68b; /* PANTONE 15-1214 TCX Warm Sand — accent, section grounds */
-  --color-dove: #7c7877; /* PANTONE 17-1501 TCX Dove Gray — large text and rules only */
+  --color-dove: #7c7877; /* PANTONE 17-1501 TCX Dove Gray — see note below */
 
-  /* Text tones. None of the three brand colours is dark enough to set body
-     text on Coconut Milk — Dove Gray reaches only 3.62:1, below the 4.5:1 that
-     WCAG AA asks for. These two are Dove Gray darkened along its own hue, so
-     the palette stays warm-neutral while the text is legible. */
-  --color-ink: #2a2928; /* primary text — 12.03:1 on paper */
-  --color-ink-muted: #6c6868; /* secondary text — 4.56:1 on paper */
+  /* Espresso. The three brand colours are all too light to set text on
+     Coconut Milk — Dove Gray reaches 3.62:1 and Warm Sand 1.88:1, under the
+     4.5:1 WCAG AA asks for. Espresso is the fourth colour that does it, chosen
+     warm so it belongs to Warm Sand's family rather than reading as a
+     borrowed black. ink-muted is the same hue lifted toward the paper. */
+  --color-ink: #3a2e26; /* primary text — 10.89:1 on paper, 5.79:1 on sand */
+  --color-ink-muted: #685e55; /* secondary text — 5.24:1 on paper */
 
-  --color-rule: #d9c4b0; /* hairlines — paper mixed toward Warm Sand */
+  /* Dove Gray's job: hairlines, and large display type only. At 3.62:1 it
+     clears AA Large (24px+, or 19px+ bold) but never AA body, so it must not
+     be used for anything set small. */
+  --color-rule: var(--color-dove);
   --color-accent: var(--color-sand);
 
   /* Type ----------------------------------------------------------------- */
@@ -178,6 +182,9 @@
 @utility unicode-bidi-isolate {
   unicode-bidi: isolate;
 }
+
+/* On a Warm Sand ground, only --color-ink is legible: ink-muted falls to
+   2.79:1 there. Sections on sand use ink for both headings and body. */
 
 @utility rule-t {
   border-block-start: 1px solid var(--color-rule);

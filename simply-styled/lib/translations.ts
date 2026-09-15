@@ -31,7 +31,7 @@ export type Dictionary = {
     typeLabel: string;
     ratesLabel: string;
     displayFaceNote: string;
-    swatches: { paper: string; sand: string; dove: string };
+    swatches: { paper: string; sand: string; dove: string; ink: string };
     modes: { online: string; inPerson: string };
     perOutfit: string;
   };
@@ -63,6 +63,7 @@ const en: Dictionary = {
       paper: "Coconut Milk",
       sand: "Warm Sand",
       dove: "Dove Gray",
+      ink: "Espresso",
     },
     modes: { online: "Online", inPerson: "In person" },
     perOutfit: "from, per outfit",
@@ -94,6 +95,7 @@ const ar: Dictionary = {
       paper: "حليب جوز الهند",
       sand: "رمل دافئ",
       dove: "رمادي حمامي",
+      ink: "إسبريسو",
     },
     modes: { online: "أونلاين", inPerson: "حضورياً" },
     perOutfit: "تبدأ من، لكل إطلالة",

@@ -19,6 +19,7 @@ export default function FoundationPage() {
     { name: copy.foundation.swatches.paper, hex: "#F0E9DD", className: "bg-paper" },
     { name: copy.foundation.swatches.sand, hex: "#C7A68B", className: "bg-sand" },
     { name: copy.foundation.swatches.dove, hex: "#7C7877", className: "bg-dove" },
+    { name: copy.foundation.swatches.ink, hex: "#3A2E26", className: "bg-ink" },
   ];
 
   const modes = [
@@ -48,7 +49,7 @@ export default function FoundationPage() {
         {/* Palette */}
         <section className="rule-t py-16">
           <Label>{copy.foundation.paletteLabel}</Label>
-          <div className="mt-8 grid grid-cols-1 gap-10 sm:grid-cols-3">
+          <div className="mt-8 grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
             {swatches.map((swatch) => (
               <div key={swatch.hex}>
                 <div className={`h-32 border border-rule ${swatch.className}`} />
