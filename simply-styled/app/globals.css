@@ -1,6 +1,24 @@
 @import "tailwindcss";
 
 /* ---------------------------------------------------------------------------
+   PALMORE — the brand display face, licensed via Envato Elements.
+
+   Uncomment once public/fonts/palmore-regular.woff2 exists. Left commented so
+   the site does not request a font file that is not there. Full instructions in
+   public/fonts/README.md.
+   --------------------------------------------------------------------------- */
+
+/*
+@font-face {
+  font-family: "Palmore";
+  src: url("/fonts/palmore-regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+*/
+
+/* ---------------------------------------------------------------------------
    SIMPLY STYLED — design tokens.
 
    Luxury editorial, not SaaS. The rules this file encodes:
@@ -9,25 +27,36 @@
      - whitespace is the primary design element, so the space scale runs long
      - headlines are large serif; everything else is quiet sans at small sizes
 
-   PLACEHOLDER: --color-accent is a stand-in pending §14 of the spec. It is
-   referenced only through the token, so changing this one line restyles every
-   accent in the site.
+   Colour comes from the brand's three Pantone references; type is Palmore
+   (vintage rounded serif) for display, set against a quiet sans for text.
    --------------------------------------------------------------------------- */
 
 @theme {
   /* Palette -------------------------------------------------------------- */
-  --color-paper: #faf8f5; /* warm off-white ground */
-  --color-paper-deep: #f2eee8; /* recessed areas, alternating sections */
-  --color-ink: #16130f; /* headlines, primary text */
-  --color-ink-muted: #6b645b; /* secondary text, captions, labels */
-  --color-rule: #ded8cf; /* hairline rules and borders */
-  --color-accent: #9a7b4f; /* PLACEHOLDER — muted bronze */
+  /* The brand's three Pantone TCX references, converted to sRGB. TCX are
+     textile standards with no official sRGB definition, so these are close
+     approximations — correct them against a physical chip if you have one. */
+  --color-paper: #f0e9dd; /* PANTONE 11-0608 TCX Coconut Milk — page ground */
+  --color-sand: #c7a68b; /* PANTONE 15-1214 TCX Warm Sand — accent, section grounds */
+  --color-dove: #7c7877; /* PANTONE 17-1501 TCX Dove Gray — large text and rules only */
+
+  /* Text tones. None of the three brand colours is dark enough to set body
+     text on Coconut Milk — Dove Gray reaches only 3.62:1, below the 4.5:1 that
+     WCAG AA asks for. These two are Dove Gray darkened along its own hue, so
+     the palette stays warm-neutral while the text is legible. */
+  --color-ink: #2a2928; /* primary text — 12.03:1 on paper */
+  --color-ink-muted: #6c6868; /* secondary text — 4.56:1 on paper */
+
+  --color-rule: #d9c4b0; /* hairlines — paper mixed toward Warm Sand */
+  --color-accent: var(--color-sand);
 
   /* Type ----------------------------------------------------------------- */
   /* Families are bound to next/font variables in app/layout.tsx. The -ar
      families are swapped in wholesale by [lang="ar"] below, so components
      only ever name font-serif / font-sans. */
-  --font-serif: var(--font-display-latin), Georgia, "Times New Roman", serif;
+  /* "Palmore" resolves only once the licensed files are added — see
+     public/fonts/README.md. Until then it falls through to the stand-in. */
+  --font-serif: "Palmore", var(--font-display-latin), Georgia, serif;
   --font-sans: var(--font-body-latin), system-ui, -apple-system, sans-serif;
 
   /* Editorial display scale. Deliberately large — headlines carry the page. */
@@ -70,6 +99,15 @@
   --font-sans: var(--font-body-arabic), system-ui, sans-serif;
 }
 
+/* Palmore is a titling face: condensed caps with large round bowls, drawn for
+   headlines. Latin display is set in caps to match, with a little tracking so
+   the condensed glyphs breathe. */
+.text-display,
+.text-headline {
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+}
+
 /* Arabic has no uppercase, and Naskh sets taller than Latin. Tracking-out and
    upper-casing an Arabic label produces broken glyphs, so neutralise both. */
 [lang="ar"] .text-label {
@@ -80,6 +118,7 @@
 
 [lang="ar"] .text-display,
 [lang="ar"] .text-headline {
+  text-transform: none;
   letter-spacing: 0;
   line-height: 1.3;
 }
@@ -133,6 +172,12 @@
 /* ---------------------------------------------------------------------------
    Utilities
    --------------------------------------------------------------------------- */
+
+/* Tailwind ships no unicode-bidi utility. Paired with dir="ltr" this stops a
+   Latin/technical string from being reordered by the surrounding RTL text. */
+@utility unicode-bidi-isolate {
+  unicode-bidi: isolate;
+}
 
 @utility rule-t {
   border-block-start: 1px solid var(--color-rule);

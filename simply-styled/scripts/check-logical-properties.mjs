@@ -41,6 +41,46 @@ function* walk(dir) {
   }
 }
 
+/**
+ * Blanks out comments while preserving line and column positions, so a comment
+ * that merely names a banned utility ("vintage rounded serif") is not a hit but
+ * reported line numbers still line up with the file.
+ */
+function stripComments(source) {
+  let out = "";
+  let inBlock = false;
+  let inLine = false;
+  let inString = null;
+
+  for (let i = 0; i < source.length; i += 1) {
+    const char = source[i];
+    const next = source[i + 1];
+    const keep = char === "\n" ? "\n" : " ";
+
+    if (inBlock) {
+      if (char === "*" && next === "/") { inBlock = false; out += "  "; i += 1; }
+      else out += keep;
+      continue;
+    }
+    if (inLine) {
+      if (char === "\n") { inLine = false; out += "\n"; }
+      else out += " ";
+      continue;
+    }
+    if (inString) {
+      out += char;
+      if (char === "\\") { out += source[i + 1] ?? ""; i += 1; }
+      else if (char === inString) inString = null;
+      continue;
+    }
+    if (char === "/" && next === "*") { inBlock = true; out += "  "; i += 1; continue; }
+    if (char === "/" && next === "/") { inLine = true; out += "  "; i += 1; continue; }
+    if (char === '"' || char === "'" || char === "`") { inString = char; out += char; continue; }
+    out += char;
+  }
+  return out;
+}
+
 const violations = [];
 
 for (const root of ROOTS) {
@@ -53,12 +93,8 @@ for (const root of ROOTS) {
   if (!exists) continue;
 
   for (const file of walk(root)) {
-    const source = readFileSync(file, "utf8");
+    const source = stripComments(readFileSync(file, "utf8"));
     source.split("\n").forEach((line, index) => {
-      // Skip comment lines: they discuss the banned utilities by name.
-      const trimmed = line.trim();
-      if (trimmed.startsWith("*") || trimmed.startsWith("//") || trimmed.startsWith("/*")) return;
-
       for (const token of line.match(TOKEN) ?? []) {
         const bare = token.replace(/^-/, "").replace(/^(?:[a-z0-9-]+:)*/, "");
         for (const rule of RULES) {

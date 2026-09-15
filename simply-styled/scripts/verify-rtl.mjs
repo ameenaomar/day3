@@ -31,10 +31,31 @@ const snapshot = () =>
     const h1 = document.querySelector("h1");
     const indented = h1.parentElement;
     const styles = getComputedStyle(indented);
+
+    // getComputedStyle returns the DECLARED stack, not the face actually drawn.
+    // document.fonts.check() is no help either — it answers "can this render?",
+    // which is true even for an unknown family, via fallback. So measure: a
+    // family is really available only if setting it changes the text width
+    // against a deliberately distinct base.
+    const declared = getComputedStyle(h1)
+      .fontFamily.split(",")
+      .map((f) => f.trim().replace(/["']/g, ""));
+
+    const width = (font) => {
+      const ctx = document.createElement("canvas").getContext("2d");
+      ctx.font = `72px ${font}`;
+      return ctx.measureText("ORANGE SOMMAR Simply Styled").width;
+    };
+    const base = width("monospace");
+    const isAvailable = (family) => width(`"${family}", monospace`) !== base;
+    const rendered = declared.find(isAvailable) ?? null;
+
     return {
       lang: root.lang,
       dir: root.dir,
-      displayFont: getComputedStyle(h1).fontFamily.split(",")[0].replace(/["']/g, ""),
+      declaredFirst: declared[0],
+      renderedFont: rendered,
+      palmoreAvailable: isAvailable("Palmore"),
       borderLeft: styles.borderLeftWidth,
       borderRight: styles.borderRightWidth,
     };
@@ -45,7 +66,14 @@ await page.goto(BASE_URL, { waitUntil: "networkidle" });
 const en = await snapshot();
 check("initial lang", en.lang, "en");
 check("initial dir", en.dir, "ltr");
-check("English display face", en.displayFont, "Cormorant Garamond");
+// Palmore is licensed and not in the repository, so it must head the declared
+// stack while the free stand-in is what actually renders.
+// Palmore is licensed and not in the repository: it must head the declared
+// stack so it activates the moment the files land, while the free stand-in is
+// what actually renders until then.
+check("display stack starts with Palmore", en.declaredFirst, "Palmore");
+check("Palmore absent (licensed, not committed)", en.palmoreAvailable, false);
+check("English display face renders", en.renderedFont, "Yeseva One");
 check("LTR hairline on inline-start (left)", `${en.borderLeft}/${en.borderRight}`, "1px/0px");
 
 await page.getByRole("button", { name: /switch language|تغيير اللغة/i }).click();
@@ -54,14 +82,30 @@ await page.waitForFunction(() => document.documentElement.dir === "rtl", null, {
 const ar = await snapshot();
 check("toggled lang", ar.lang, "ar");
 check("toggled dir", ar.dir, "rtl");
-check("Arabic display face", ar.displayFont, "Amiri");
+check("Arabic display face renders", ar.renderedFont, "Amiri");
 check("RTL hairline on inline-start (right)", `${ar.borderLeft}/${ar.borderRight}`, "0px/1px");
+
+// Bidi: LTR technical strings (hex codes, emails, phone numbers, URLs) must be
+// isolated, or the bidirectional algorithm reorders their neutral characters in
+// Arabic — "#F0E9DD" renders as "F0E9DD#".
+const unisolated = await page.evaluate(() => {
+  const TECHNICAL = /^\s*(#[0-9A-Fa-f]{3,8}|[\w.+-]+@[\w.-]+\.\w+|https?:\/\/\S+|\+?\d[\d\s()-]{6,})\s*$/;
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  const bad = [];
+  for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+    const text = n.textContent ?? "";
+    if (!TECHNICAL.test(text)) continue;
+    if (!n.parentElement?.closest('[dir="ltr"]')) bad.push(text.trim());
+  }
+  return bad;
+});
+check("LTR technical strings isolated in RTL", unisolated.join(",") || "none", "none");
 
 await page.reload({ waitUntil: "networkidle" });
 const persisted = await snapshot();
 check("lang survives refresh", persisted.lang, "ar");
 check("dir survives refresh", persisted.dir, "rtl");
-check("face survives refresh", persisted.displayFont, "Amiri");
+check("face survives refresh", persisted.renderedFont, "Amiri");
 
 await browser.close();
 

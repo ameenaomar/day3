@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Inter, Amiri, IBM_Plex_Sans_Arabic } from "next/font/google";
+import { Yeseva_One, Inter, Amiri, IBM_Plex_Sans_Arabic } from "next/font/google";
 
 import { LanguageProvider, LanguageScript } from "@/components/LanguageProvider";
 import { DEFAULT_LOCALE, dirFor } from "@/lib/i18n";
@@ -7,10 +7,14 @@ import { t } from "@/lib/translations";
 
 import "./globals.css";
 
-/* Latin display — high-contrast old-style serif, set light and large. */
-const displayLatin = Cormorant_Garamond({
+/* Latin display — STAND-IN for Palmore, which is licensed through Envato and
+   so cannot be fetched here. Yeseva One is the nearest free face in spirit:
+   vintage, high-contrast, flared, with large round bowls. Once the licensed
+   Palmore files are in public/fonts, the @font-face in globals.css takes over
+   and this becomes the fallback. See public/fonts/README.md. */
+const displayLatin = Yeseva_One({
   subsets: ["latin"],
-  weight: ["300", "400", "500"],
+  weight: ["400"],
   variable: "--font-display-latin",
   display: "swap",
 });

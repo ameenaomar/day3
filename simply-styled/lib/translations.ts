@@ -13,6 +13,8 @@ export type Dictionary = {
     title: string;
     description: string;
   };
+  /** The dinar's unit, written the way each language writes it. */
+  currency: string;
   nav: {
     /** Accessible label on the language toggle. */
     switchLanguage: string;
@@ -25,6 +27,13 @@ export type Dictionary = {
     standfirst: string;
     directionLabel: string;
     localeLabel: string;
+    paletteLabel: string;
+    typeLabel: string;
+    ratesLabel: string;
+    displayFaceNote: string;
+    swatches: { paper: string; sand: string; dove: string };
+    modes: { online: string; inPerson: string };
+    perOutfit: string;
   };
 };
 
@@ -34,6 +43,7 @@ const en: Dictionary = {
     title: "Simply Styled",
     description: "Personal styling, online worldwide and in person in Kuwait.",
   },
+  currency: "KD",
   nav: {
     switchLanguage: "Switch language",
     otherLanguageName: "العربية",
@@ -45,6 +55,17 @@ const en: Dictionary = {
       "Design tokens, fonts, and the language layer. Switch the language to confirm the page flips direction and typeface.",
     directionLabel: "Direction",
     localeLabel: "Language",
+    paletteLabel: "Palette",
+    typeLabel: "Type",
+    ratesLabel: "Rates",
+    displayFaceNote: "Display face — stand-in for Palmore",
+    swatches: {
+      paper: "Coconut Milk",
+      sand: "Warm Sand",
+      dove: "Dove Gray",
+    },
+    modes: { online: "Online", inPerson: "In person" },
+    perOutfit: "from, per outfit",
   },
 };
 
@@ -53,6 +74,7 @@ const ar: Dictionary = {
     title: "سِمبلي ستايلد",
     description: "تنسيق أزياء شخصي، أونلاين حول العالم وحضورياً في الكويت.",
   },
+  currency: "د.ك",
   nav: {
     switchLanguage: "تغيير اللغة",
     otherLanguageName: "English",
@@ -64,6 +86,17 @@ const ar: Dictionary = {
       "الألوان والخطوط وطبقة اللغة. غيّر اللغة للتأكد من أن الصفحة تقلب الاتجاه ونوع الخط.",
     directionLabel: "الاتجاه",
     localeLabel: "اللغة",
+    paletteLabel: "الألوان",
+    typeLabel: "الخط",
+    ratesLabel: "الأسعار",
+    displayFaceNote: "خط العناوين — بديل مؤقت عن Palmore",
+    swatches: {
+      paper: "حليب جوز الهند",
+      sand: "رمل دافئ",
+      dove: "رمادي حمامي",
+    },
+    modes: { online: "أونلاين", inPerson: "حضورياً" },
+    perOutfit: "تبدأ من، لكل إطلالة",
   },
 };
 
