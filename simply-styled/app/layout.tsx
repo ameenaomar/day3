@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Italiana, Inter, Amiri, IBM_Plex_Sans_Arabic } from "next/font/google";
+import { Yeseva_One, Inter, Amiri, IBM_Plex_Sans_Arabic } from "next/font/google";
 
 import { LanguageProvider, LanguageScript } from "@/components/LanguageProvider";
 import { DEFAULT_LOCALE, dirFor } from "@/lib/i18n";
@@ -8,12 +8,12 @@ import { t } from "@/lib/translations";
 import "./globals.css";
 
 /* Latin display — STAND-IN for Palmore, which is licensed through Envato and
-   so cannot be fetched here. Italiana is the nearest free face: condensed caps,
-   large circular O and C, fine high-contrast strokes, deco flavour — the same
-   qualities Palmore is built on, at a lighter weight. Once the licensed Palmore
-   files are in public/fonts, the @font-face in globals.css takes over and this
+   so cannot be fetched here. Yeseva One: vintage, flared, high-contrast, with
+   the weight and presence to carry a headline. Chosen for its solidity rather
+   than for matching Palmore's condensed width. Once the licensed Palmore files
+   are in public/fonts, the @font-face in globals.css takes over and this
    becomes the fallback. See public/fonts/README.md. */
-const displayLatin = Italiana({
+const displayLatin = Yeseva_One({
   subsets: ["latin"],
   weight: ["400"],
   variable: "--font-display-latin",

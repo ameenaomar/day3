@@ -73,7 +73,7 @@ check("initial dir", en.dir, "ltr");
 // what actually renders until then.
 check("display stack starts with Palmore", en.declaredFirst, "Palmore");
 check("Palmore absent (licensed, not committed)", en.palmoreAvailable, false);
-check("English display face renders", en.renderedFont, "Italiana");
+check("English display face renders", en.renderedFont, "Yeseva One");
 check("LTR hairline on inline-start (left)", `${en.borderLeft}/${en.borderRight}`, "1px/0px");
 
 await page.getByRole("button", { name: /switch language|تغيير اللغة/i }).click();
