@@ -179,6 +179,30 @@
 
 /* Tailwind ships no unicode-bidi utility. Paired with dir="ltr" this stops a
    Latin/technical string from being reordered by the surrounding RTL text. */
+/* ---------------------------------------------------------------------------
+   Photography — a true two-colour duotone.
+
+   Stock shots arrive on whatever ground the photographer used: cool grey,
+   white, black, daylight. Dropped straight onto Coconut Milk they read as five
+   unrelated pictures, and a shot taken on black stays a black rectangle.
+
+   So the image is remapped: desaturated, then its luminance ramp is stretched
+   between Espresso (shadows) and Coconut Milk (highlights) by the SVG filter
+   in app/layout.tsx. Every photograph then lives in the palette's own range,
+   which is what two-colour editorial printing did — the period Palmore is
+   drawn from.
+
+   An earlier attempt stacked `lighten`/`darken` overlays instead. Two problems:
+   it only clamps the endpoints, leaving midtones flatly grey; and the overlays
+   composite against whatever is behind the frame unless the frame isolates
+   itself, which rendered every slot as flat Warm Sand. A filter has neither
+   failure mode.
+   --------------------------------------------------------------------------- */
+
+@utility photo-duotone {
+  filter: url(#ss-duotone) contrast(1.04);
+}
+
 @utility unicode-bidi-isolate {
   unicode-bidi: isolate;
 }

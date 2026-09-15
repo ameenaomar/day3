@@ -2,6 +2,8 @@
 
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { LtrText } from "@/components/LtrText";
+import { Figure } from "@/components/Figure";
+import { lookbook } from "@/lib/site.config";
 import { useLanguage } from "@/components/LanguageProvider";
 import { formatAmount, quoteFor } from "@/lib/pricing";
 import { t } from "@/lib/translations";
@@ -87,6 +89,51 @@ export default function FoundationPage() {
               </div>
             ))}
           </dl>
+        </section>
+
+        {/* Lookbook — editorial arrangement: display type set against an
+            asymmetric grid, the wide shot breaking the column at the end. */}
+        <section className="rule-t py-16">
+          <Label>{copy.foundation.lookbookLabel}</Label>
+
+          <div className="mt-10 grid grid-cols-2 gap-6 lg:grid-cols-4 lg:gap-8">
+            {lookbook
+              .filter((slot) => slot.ratio === "2/3")
+              .map((slot) => (
+                <Figure
+                  key={slot.id}
+                  src={slot.src}
+                  ratio={slot.ratio}
+                  alt={copy.lookbook[slot.id]}
+                  caption={slot.id}
+                />
+              ))}
+          </div>
+
+          {/* The landscape shot runs wide, with the headline beside it. */}
+          {lookbook
+            .filter((slot) => slot.ratio === "3/2")
+            .map((slot) => (
+              <div
+                key={slot.id}
+                className="mt-8 grid grid-cols-1 items-end gap-8 lg:grid-cols-3 lg:gap-10"
+              >
+                <div className="lg:col-span-2">
+                  <Figure
+                    src={slot.src}
+                    ratio={slot.ratio}
+                    alt={copy.lookbook[slot.id]}
+                  />
+                </div>
+                <p className="font-serif text-title text-ink">
+                  {copy.foundation.headline}
+                </p>
+              </div>
+            ))}
+
+          <p className="mt-6 text-caption text-ink-muted">
+            {copy.foundation.lookbookNote}
+          </p>
         </section>
 
         {/* Live readout, so the flip is verifiable rather than eyeballed. */}

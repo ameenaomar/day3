@@ -72,6 +72,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <LanguageScript />
       </head>
       <body>
+        {/* Duotone filter for photography. Maps luminance onto a ramp from
+            Espresso (shadows) to Coconut Milk (highlights), so every shot sits
+            in the palette whatever ground it was photographed on. Values are
+            the two colours' channels as 0–1. */}
+        <svg aria-hidden="true" focusable="false" className="absolute size-0">
+          <filter id="ss-duotone" colorInterpolationFilters="sRGB">
+            <feColorMatrix type="saturate" values="0" />
+            <feComponentTransfer>
+              <feFuncR type="table" tableValues="0.2275 0.9412" />
+              <feFuncG type="table" tableValues="0.1804 0.9137" />
+              <feFuncB type="table" tableValues="0.1490 0.8667" />
+            </feComponentTransfer>
+          </filter>
+        </svg>
         <LanguageProvider>{children}</LanguageProvider>
       </body>
     </html>

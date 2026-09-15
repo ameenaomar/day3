@@ -34,7 +34,11 @@ export type Dictionary = {
     swatches: { paper: string; sand: string; dove: string; ink: string };
     modes: { online: string; inPerson: string };
     perOutfit: string;
+    lookbookLabel: string;
+    lookbookNote: string;
   };
+  /** Alt text per lookbook slot. Describes the garment, not the styling. */
+  lookbook: Record<"hanger" | "jeans" | "jacket" | "shirts" | "outfit", string>;
 };
 
 const en: Dictionary = {
@@ -67,6 +71,15 @@ const en: Dictionary = {
     },
     modes: { online: "Online", inPerson: "In person" },
     perOutfit: "from, per outfit",
+    lookbookLabel: "Lookbook",
+    lookbookNote: "Photography slots — add files to public/images",
+  },
+  lookbook: {
+    hanger: "An empty wooden coat hanger suspended from a wire",
+    jeans: "A pair of straight-leg blue jeans on a hanger",
+    jacket: "A denim jacket with a corduroy collar on a hanger",
+    shirts: "A rail of pale linen shirts",
+    outfit: "A suede bomber jacket paired with light denim jeans",
   },
 };
 
@@ -99,6 +112,15 @@ const ar: Dictionary = {
     },
     modes: { online: "أونلاين", inPerson: "حضورياً" },
     perOutfit: "تبدأ من، لكل إطلالة",
+    lookbookLabel: "دفتر الإطلالات",
+    lookbookNote: "أماكن الصور — أضِف الملفات إلى public/images",
+  },
+  lookbook: {
+    hanger: "علّاقة ملابس خشبية فارغة معلّقة على سلك",
+    jeans: "بنطال جينز أزرق مستقيم على علّاقة",
+    jacket: "جاكيت جينز بياقة مخمل مضلّع على علّاقة",
+    shirts: "صف من قمصان الكتان الفاتحة",
+    outfit: "جاكيت بومبر من الجلد المدبوغ مع جينز فاتح",
   },
 };
 
