@@ -5,8 +5,10 @@ The brand's display typeface is **PALMORE – Vintage Rounded Serif** (by kaligr
 committed by a build agent or fetched from a CDN, so the repository ships a free
 stand-in and leaves Palmore as a drop-in.
 
-Until the files below exist, headlines render in **Yeseva One** — the nearest
-free face in spirit, not a match.
+Until the files below exist, headlines render in **Italiana** — the nearest free
+face (condensed caps, large circular O, fine high-contrast strokes), not a match.
+It is noticeably lighter than Palmore, so headlines will gain weight when the
+real face lands.
 
 ## Adding it
 
