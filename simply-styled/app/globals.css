@@ -33,25 +33,21 @@
 
 @theme {
   /* Palette -------------------------------------------------------------- */
-  /* The brand's three Pantone TCX references, converted to sRGB. TCX are
-     textile standards with no official sRGB definition, so these are close
-     approximations — correct them against a physical chip if you have one. */
-  --color-paper: #f0e9dd; /* PANTONE 11-0608 TCX Coconut Milk — page ground */
-  --color-sand: #c7a68b; /* PANTONE 15-1214 TCX Warm Sand — accent, section grounds */
-  --color-dove: #7c7877; /* PANTONE 17-1501 TCX Dove Gray — see note below */
+  /* Dark editorial: cream type on a deep espresso ground.
+     "paper" is the ground and "ink" is what is written on it — the metaphor
+     still holds inverted, so components keep naming bg-paper / text-ink.
 
-  /* Espresso. The three brand colours are all too light to set text on
-     Coconut Milk — Dove Gray reaches 3.62:1 and Warm Sand 1.88:1, under the
-     4.5:1 WCAG AA asks for. Espresso is the fourth colour that does it, chosen
-     warm so it belongs to Warm Sand's family rather than reading as a
-     borrowed black. ink-muted is the same hue lifted toward the paper. */
-  --color-ink: #3a2e26; /* primary text — 10.89:1 on paper, 5.79:1 on sand */
-  --color-ink-muted: #685e55; /* secondary text — 5.24:1 on paper */
+     The brand's Pantones carry further here than they did on cream: Warm Sand
+     reaches 7.44:1 on this ground and can set body text, where on Coconut Milk
+     it managed only 1.88:1 and could not be used for type at all. */
+  --color-paper: #211c18; /* ground — Espresso taken deeper for a full-page field */
+  --color-ink: #f0e9dd; /* PANTONE 11-0608 TCX Coconut Milk — 13.99:1 */
+  --color-ink-muted: #958f86; /* secondary text — 5.27:1 */
+  --color-sand: #c7a68b; /* PANTONE 15-1214 TCX Warm Sand — 7.44:1, accent and text */
+  --color-dove: #7c7877; /* PANTONE 17-1501 TCX Dove Gray — 3.87:1, large text only */
 
-  /* Dove Gray's job: hairlines, and large display type only. At 3.62:1 it
-     clears AA Large (24px+, or 19px+ bold) but never AA body, so it must not
-     be used for anything set small. */
-  --color-rule: var(--color-dove);
+  --color-raised: #2b2622; /* panels sitting just above the ground */
+  --color-rule: #4f4943; /* hairlines */
   --color-accent: var(--color-sand);
 
   /* Type ----------------------------------------------------------------- */
@@ -134,6 +130,9 @@
 @layer base {
   html {
     -webkit-text-size-adjust: 100%;
+    /* The design is a single dark theme, not a light/dark pair. Declaring it
+       makes native controls, scrollbars and form fields render dark too. */
+    color-scheme: dark;
   }
 
   body {
@@ -203,20 +202,16 @@
   filter: url(#ss-duotone) contrast(1.04);
 }
 
-/* The scrim that makes type legible over any photograph. Espresso at 75% puts
-   the brightest possible duotoned pixel at #675D54 — 5.32:1 against Coconut
-   Milk text. Flat colour, not a gradient. */
-@utility wallpaper-scrim {
-  background-color: var(--color-ink);
-  opacity: 0.75;
-}
-
 @utility unicode-bidi-isolate {
   unicode-bidi: isolate;
 }
 
 /* On a Warm Sand ground, only --color-ink is legible: ink-muted falls to
    2.79:1 there. Sections on sand use ink for both headings and body. */
+
+@utility rule-t-none {
+  border-block-start: 0;
+}
 
 @utility rule-t {
   border-block-start: 1px solid var(--color-rule);

@@ -22,20 +22,20 @@ export type Dictionary = {
     /** The name of the language being switched TO, shown in that language. */
     otherLanguageName: string;
   };
-  foundation: {
-    eyebrow: string;
-    headline: string;
-    standfirst: string;
-    directionLabel: string;
-    localeLabel: string;
-    paletteLabel: string;
-    typeLabel: string;
+  home: {
+    location: string;
+    headlineTop: string;
+    headlineBottom: string;
+    lede: string;
+    meta: readonly string[];
+    sections: readonly { n: string; title: string; body: string }[];
     ratesLabel: string;
-    displayFaceNote: string;
-    swatches: { paper: string; sand: string; dove: string; ink: string };
-    modes: { online: string; inPerson: string };
-    perOutfit: string;
-    wallpaperNote: string;
+    online: string;
+    inPerson: string;
+    rateNote: string;
+    ctaTitle: string;
+    ctaButton: string;
+    stripNote: string;
   };
   /**
    * Quiz copy, keyed by the ids in lib/quiz.config.ts. Options for fields
@@ -76,26 +76,24 @@ const en: Dictionary = {
     switchLanguage: "Switch language",
     otherLanguageName: "العربية",
   },
-  foundation: {
-    eyebrow: "Foundation",
-    headline: "Simply Styled",
-    standfirst:
-      "Design tokens, fonts, and the language layer. Switch the language to confirm the page flips direction and typeface.",
-    directionLabel: "Direction",
-    localeLabel: "Language",
-    paletteLabel: "Palette",
-    typeLabel: "Type",
+  home: {
+    location: "Kuwait · Online worldwide",
+    headlineTop: "Simply",
+    headlineBottom: "Styled",
+    lede: "Personal styling for the way you actually live. Seven questions, and we build your profile — your palette, your silhouette, the rules we never break.",
+    meta: ["Est. Kuwait", "Women & Men", "Online · In person"],
+    sections: [
+      { n: "01", title: "The Profile", body: "Seven screens, mostly taps. Two minutes. Free, and yours to keep." },
+      { n: "02", title: "The Edit", body: "Colours that work on you, cuts that fit your frame, rules we never break." },
+      { n: "03", title: "The Look", body: "Outfits you will actually wear, priced per outfit, online or in person." },
+    ],
     ratesLabel: "Rates",
-    displayFaceNote: "Display face — stand-in for Palmore",
-    swatches: {
-      paper: "Coconut Milk",
-      sand: "Warm Sand",
-      dove: "Dove Gray",
-      ink: "Espresso",
-    },
-    modes: { online: "Online", inPerson: "In person" },
-    perOutfit: "from, per outfit",
-    wallpaperNote: "Wallpaper slots — add files to public/images",
+    online: "Online",
+    inPerson: "In person",
+    rateNote: "Per outfit. The more outfits, the lower the rate.",
+    ctaTitle: "Start your profile",
+    ctaButton: "Begin — 2 min",
+    stripNote: "Photography slots — add files to public/images",
   },
   quiz: {
     steps: {
@@ -321,26 +319,24 @@ const ar: Dictionary = {
     switchLanguage: "تغيير اللغة",
     otherLanguageName: "English",
   },
-  foundation: {
-    eyebrow: "الأساس",
-    headline: "سِمبلي ستايلد",
-    standfirst:
-      "الألوان والخطوط وطبقة اللغة. غيّر اللغة للتأكد من أن الصفحة تقلب الاتجاه ونوع الخط.",
-    directionLabel: "الاتجاه",
-    localeLabel: "اللغة",
-    paletteLabel: "الألوان",
-    typeLabel: "الخط",
+  home: {
+    location: "الكويت · أونلاين حول العالم",
+    headlineTop: "سِمبلي",
+    headlineBottom: "ستايلد",
+    lede: "تنسيق شخصي يليق بحياتك كما هي. سبعة أسئلة، ونبني ملفك — لوحة ألوانك، وقَصّتك، والقواعد التي لا نخالفها.",
+    meta: ["تأسست في الكويت", "نساء ورجال", "أونلاين · حضورياً"],
+    sections: [
+      { n: "٠١", title: "الملف", body: "سبع شاشات، معظمها بلمسة. دقيقتان. مجاناً، ويبقى لك." },
+      { n: "٠٢", title: "الاختيار", body: "ألوان تناسبك، وقَصّات تلائم جسمك، وقواعد لا نخالفها." },
+      { n: "٠٣", title: "الإطلالة", body: "إطلالات ترتديها فعلاً، بسعر لكل إطلالة، أونلاين أو حضورياً." },
+    ],
     ratesLabel: "الأسعار",
-    displayFaceNote: "خط العناوين — بديل مؤقت عن Palmore",
-    swatches: {
-      paper: "حليب جوز الهند",
-      sand: "رمل دافئ",
-      dove: "رمادي حمامي",
-      ink: "إسبريسو",
-    },
-    modes: { online: "أونلاين", inPerson: "حضورياً" },
-    perOutfit: "تبدأ من، لكل إطلالة",
-    wallpaperNote: "أماكن صور الخلفية — أضِف الملفات إلى public/images",
+    online: "أونلاين",
+    inPerson: "حضورياً",
+    rateNote: "لكل إطلالة. كلما زاد العدد قلّ السعر.",
+    ctaTitle: "ابدأ ملفك",
+    ctaButton: "ابدأ — دقيقتان",
+    stripNote: "أماكن الصور — أضِف الملفات إلى public/images",
   },
   quiz: {
     steps: {

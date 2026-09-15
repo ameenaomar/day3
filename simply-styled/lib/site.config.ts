@@ -80,12 +80,14 @@ export const siteConfig: SiteConfig = {
 };
 
 /**
- * Wallpapers — full-bleed photographic bands with display type over them.
+ * The photographic strip that runs across the page.
  *
- * Filenames are deliberately generic so a photograph can be swapped without
- * touching code. See public/images/README.md.
+ * Filenames are deliberately generic so a shot can be swapped without touching
+ * code. See public/images/README.md.
  */
-export const wallpapers = {
-  hero: "/images/wallpaper-hero.jpg",
-  services: "/images/wallpaper-services.jpg",
-} as const;
+export const stripImages: readonly string[] = [
+  "/images/strip-01.jpg",
+  "/images/strip-02.jpg",
+  "/images/strip-03.jpg",
+  "/images/strip-04.jpg",
+] as const;
