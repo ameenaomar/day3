@@ -1,19 +1,16 @@
-# Lookbook photography
+# Wallpapers
 
-Drop the files here using these exact names. Nothing else needs changing — the
-slots, alt text and layout are already wired in `lib/site.config.ts` and
-`lib/translations.ts`.
+The site uses photographs as full-bleed wallpaper behind display type — one
+image, one headline, nothing else. Drop the files here using these names;
+nothing else needs changing.
 
-| File | Framing | Shot |
-|------|---------|------|
-| `look-01-hanger.jpg` | portrait 2:3 | empty wooden hanger |
-| `look-02-jeans.jpg`  | portrait 2:3 | straight-leg jeans |
-| `look-03-jacket.jpg` | portrait 2:3 | denim jacket, corduroy collar |
-| `look-04-shirts.jpg` | portrait 2:3 | rail of linen shirts |
-| `look-05-outfit.jpg` | landscape 3:2 | suede jacket with denim |
+| File | Framing | Where |
+|------|---------|-------|
+| `wallpaper-hero.jpg` | landscape, 16:9 or wider | the opening screen, behind the wordmark |
+| `wallpaper-services.jpg` | landscape, 16:9 or wider | the rates band |
 
-Any shot can be swapped for another — keep the filename and the framing and the
-layout holds.
+Any photograph can be swapped for another — keep the filename and the layout
+holds.
 
 ## Before you add a file
 
@@ -25,24 +22,39 @@ licensed original, or choose a different shot.
 Unsplash's free tier and Envato Elements (which you already subscribe to for
 Palmore) both permit commercial use. Keep a record of where each file came from.
 
+## Choosing a shot
+
+Because the type sits over the image, wallpapers want **space** — a plain wall,
+a rail seen at a distance, a flat lay with room around it. A photograph with
+its subject dead centre will fight the headline.
+
+Portrait-shaped photographs will be cropped hard: the slot fills its band with
+`object-fit: cover`, so a tall image loses its top and bottom. Prefer landscape.
+
 ## Preparation
 
-- Export at roughly **1600px on the long edge** — enough for a 2× display at the
-  sizes used, without making the page heavy.
-- Save as JPEG, quality ~80. Aim to keep each file under ~300KB.
-- Crop to the framing in the table. The slot crops with `object-fit: cover`, so
-  an off-ratio file will lose its edges.
+- Export at roughly **2400px wide** — these run the full width of the screen.
+- JPEG, quality ~80. Aim to keep each under ~400KB.
 
-## The duotone
+## Why the images look darker on the page
 
-Photographs are remapped to a single duotone in the palette's range. This is
-what makes five shots taken on five different backgrounds read as one set, and
-it matches the two-colour printing of the 60s editorial work Palmore comes from.
+Two treatments are applied, and both are load-bearing:
 
-It is an SVG filter (`#ss-duotone`, defined in `app/layout.tsx`) applied through
-the `photo-duotone` utility in `app/globals.css`. It desaturates the image and
-stretches its luminance ramp between Espresso and Coconut Milk, so a shot taken
-on black lands on Espresso rather than staying a black rectangle.
+1. **Duotone.** An SVG filter (`#ss-duotone`, defined in `app/layout.tsx`)
+   desaturates the photograph and stretches its luminance between Espresso and
+   Coconut Milk. A shot taken on black lands on Espresso instead of punching a
+   black hole in a warm page, and any two photographs read as one set. It is
+   also the period treatment — two-colour editorial printing, which is where
+   Palmore comes from.
 
-To show a photograph in its original colour, pass `duotone={false}` to
-`<Figure>`.
+2. **Scrim.** A flat Espresso layer at 75% sits over the photograph. This is
+   what keeps the headline readable: after the duotone the brightest pixel a
+   photograph can produce is Coconut Milk, and under the scrim even that sits
+   at `#675D54` — 5.32:1 against Coconut Milk text, clear of the 4.5:1 that
+   WCAG AA requires. Without it, legibility would depend on which photograph
+   happened to be in the slot.
+
+Headlines over a wallpaper must be **Coconut Milk**. Warm Sand reaches only
+2.83:1 over the same scrim and fails.
+
+Both live in `components/Wallpaper.tsx` and `app/globals.css`.

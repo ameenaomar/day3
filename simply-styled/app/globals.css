@@ -203,6 +203,14 @@
   filter: url(#ss-duotone) contrast(1.04);
 }
 
+/* The scrim that makes type legible over any photograph. Espresso at 75% puts
+   the brightest possible duotoned pixel at #675D54 — 5.32:1 against Coconut
+   Milk text. Flat colour, not a gradient. */
+@utility wallpaper-scrim {
+  background-color: var(--color-ink);
+  opacity: 0.75;
+}
+
 @utility unicode-bidi-isolate {
   unicode-bidi: isolate;
 }

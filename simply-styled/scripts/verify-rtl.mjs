@@ -29,8 +29,12 @@ const snapshot = () =>
   page.evaluate(() => {
     const root = document.documentElement;
     const h1 = document.querySelector("h1");
-    const indented = h1.parentElement;
-    const styles = getComputedStyle(indented);
+    // Anchored to an explicit marker rather than to h1's parent: the layout
+    // moves, and a border assertion that silently starts measuring an
+    // unbordered element passes for the wrong reason.
+    const bordered = document.querySelector("[data-logical-border]");
+    if (!bordered) throw new Error("no [data-logical-border] element on the page");
+    const styles = getComputedStyle(bordered);
 
     // getComputedStyle returns the DECLARED stack, not the face actually drawn.
     // document.fonts.check() is no help either — it answers "can this render?",

@@ -80,23 +80,12 @@ export const siteConfig: SiteConfig = {
 };
 
 /**
- * Lookbook photography.
+ * Wallpapers — full-bleed photographic bands with display type over them.
  *
- * `id` keys the alt text and caption in lib/translations.ts; `src` is the file
- * to drop into public/images. Filenames are deliberately generic so a shot can
- * be swapped without touching code. See public/images/README.md.
+ * Filenames are deliberately generic so a photograph can be swapped without
+ * touching code. See public/images/README.md.
  */
-export type LookbookSlot = {
-  readonly id: "hanger" | "jeans" | "jacket" | "shirts" | "outfit";
-  readonly src: string;
-  /** CSS aspect-ratio, matching how the shot is framed. */
-  readonly ratio: string;
-};
-
-export const lookbook: readonly LookbookSlot[] = [
-  { id: "hanger", src: "/images/look-01-hanger.jpg", ratio: "2/3" },
-  { id: "jeans", src: "/images/look-02-jeans.jpg", ratio: "2/3" },
-  { id: "jacket", src: "/images/look-03-jacket.jpg", ratio: "2/3" },
-  { id: "shirts", src: "/images/look-04-shirts.jpg", ratio: "2/3" },
-  { id: "outfit", src: "/images/look-05-outfit.jpg", ratio: "3/2" },
-] as const;
+export const wallpapers = {
+  hero: "/images/wallpaper-hero.jpg",
+  services: "/images/wallpaper-services.jpg",
+} as const;

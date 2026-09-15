@@ -1,16 +1,20 @@
 "use client";
 
 import { LanguageToggle } from "@/components/LanguageToggle";
-import { LtrText } from "@/components/LtrText";
-import { Figure } from "@/components/Figure";
-import { lookbook } from "@/lib/site.config";
 import { useLanguage } from "@/components/LanguageProvider";
+import { LtrText } from "@/components/LtrText";
+import { Wallpaper } from "@/components/Wallpaper";
 import { formatAmount, quoteFor } from "@/lib/pricing";
+import { wallpapers } from "@/lib/site.config";
 import { t } from "@/lib/translations";
 
 /** Small all-caps label — the editorial eyebrow. */
-function Label({ children }: { children: React.ReactNode }) {
-  return <span className="text-label uppercase text-ink-muted">{children}</span>;
+function Label({ children, tone = "ink" }: { children: React.ReactNode; tone?: "ink" | "paper" }) {
+  return (
+    <span className={`text-label uppercase ${tone === "paper" ? "text-paper/75" : "text-ink-muted"}`}>
+      {children}
+    </span>
+  );
 }
 
 export default function FoundationPage() {
@@ -30,26 +34,27 @@ export default function FoundationPage() {
   ];
 
   return (
-    <main className="min-h-dvh px-gutter">
-      <div className="mx-auto max-w-5xl">
-        <header className="flex items-center justify-between rule-b py-8">
-          <Label>{copy.foundation.eyebrow}</Label>
-          <LanguageToggle />
-        </header>
+    <main>
+      {/* Wallpaper hero — one photograph, one headline, nothing else. */}
+      <Wallpaper src={wallpapers.hero} className="min-h-dvh">
+        <div className="mx-auto flex min-h-dvh max-w-5xl flex-col px-gutter">
+          <header className="flex items-center justify-between py-8">
+            <Label tone="paper">{copy.foundation.eyebrow}</Label>
+            <LanguageToggle tone="paper" />
+          </header>
 
-        {/* Display specimen. ps- and border-inline-start, so the indent moves
-            side on flip. */}
-        <section className="py-section-sm">
-          <div className="rule-s ps-8 sm:ps-14">
-            <h1 className="text-display font-serif text-ink">{copy.foundation.headline}</h1>
-            <p className="mt-10 max-w-prose text-body text-ink-muted">
+          <div className="flex flex-1 flex-col justify-center pb-section-sm">
+            <h1 className="text-display font-serif text-paper">{copy.foundation.headline}</h1>
+            <p className="mt-10 max-w-prose text-body text-paper/85">
               {copy.foundation.standfirst}
             </p>
           </div>
-        </section>
+        </div>
+      </Wallpaper>
 
+      <div className="mx-auto max-w-5xl px-gutter">
         {/* Palette */}
-        <section className="rule-t py-16">
+        <section className="py-16">
           <Label>{copy.foundation.paletteLabel}</Label>
           <div className="mt-8 grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
             {swatches.map((swatch) => (
@@ -72,72 +77,35 @@ export default function FoundationPage() {
           <p className="mt-8 font-serif text-headline text-ink">{copy.foundation.headline}</p>
           <p className="mt-4 text-caption text-ink-muted">{copy.foundation.displayFaceNote}</p>
         </section>
+      </div>
 
-        {/* Rates */}
-        <section className="rule-t py-16">
-          <Label>{copy.foundation.ratesLabel}</Label>
-          <dl className="mt-8 grid grid-cols-1 gap-10 sm:grid-cols-2">
+      {/* Second wallpaper band — the rates set over a photograph. */}
+      <Wallpaper src={wallpapers.services}>
+        <div className="mx-auto max-w-5xl px-gutter py-section-sm">
+          <Label tone="paper">{copy.foundation.ratesLabel}</Label>
+          <dl className="mt-10 grid grid-cols-1 gap-10 sm:grid-cols-2">
             {modes.map((mode) => (
-              <div key={mode.name} className="rule-s ps-6">
-                <dt className="text-caption text-ink-muted">{mode.name}</dt>
-                <dd className="mt-3 font-serif text-title text-ink">
+              <div
+                key={mode.name}
+                data-logical-border
+                className="border-paper/35 rule-s ps-6"
+              >
+                <dt className="text-caption text-paper/75">{mode.name}</dt>
+                <dd className="mt-3 font-serif text-headline text-paper">
                   {formatAmount(mode.quote.filsPerOutfit, locale)} {copy.currency}
                 </dd>
-                <dd className="mt-1 text-caption text-ink-muted">
-                  {copy.foundation.perOutfit}
-                </dd>
+                <dd className="mt-1 text-caption text-paper/75">{copy.foundation.perOutfit}</dd>
               </div>
             ))}
           </dl>
-        </section>
+        </div>
+      </Wallpaper>
 
-        {/* Lookbook — editorial arrangement: display type set against an
-            asymmetric grid, the wide shot breaking the column at the end. */}
-        <section className="rule-t py-16">
-          <Label>{copy.foundation.lookbookLabel}</Label>
-
-          <div className="mt-10 grid grid-cols-2 gap-6 lg:grid-cols-4 lg:gap-8">
-            {lookbook
-              .filter((slot) => slot.ratio === "2/3")
-              .map((slot) => (
-                <Figure
-                  key={slot.id}
-                  src={slot.src}
-                  ratio={slot.ratio}
-                  alt={copy.lookbook[slot.id]}
-                  caption={slot.id}
-                />
-              ))}
-          </div>
-
-          {/* The landscape shot runs wide, with the headline beside it. */}
-          {lookbook
-            .filter((slot) => slot.ratio === "3/2")
-            .map((slot) => (
-              <div
-                key={slot.id}
-                className="mt-8 grid grid-cols-1 items-end gap-8 lg:grid-cols-3 lg:gap-10"
-              >
-                <div className="lg:col-span-2">
-                  <Figure
-                    src={slot.src}
-                    ratio={slot.ratio}
-                    alt={copy.lookbook[slot.id]}
-                  />
-                </div>
-                <p className="font-serif text-title text-ink">
-                  {copy.foundation.headline}
-                </p>
-              </div>
-            ))}
-
-          <p className="mt-6 text-caption text-ink-muted">
-            {copy.foundation.lookbookNote}
-          </p>
-        </section>
+      <div className="mx-auto max-w-5xl px-gutter">
+        <p className="pt-6 text-caption text-ink-muted">{copy.foundation.wallpaperNote}</p>
 
         {/* Live readout, so the flip is verifiable rather than eyeballed. */}
-        <footer className="rule-t py-10">
+        <footer className="mt-10 rule-t py-10">
           <dl className="flex gap-14 text-caption">
             <div>
               <dt>
