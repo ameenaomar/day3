@@ -1,24 +1,122 @@
 /**
  * The 7-step Style Profile quiz, defined as data.
  *
- * PLACEHOLDER: the step and option definitions come from §7 of the spec, which
- * is not yet available to this build. The types below are a provisional sketch
- * and WILL be revised against §7 — nothing renders from this file yet.
+ * GENERATED from the prototype at public/whatcaniwear.html (the original
+ * "What Can I Wear" flow), then reworked for the advice-only service: the
+ * clothing-budget field is gone, and a delivery-mode field was added because
+ * the rate depends on it.
  *
- * Copy rule: this file holds structure and translation keys only. The visible
- * question and option text lives in lib/translations.ts.
+ * Structure only. Every visible string — step questions, field labels, option
+ * labels, hints — lives in lib/translations.ts and is keyed by the ids here.
  */
 
-export type QuizOptionId = string;
-export type QuizStepId = string;
+export type Audience = "women" | "men";
 
-export type QuizStep = {
-  id: QuizStepId;
-  /** Single- or multi-select; §7 will confirm which steps are which. */
-  kind: "single" | "multi";
-  options: readonly { id: QuizOptionId }[];
+export type FieldKind =
+  | "single"       /* pick one */
+  | "multi"        /* pick any number */
+  | "text"         /* free text */
+  | "tone"         /* skin undertone, shown as swatches */
+  | "measurements" /* the optional exact-measurements panel */;
+
+export type QuizStepId = "basics" | "sizes" | "body" | "cut" | "colour" | "life" | "order";
+
+export type QuizFieldKey = "who" | "occasion" | "top" | "bottomW" | "bottomM" | "bra" | "shoeW" | "shoeM" | "fitpref" | "brand" | "heightW" | "heightM" | "shoulders" | "arms" | "torso" | "shapeW" | "shapeM" | "__exact" | "sleeve" | "length" | "modest" | "cover" | "never" | "tone" | "lovecol" | "life" | "bold" | "mode" | "looks";
+
+export type QuizField = {
+  readonly key: QuizFieldKey;
+  readonly kind: FieldKind;
+  /** The answer may be left blank. */
+  readonly optional?: boolean;
+  /** Options are literal values (sizes, heights) shown as-is, never translated. */
+  readonly bare?: boolean;
+  /** Lay the options out as a grid rather than a row. */
+  readonly grid?: boolean;
+  /** Only asked when "who" is this. */
+  readonly only?: Audience;
+  /** Only asked once this other field has an answer. */
+  readonly needs?: QuizFieldKey;
+  readonly options?: readonly string[];
+  /** tone only: the swatch colours shown for each option. */
+  readonly swatches?: Readonly<Record<string, readonly string[]>>;
+  /** measurements only: the individual centimetre inputs. */
+  readonly measurements?: readonly { readonly key: string; readonly only?: Audience }[];
 };
 
-export const quizSteps: readonly QuizStep[] = [];
+export type QuizStep = {
+  readonly id: QuizStepId;
+  readonly fields: readonly QuizField[];
+};
 
+export const quizSteps: readonly QuizStep[] = [
+  {
+    id: "basics",
+    fields: [
+      { key: "who", kind: "single", options: ["women", "men"] },
+      { key: "occasion", kind: "single", needs: "who", options: ["wedding", "eid", "grad", "work", "travel", "everyday"] },
+    ],
+  },
+  {
+    id: "sizes",
+    fields: [
+      { key: "top", kind: "single", bare: true, options: ["XS", "S", "M", "L", "XL", "2XL", "3XL"] },
+      { key: "bottomW", kind: "single", bare: true, only: "women", options: ["34", "36", "38", "40", "42", "44", "46", "48"] },
+      { key: "bottomM", kind: "single", bare: true, only: "men", options: ["28", "30", "32", "34", "36", "38", "40", "42"] },
+      { key: "bra", kind: "single", optional: true, bare: true, only: "women", options: ["70", "75", "80", "85", "90", "95", "100", "A", "B", "C", "D", "DD", "E"] },
+      { key: "shoeW", kind: "single", bare: true, only: "women", options: ["35", "36", "37", "38", "39", "40", "41", "42"] },
+      { key: "shoeM", kind: "single", bare: true, only: "men", options: ["39", "40", "41", "42", "43", "44", "45", "46"] },
+      { key: "fitpref", kind: "single", options: ["fitted", "true", "relaxed", "oversized"] },
+      { key: "brand", kind: "text" },
+    ],
+  },
+  {
+    id: "body",
+    fields: [
+      { key: "heightW", kind: "single", bare: true, only: "women", options: ["<150", "150-155", "156-160", "161-165", "166-170", "171-175", "176+"] },
+      { key: "heightM", kind: "single", bare: true, only: "men", options: ["<165", "165-170", "171-175", "176-180", "181-185", "186-190", "191+"] },
+      { key: "shoulders", kind: "single", grid: true, options: ["narrow", "average", "broad"] },
+      { key: "arms", kind: "single", grid: true, options: ["short", "average", "long"] },
+      { key: "torso", kind: "single", grid: true, options: ["short", "average", "long"] },
+      { key: "shapeW", kind: "single", grid: true, only: "women", options: ["hourglass", "pear", "rectangle", "apple", "inverted", "unsure"] },
+      { key: "shapeM", kind: "single", grid: true, only: "men", options: ["slim", "athletic", "average", "broad", "unsure"] },
+      { key: "__exact", kind: "measurements", measurements: [{ key: "bust", only: "women" }, { key: "chest", only: "men" }, { key: "waist" }, { key: "hip" }, { key: "shoulderCm" }, { key: "armCm" }, { key: "inseam" }] },
+    ],
+  },
+  {
+    id: "cut",
+    fields: [
+      { key: "sleeve", kind: "single", options: ["long", "threequarter", "any"] },
+      { key: "length", kind: "single", only: "women", options: ["maxi", "midi", "any"] },
+      { key: "modest", kind: "multi", optional: true, only: "women", options: ["hijab", "abaya", "opaque", "nolayer"] },
+      { key: "cover", kind: "multi", optional: true, options: ["arms", "waist", "legs", "shoulders", "chest", "back", "nothing"] },
+      { key: "never", kind: "multi", optional: true, options: ["tight", "prints", "heels", "neon", "crop", "logos"] },
+    ],
+  },
+  {
+    id: "colour",
+    fields: [
+      { key: "tone", kind: "tone", options: ["warm", "cool", "neutral"], swatches: { "warm": ["#F0D9B5", "#DEB887", "#B98A5B", "#8C6239"], "cool": ["#F6DDD8", "#E0B7AE", "#B98A8A", "#7A5450"], "neutral": ["#F2E3D0", "#D9BFA6", "#AD8E74", "#6E5744"] } },
+      { key: "lovecol", kind: "multi", optional: true, options: ["black", "earth", "blue", "green", "jewel", "pastel"] },
+    ],
+  },
+  {
+    id: "life",
+    fields: [
+      { key: "life", kind: "multi", options: ["office", "uni", "home", "outings", "travel", "active"] },
+      { key: "bold", kind: "single", grid: true, options: ["quiet", "polished", "statement"] },
+    ],
+  },
+  {
+    id: "order",
+    fields: [
+      { key: "mode", kind: "single", options: ["online", "inPerson"] },
+      { key: "looks", kind: "single", options: ["1", "2", "3"] },
+    ],
+  },
+] as const;
+
+/** Where answers are persisted, so the quiz survives a refresh. */
 export const QUIZ_STORAGE_KEY = "simply-styled:style-profile";
+
+/** The field whose answer decides which `only` fields are asked. */
+export const AUDIENCE_FIELD = "who" as const;

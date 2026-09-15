@@ -13,7 +13,8 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "check:logical": "node scripts/check-logical-properties.mjs",
-    "verify:rtl": "node scripts/verify-rtl.mjs"
+    "verify:rtl": "node scripts/verify-rtl.mjs",
+    "verify:quiz": "node scripts/verify-quiz.mjs"
   },
   "dependencies": {
     "lucide-react": "1.45.0",

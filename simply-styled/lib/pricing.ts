@@ -44,6 +44,11 @@ export function quoteFor(mode: ServiceMode, outfits: number): Quote {
  * shown to users, so it belongs in lib/translations.ts like all other copy.
  * Always shown to three decimals, because the dinar divides into 1000 fils.
  */
+/** A plain integer in the locale's numerals — "7", or "٧" in Arabic. */
+export function formatNumber(value: number, locale: Locale): string {
+  return new Intl.NumberFormat(locale === "ar" ? "ar-KW" : "en-KW").format(value);
+}
+
 export function formatAmount(fils: number, locale: Locale): string {
   return new Intl.NumberFormat(locale === "ar" ? "ar-KW" : "en-KW", {
     minimumFractionDigits: 3,
