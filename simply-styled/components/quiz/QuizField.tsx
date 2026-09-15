@@ -3,7 +3,7 @@
 import { QuizChoice } from "@/components/quiz/QuizChoice";
 import type { Answer, Answers, Measurements } from "@/lib/quiz-state";
 import { isSelected, toggleMulti } from "@/lib/quiz-state";
-import type { Audience, QuizField as Field } from "@/lib/quiz.config";
+import type { QuizField as Field } from "@/lib/quiz.config";
 import type { Dictionary } from "@/lib/translations";
 
 type QuizFieldProps = {
@@ -11,7 +11,6 @@ type QuizFieldProps = {
   copy: Dictionary;
   answers: Answers;
   measurements: Measurements;
-  audience: Audience | null;
   missing: boolean;
   showMeasurements: boolean;
   onToggleMeasurements: () => void;
@@ -24,7 +23,6 @@ export function QuizField({
   copy,
   answers,
   measurements,
-  audience,
   missing,
   showMeasurements,
   onToggleMeasurements,
@@ -66,9 +64,7 @@ export function QuizField({
   }
 
   if (field.kind === "measurements") {
-    const inputs = (field.measurements ?? []).filter(
-      (m) => !m.only || m.only === audience,
-    );
+    const inputs = field.measurements ?? [];
     return (
       <div className="rule-t pt-8">
         <button

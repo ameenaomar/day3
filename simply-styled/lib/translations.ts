@@ -81,7 +81,7 @@ const en: Dictionary = {
     headlineTop: "Simply",
     headlineBottom: "Styled",
     lede: "Personal styling for the way you actually live. Seven questions, and we build your profile — your palette, your silhouette, the rules we never break.",
-    meta: ["Est. Kuwait", "Women & Men", "Online · In person"],
+    meta: ["Est. Kuwait", "For women", "Online · In person"],
     sections: [
       { n: "01", title: "The Profile", body: "Seven screens, mostly taps. Two minutes. Free, and yours to keep." },
       { n: "02", title: "The Edit", body: "Colours that work on you, cuts that fit your frame, rules we never break." },
@@ -99,7 +99,7 @@ const en: Dictionary = {
     steps: {
       basics: {
         tag: "Basics",
-        question: "Who are we styling, and what for?",
+        question: "What are we dressing for?",
         sub: "The occasion decides almost everything else.",
       },
       sizes: {
@@ -134,23 +134,18 @@ const en: Dictionary = {
       },
     },
     fields: {
-      who: { label: "Styling for" },
       occasion: { label: "The occasion" },
       top: { label: "Top" },
       bottomW: { label: "Bottom (EU)" },
-      bottomM: { label: "Waist (inches)" },
       bra: { label: "Bra size" },
       shoeW: { label: "Shoe (EU)" },
-      shoeM: { label: "Shoe (EU)" },
       fitpref: { label: "How you like clothes to sit" },
       brand: { label: "A brand and size that fits you well", placeholder: "e.g. Zara M, Mango 38", hint: "This one line is the single most useful thing you can tell a stylist." },
       heightW: { label: "Height (cm)" },
-      heightM: { label: "Height (cm)" },
       shoulders: { label: "Shoulders" },
       arms: { label: "Arm length" },
       torso: { label: "Torso and legs" },
       shapeW: { label: "Where you carry your width" },
-      shapeM: { label: "Your build" },
       __exact: { label: "Exact measurements" },
       sleeve: { label: "Sleeves" },
       length: { label: "Length" },
@@ -165,10 +160,6 @@ const en: Dictionary = {
       looks: { label: "Number of outfits" },
     },
     options: {
-      who: {
-        "women": { label: "Women" },
-        "men": { label: "Men" },
-      },
       occasion: {
         "wedding": { label: "Wedding or party" },
         "eid": { label: "Eid or Ramadan" },
@@ -204,13 +195,6 @@ const en: Dictionary = {
         "rectangle": { label: "Straight up and down", note: "Shoulders, waist and hips similar" },
         "apple": { label: "Middle widest", note: "Slimmer arms and legs" },
         "inverted": { label: "Shoulders widest", note: "Narrower through the hips" },
-        "unsure": { label: "Not sure", note: "Let the stylist decide from the rest" },
-      },
-      shapeM: {
-        "slim": { label: "Slim", note: "Clothes hang loose on me" },
-        "athletic": { label: "Athletic", note: "Broad chest, narrower waist" },
-        "average": { label: "Average", note: "Standard cuts mostly work" },
-        "broad": { label: "Solid", note: "Fuller through chest and middle" },
         "unsure": { label: "Not sure", note: "Let the stylist decide from the rest" },
       },
       sleeve: {
@@ -284,7 +268,6 @@ const en: Dictionary = {
     },
     measurements: {
       bust: "Bust",
-      chest: "Chest",
       waist: "Waist",
       hip: "Hips",
       shoulderCm: "Shoulder, seam to seam",
@@ -324,7 +307,7 @@ const ar: Dictionary = {
     headlineTop: "سِمبلي",
     headlineBottom: "ستايلد",
     lede: "تنسيق شخصي يليق بحياتك كما هي. سبعة أسئلة، ونبني ملفك — لوحة ألوانك، وقَصّتك، والقواعد التي لا نخالفها.",
-    meta: ["تأسست في الكويت", "نساء ورجال", "أونلاين · حضورياً"],
+    meta: ["تأسست في الكويت", "للنساء", "أونلاين · حضورياً"],
     sections: [
       { n: "٠١", title: "الملف", body: "سبع شاشات، معظمها بلمسة. دقيقتان. مجاناً، ويبقى لك." },
       { n: "٠٢", title: "الاختيار", body: "ألوان تناسبك، وقَصّات تلائم جسمك، وقواعد لا نخالفها." },
@@ -334,15 +317,15 @@ const ar: Dictionary = {
     online: "أونلاين",
     inPerson: "حضورياً",
     rateNote: "لكل إطلالة. كلما زاد العدد قلّ السعر.",
-    ctaTitle: "ابدأ ملفك",
-    ctaButton: "ابدأ — دقيقتان",
+    ctaTitle: "ابدئي ملفك",
+    ctaButton: "ابدئي — دقيقتان",
     stripNote: "أماكن الصور — أضِف الملفات إلى public/images",
   },
   quiz: {
     steps: {
       basics: {
         tag: "الأساسيات",
-        question: "لمن سنقوم بالتنسيق، ولماذا؟",
+        question: "لأي مناسبة ننسّق؟",
         sub: "المناسبة تحدد كل شيء تقريباً.",
       },
       sizes: {
@@ -377,23 +360,18 @@ const ar: Dictionary = {
       },
     },
     fields: {
-      who: { label: "التنسيق لـ" },
       occasion: { label: "المناسبة" },
       top: { label: "الأعلى" },
       bottomW: { label: "الأسفل (أوروبي)" },
-      bottomM: { label: "الوسط (إنش)" },
       bra: { label: "مقاس حمالة الصدر" },
       shoeW: { label: "الحذاء (أوروبي)" },
-      shoeM: { label: "الحذاء (أوروبي)" },
       fitpref: { label: "كيف تحبين أن تكون القصّة" },
       brand: { label: "ماركة ومقاس يناسبك تماماً", placeholder: "مثال: زارا M، مانجو ٣٨", hint: "هذا السطر هو أهم ما يمكنك إخباره للمنسّقة." },
       heightW: { label: "الطول (سم)" },
-      heightM: { label: "الطول (سم)" },
       shoulders: { label: "الكتفان" },
       arms: { label: "طول الذراع" },
       torso: { label: "الجذع والساقان" },
       shapeW: { label: "أين يتمركز عرض جسمك" },
-      shapeM: { label: "بنيتك" },
       __exact: { label: "المقاسات الدقيقة" },
       sleeve: { label: "الأكمام" },
       length: { label: "الطول" },
@@ -408,10 +386,6 @@ const ar: Dictionary = {
       looks: { label: "عدد الإطلالات" },
     },
     options: {
-      who: {
-        "women": { label: "نساء" },
-        "men": { label: "رجال" },
-      },
       occasion: {
         "wedding": { label: "عرس أو حفلة" },
         "eid": { label: "العيد أو رمضان" },
@@ -448,13 +422,6 @@ const ar: Dictionary = {
         "apple": { label: "الوسط الأعرض", note: "ذراعان وساقان أنحف" },
         "inverted": { label: "الكتفان الأعرض", note: "الأرداف أضيق" },
         "unsure": { label: "غير متأكدة", note: "اتركي القرار للمنسّقة" },
-      },
-      shapeM: {
-        "slim": { label: "نحيف", note: "الملابس واسعة عليّ" },
-        "athletic": { label: "رياضي", note: "صدر عريض ووسط أضيق" },
-        "average": { label: "متوسط", note: "القَصّات العادية تناسبني" },
-        "broad": { label: "ممتلئ", note: "أعرض في الصدر والوسط" },
-        "unsure": { label: "غير متأكد", note: "اتركي القرار للمنسّق" },
       },
       sleeve: {
         "long": { label: "طويلة فقط" },
@@ -527,7 +494,6 @@ const ar: Dictionary = {
     },
     measurements: {
       bust: "محيط الصدر",
-      chest: "محيط الصدر",
       waist: "الوسط",
       hip: "الأرداف",
       shoulderCm: "الكتف، من خيط لخيط",
@@ -540,11 +506,11 @@ const ar: Dictionary = {
       back: "رجوع",
       finish: "إنهاء",
       optional: "اختياري",
-      answerRequired: "أجب عن الأسئلة المعلّمة بـ * للمتابعة.",
+      answerRequired: "أجيبي عن الأسئلة المعلّمة بـ * للمتابعة.",
       showMeasurements: "إدخال المقاسات الدقيقة بالسنتيمتر",
       hideMeasurements: "إخفاء المقاسات الدقيقة",
       measurementsHint:
-        "لا تحتاج إلى شريط قياس. الاختيارات أعلاه كافية \u2014 الأرقام الدقيقة تحسّن القصّة فقط.",
+        "لا تحتاجين إلى شريط قياس. الاختيارات أعلاه كافية \u2014 الأرقام الدقيقة تحسّن القصّة فقط.",
       centimetres: "سم",
       startOver: "البدء من جديد",
       savedNote: "تُحفظ إجاباتك على هذا الجهاز أولاً بأول.",

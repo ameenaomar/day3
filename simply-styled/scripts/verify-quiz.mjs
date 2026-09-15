@@ -2,7 +2,7 @@
 /**
  * Drives the Style Profile quiz in a real browser and asserts the behaviour the
  * brief calls for: answers persist across a refresh, survive a mid-quiz
- * language switch, and the conditional fields follow the audience answer.
+ * language switch, required answers gate the step, and the men's path is gone.
  *
  * Usage:  npm run build && npm start &   then:  npm run verify:quiz
  * Env:    BASE_URL (default http://localhost:3000), CHROMIUM_PATH
@@ -33,20 +33,17 @@ const fieldLabels = () =>
 await page.goto(`${BASE_URL}/quiz`, { waitUntil: "networkidle" });
 await page.waitForSelector('[role="radio"]');
 
-// --- step 1: the audience answer gates the next question -------------------
-check("occasion hidden until audience is chosen",
+// --- step 1: no audience gate — the service is for women only ----------------
+check("no audience question is asked",
+  await page.getByRole("radio", { name: /^(Women|Men)$/ }).count(), 0);
+check("the occasion is asked immediately",
   await page.$$eval('[role="radiogroup"]', (g) => g.length), 1);
-
-await page.getByRole("radio", { name: "Women" }).click();
-await page.waitForTimeout(150);
-check("occasion appears after choosing an audience",
-  await page.$$eval('[role="radiogroup"]', (g) => g.length), 2);
 
 // --- advancing requires the required answers -------------------------------
 await page.getByRole("button", { name: /Continue/i }).click();
 await page.waitForTimeout(200);
 check("blocked while a required answer is missing",
-  await page.$$eval("h1", (h) => h[0].textContent.includes("Who are we styling")), true);
+  await page.$$eval("h1", (h) => h[0].textContent.includes("What are we dressing for")), true);
 
 await page.getByRole("radio", { name: "Wedding or party" }).click();
 await page.getByRole("button", { name: /Continue/i }).click();
@@ -54,15 +51,15 @@ await page.waitForTimeout(300);
 check("advances once answered",
   await page.$eval("h1", (h) => h.textContent.trim()), "The sizes you buy today.");
 
-// --- women-only fields are the ones asked ----------------------------------
+// --- only the women's fields exist -----------------------------------------
 const labels = await fieldLabels();
 check("women's size fields asked", labels.includes("Bottom (EU)"), true);
-check("men's size fields not asked", labels.includes("Waist (inches)"), false);
+check("men's size fields absent", labels.includes("Waist (inches)"), false);
 
 await page.getByRole("radio", { name: "M", exact: true }).first().click();
 await page.waitForTimeout(150);
 const before = await stored();
-check("answers written to storage", before.answers.who, "women");
+check("answers written to storage", before.answers.occasion, "wedding");
 check("step index written to storage", before.step, 1);
 
 // --- survives a refresh ----------------------------------------------------
@@ -70,7 +67,7 @@ await page.reload({ waitUntil: "networkidle" });
 await page.waitForSelector("h1");
 check("step survives refresh",
   await page.$eval("h1", (h) => h.textContent.trim()), "The sizes you buy today.");
-check("answers survive refresh", (await stored()).answers.who, "women");
+check("answers survive refresh", (await stored()).answers.occasion, "wedding");
 check("selection still marked after refresh", (await selected()).includes("M"), true);
 
 // --- survives a mid-quiz language switch -----------------------------------

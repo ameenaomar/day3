@@ -6,7 +6,6 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useLanguage } from "@/components/LanguageProvider";
 import { QuizField } from "@/components/quiz/QuizField";
 import {
-  audienceOf,
   clearState,
   EMPTY_STATE,
   isStepComplete,
@@ -47,7 +46,6 @@ export function Quiz() {
   if (step === undefined) throw new Error("quizSteps is empty");
 
   const stepCopy = copy.quiz.steps[step.id];
-  const audience = audienceOf(state.answers);
   const fields = visibleFields(step, state.answers);
   const complete = isStepComplete(step, state.answers);
   const missing = useMemo(
@@ -119,7 +117,6 @@ export function Quiz() {
             copy={copy}
             answers={state.answers}
             measurements={state.measurements}
-            audience={audience}
             missing={missing.has(field.key)}
             showMeasurements={showMeasurements}
             onToggleMeasurements={() => setShowMeasurements((v) => !v)}

@@ -7,10 +7,8 @@
  */
 
 import {
-  AUDIENCE_FIELD,
   QUIZ_STORAGE_KEY,
   quizSteps,
-  type Audience,
   type QuizField,
   type QuizFieldKey,
   type QuizStep,
@@ -32,22 +30,14 @@ export const EMPTY_STATE: QuizState = { answers: {}, measurements: {}, step: 0 }
 /** Bumped when the shape changes, so a stale saved quiz is discarded not crashed. */
 const STATE_VERSION = 1;
 
-export function audienceOf(answers: Answers): Audience | null {
-  const who = answers[AUDIENCE_FIELD];
-  return who === "women" || who === "men" ? who : null;
-}
-
 /**
- * Which fields of a step are currently asked. A field is hidden when it is for
- * the other audience, or when the field it depends on is still unanswered.
+ * Which fields of a step are currently asked — all of them, except any whose
+ * prerequisite is still unanswered.
  */
 export function visibleFields(step: QuizStep, answers: Answers): readonly QuizField[] {
-  const audience = audienceOf(answers);
-  return step.fields.filter((field) => {
-    if (field.only && field.only !== audience) return false;
-    if (field.needs && !hasAnswer(answers[field.needs])) return false;
-    return true;
-  });
+  return step.fields.filter(
+    (field) => !field.needs || hasAnswer(answers[field.needs]),
+  );
 }
 
 export function hasAnswer(value: Answer | undefined): boolean {
