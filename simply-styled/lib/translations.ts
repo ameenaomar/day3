@@ -24,6 +24,9 @@ export type Dictionary = {
   };
   home: {
     location: string;
+    headlineLead: string;
+    marquee: readonly string[];
+    stripCaptions: readonly string[];
     headlineTop: string;
     headlineBottom: string;
     lede: string;
@@ -78,6 +81,9 @@ const en: Dictionary = {
   },
   home: {
     location: "Kuwait · Online worldwide",
+    headlineLead: "Dressed for",
+    marquee: ["Personal styling", "Kuwait · Online worldwide", "Seven questions, two minutes", "For women"],
+    stripCaptions: ["The hanger", "The denim", "The jacket", "The linen"],
     headlineTop: "Simply",
     headlineBottom: "Styled",
     lede: "Personal styling for the way you actually live. Seven questions, and we build your profile — your palette, your silhouette, the rules we never break.",
@@ -304,6 +310,9 @@ const ar: Dictionary = {
   },
   home: {
     location: "الكويت · أونلاين حول العالم",
+    headlineLead: "إطلالة لـ",
+    marquee: ["تنسيق شخصي", "الكويت · أونلاين حول العالم", "سبعة أسئلة، دقيقتان", "للنساء"],
+    stripCaptions: ["العلّاقة", "الجينز", "الجاكيت", "الكتان"],
     headlineTop: "سِمبلي",
     headlineBottom: "ستايلد",
     lede: "تنسيق شخصي يليق بحياتك كما هي. سبعة أسئلة، ونبني ملفك — لوحة ألوانك، وقَصّتك، والقواعد التي لا نخالفها.",

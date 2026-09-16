@@ -173,6 +173,83 @@
 }
 
 /* ---------------------------------------------------------------------------
+   Motion.
+
+   Every animation here is decorative — the page reads identically without it —
+   so all of it is switched off under prefers-reduced-motion. Nothing animates
+   layout, only transform and opacity, so none of it causes reflow.
+   --------------------------------------------------------------------------- */
+
+@keyframes ss-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    /* The track holds the phrase twice; -50% lands exactly on the repeat. */
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes ss-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes ss-word-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.35em);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@utility marquee-track {
+  display: flex;
+  inline-size: max-content;
+  animation: ss-marquee 38s linear infinite;
+}
+
+/* The ticker should travel against the reading direction in both languages. */
+[dir="rtl"] .marquee-track {
+  animation-direction: reverse;
+}
+
+@utility rise {
+  animation: ss-rise 0.7s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+
+@utility word-in {
+  animation: ss-word-in 0.45s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+
+/* A section index set huge and faint, sitting behind its own heading. */
+@utility ghost-numeral {
+  font-size: 9rem;
+  line-height: 0.8;
+  color: var(--color-rule);
+  opacity: 0.55;
+  pointer-events: none;
+  user-select: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track,
+  .rise,
+  .word-in {
+    animation: none !important;
+  }
+}
+
+/* ---------------------------------------------------------------------------
    Utilities
    --------------------------------------------------------------------------- */
 
